@@ -1,0 +1,183 @@
+.el-input.is-disabled .el-input__inner {
+  background-color: #f5f7fa;
+  border-color: #e4e7ed;
+  color: #888888;
+  cursor: not-allowed
+}
+
+.el-input.is-disabled .el-input__inner::-webkit-input-placeholder {
+  color: #C1C1C1
+}
+
+.el-input.is-disabled .el-input__inner:-ms-input-placeholder {
+  color: #C1C1C1
+}
+
+.el-input.is-disabled .el-input__inner::placeholder {
+  color: #C1C1C1
+}
+
+.login-box .el-input__inner {
+  background: rgba(0, 0, 0, 0);
+  border-color: #7d7d7d;
+  color: #fff;
+}
+
+.login-box .el-input__inner:-ms-input-placeholder {
+  color: #999
+}
+
+.login-box .el-input__inner::placeholder {
+  color: #999
+}
+
+.login-box .el-input__inner:focus {
+  border-color: #33CCFF;
+}
+
+.el-tag + .el-tag {
+  margin-left: 10px;
+}
+
+.el-menu {
+  border-right: none;
+}
+
+.button-tag {
+  margin-left: 10px;
+  height: 32px;
+  line-height: 30px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.input-tag {
+  width: 90px;
+  margin-left: 10px;
+  vertical-align: bottom;
+}
+
+/** 表格样式开始*/
+.el-table {
+  font-size: 14px;
+  color: #666
+}
+
+.el-table thead {
+  color: #333;
+  font-weight: 500
+}
+
+.el-table--striped .el-table__body tr.el-table__row--striped td {
+  background: #dfdfdf;
+  background-clip: padding-box;
+}
+
+.el-table--striped .el-table__body tr.el-table__row--striped.current-row td {
+  background: #edf7ff;
+}
+
+/**表格样式结束*/
+
+.el-popover {
+  padding: 0;
+  -moz-box-shadow: -6px 6px 12px rgba(40, 40, 40, .5); /*firefox*/
+  -webkit-box-shadow: -6px 6px 12px rgba(40, 40, 40, .5); /*webkit*/
+  box-shadow: -6px 6px 12px rgba(40, 40, 40, .5); /*opera或ie9*/
+}
+
+.el-input-group__append, .el-input-group__prepend {
+  background-color: #33CCFF;
+  color: #fff;
+  border: 1px solid #33CCFF;
+}
+
+/** 定制版dialog*/
+.popu .el-dialog {
+  border-radius: 4px;
+  height: 162px;
+  margin: 0;
+}
+
+.popu .el-dialog__body {
+  padding: 0;
+  color: #606266;
+  line-height: 24px;
+  font-size: 14px
+}
+
+.popu .el-dialog__headerbtn .el-dialog__close {
+  display: none;
+  color: #909399
+}
+
+.popu .el-dialog__body .el-button {
+  width: 100%;
+  border-top: 1px solid #33CCFF;
+  padding: 20px 0;
+}
+
+.popu .el-dialog__body .el-button.left {
+  border-radius: 0 0 0 4px;
+  border-right: 1px solid #33CCFF;
+}
+
+.popu .el-dialog__body .el-button.right {
+  border-radius: 0 0 4px 0;
+}
+
+/** 定制版dialog*/
+
+.add-appdiv {
+  border: 1px #D0CACF solid;
+  border-radius: 4px;
+  padding: 30px;
+  margin-bottom: 30px;
+  background: #fff;
+}
+
+@media screen and (min-width: 320px) and (max-width: 799px) {
+  .el-message {
+    min-width: 300px;
+  }
+
+  .el-message-box {
+    width: 300px;
+  }
+
+  .popu .el-dialog {
+    position: absolute;
+    left: 50%;
+    top: 18%;
+    margin-top: -81px;
+    margin-left: -150px;
+  }
+}
+
+/**form的label变灰色*/
+.gray-form .el-form-item__label {
+  font-size: 16px;
+  padding: 0 30px 0 0;
+}
+
+.gray-form .el-form-item__content {
+  color: #333;
+}
+
+@media screen and (min-width: 800px) {
+  .el-message {
+    min-width: 380px;
+  }
+
+  .el-message-box {
+    width: 420px;
+  }
+
+  .popu .el-dialog {
+    position: absolute;
+    left: 50%;
+    top: 26%;
+    margin-top: -81px;
+    margin-left: -210px;
+  }
+}
