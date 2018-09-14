@@ -146,8 +146,13 @@
           {code: "TYPE_WIFI", name: "WIFI 设备"}, {code: "TYPE_LTE", name: "LTE 设备"},
           {code: "TYPE_CDMA", name: "CDMA 设备"}, {code: "TYPE_WCDMA", name: "WCDMA 设备"},
           {code: "TYPE_TDSCDMA", name: "TDSCDMA 设备"}, {code: "GSM_CDMA_MU_MODE", name: "GSM+CDMA 多模"},
-          {code: "GSM_CDMA_WCDMA_MU_MODE", name: "GSM+CDMA+WCDMA 多模"},
-          {code: "CDMA_WCDMA_MU_MODE", name: "CDMA+WCDMA 多模"}, {code: "GSM_LTE_MU_MODE", name: "GSM+LTE 多模"}],
+          {code: "GSM_CDMA_WCDMA_MU_MODE", name: "GSM+CDMA+WCDMA 多模"}, {code: "ZDM8", name: "4BandLTE"},
+          {code: "CDMA_WCDMA_MU_MODE", name: "CDMA+WCDMA 多模"}, {code: "GSM_LTE_MU_MODE", name: "GSM+LTE 多模"},
+          {code: "ZDM1", name: "3BandLTE"}, {code: "ZDM2", name: "GSM+4BandLTE"}, {code: "ZDM3", name: "GSM+CDMA+LTE"},
+          {code: "ZDM4", name: "GSM+CDMA+WCDMA+LTE"}, {code: "ZDM5", name: "GSM+CDMA+WCDMA+TD-SSCDMA+LTE"},
+          {code: "ZDM6", name: "GSM+WCDMA+LTE"}, {code: "ZDM7", name: "3BandLTE+WIFI"},
+          {code: "ZDM9", name: "4BandLTE+WIFI"}, {code: "ZDKA", name: "2BandLTE"},
+          {code: "ZDKB", name: "2BandLTE+WIFI"}, {code: "ZDKC", name: "2BabdLTE+GSM+WIFI"}],
         devTypes: [{code: "CON_OUTDOOR_POLE", name: "通用室外抱杆型"}, {code: "CON_OUTDOOR_MOCRO", name: "室外微热点"}],
         intervalid: null
       }
@@ -177,7 +182,7 @@
         this.$emit('openLoading');
         this.$post(param).then((data) => {
           this.$emit('closeLoading');
-          if ("000000" === data.code) {
+          if ("000000" == data.code) {
             this.$message({message: '设备正在重启，请稍后...', type: 'success'});
           }
         }).catch((err) => {
@@ -191,7 +196,7 @@
         this.$emit('openLoading');
         this.$post(param).then((data) => {
           this.$emit('closeLoading');
-          if ("000000" === data.code) {
+          if ("000000" == data.code) {
             this.deviceMonitor = data.data;
             if (data.data.devType.length > 0) {
               this.devType = this.getDevType(data.data.devForm);
@@ -199,6 +204,9 @@
             if (data.data.devForm.length > 0) {
               this.devForm = this.getDevForm(data.data.devType);
             }
+            sessionStorage.setItem("band4", data.data.band4 ? data.data.band4 : 0);
+            sessionStorage.setItem("hasGsmModule", data.data.hasGsmModule ? data.data.hasGsmModule : 0);
+            sessionStorage.setItem("hasPaModule", data.data.hasPaModule ? data.data.hasPaModule : 0);
             this.$emit('showDialog', false, false);
           }
         }).catch((err) => {
@@ -208,14 +216,14 @@
       },
       getDevForm(val) {
         for (let item of this.devForms) {
-          if (val === item.code) {
+          if (val == item.code) {
             return item.name;
           }
         }
       },
       getDevType(val) {
         for (let item of this.devTypes) {
-          if (val === item.code) {
+          if (val == item.code) {
             return item.name;
           }
         }
@@ -224,10 +232,10 @@
       getDeviceStatus() {
         let param = {msgId: "b7518c70", type: 4194, cmd: 4527, moduleID: 255, timestamp: new Date().getTime()};
         this.$post(param).then((data) => {
-          if ("000000" === data.code) {
+          if ("000000" == data.code) {
             this.deviceParam = data.data;
             this.deviceParam.deviceMonitorList.forEach((item) => {
-              if ('M' === item.operationType) {
+              if ('M' == item.operationType) {
                 this.boardParam = item;
               }
             });
@@ -240,7 +248,7 @@
       //各个基带板的参数
       getSubStatus() {
         this.deviceParam.deviceMonitorList.forEach((item) => {
-          if (this.activeItem === item.operationType) {
+          if (this.activeItem == item.operationType) {
             this.subParam = item;
           }
         });

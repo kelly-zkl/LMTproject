@@ -15,7 +15,7 @@
           </el-form-item>
           <el-form-item class="login-box">
             <el-input type="password" placeholder="密码" v-model="account.password" :maxlength="18"
-                      prefix-icon="fa fa-lock"></el-input>
+                      prefix-icon="fa fa-lock" @keyup.13.native="login()"></el-input>
           </el-form-item>
           <el-form-item align="left" style="margin: 0">
             <el-checkbox v-model="savePsw" style="color: #999" @change="handleChange">记住密码</el-checkbox>
@@ -27,7 +27,7 @@
         </el-form>
       </el-col>
       <el-col :span="24" class="main-footer">
-        All Rights Reserved V1.0.0
+        All Rights Reserved V2.0.4
       </el-col>
     </section>
   </div>

@@ -117,7 +117,7 @@
       getData() {
         let param = {msgId: "b7518c70", type: 4194, cmd: 4528, moduleID: 255, timestamp: new Date().getTime()};
         this.$post(param).then((data) => {
-          if ("000000" === data.code) {
+          if ("000000" == data.code) {
             if (data.data.metaInfo && data.data.metaInfo.content.length > 0) {//有数据时，更新列表
               let list = JSON.parse(data.data.metaInfo.content);
               if (list.length > 0) {
@@ -167,7 +167,7 @@
       getNoIndex(arr, item) {
         let index = true;
         for (let i = 0; i < arr.length; i++) {
-          if (arr[i].imsi === item.imsi) {
+          if (arr[i].imsi == item.imsi) {
             index = false;
           }
         }
@@ -188,7 +188,7 @@
         this.$confirm('确定从黑名单中删除该imsi号?', '提示', {type: 'info'}).then(() => {
           let bol = JSON.parse(localStorage.getItem("black"));
           if (bol) {
-            if (flag === 1) {
+            if (flag == 1) {
               val.forEach((item) => {
                 bol.splice(this.getIndex(bol, item), 1);
               });
@@ -253,11 +253,11 @@
       },
       //格式化内容   有数据就展示，没有数据就显示--
       formatterAddress(row, column) {
-        if (column.property === 'uptime') {//上报时间
+        if (column.property == 'uptime') {//上报时间
           return row.uptime ? formatDate(new Date(row.uptime * 1000), 'yyyy-MM-dd hh:mm:ss') : '--';
-        } else if (column.property === 'isp') {//运营商
-          return row.isp === 0 ? '移动' : row.isp === 1 ? '联通' : row.isp === 2 ? '电信' : '未知';
-        } else if (column.property === 'netType') {//网络类型 --> 根据运营商判断
+        } else if (column.property == 'isp') {//运营商
+          return row.isp == 0 ? '移动' : row.isp == 1 ? '联通' : row.isp == 2 ? '电信' : '未知';
+        } else if (column.property == 'netType') {//网络类型 --> 根据运营商判断
           return this.getNetType(row.isp);
         } else {
           return row[column.property] && row[column.property] !== "null" ? row[column.property] : '--';
@@ -283,7 +283,7 @@
       getIndex(arr, item) {
         let index = -1;
         for (let i = 0; i < arr.length; i++) {
-          if (arr[i].imsi === item.imsi) {
+          if (arr[i].imsi == item.imsi) {
             index = i;
           }
         }
@@ -333,7 +333,7 @@
       getBlackList() {
         let param = {msgId: "b7518c70", type: 4194, cmd: 4540, timestamp: new Date().getTime()};
         this.$post(param).then((data) => {
-          if ("000000" === data.code) {
+          if ("000000" == data.code) {
             if (data.blackImsi.length > 0) {
               data.blackImsi.forEach((item) => {
                 this.addImsi(item);
@@ -354,7 +354,7 @@
 //          this.$set(imsi, 'black', false);
 //          if (black && black.length > 0) {
 //            for (let item of black) {
-//              if (item.imsi === imsi.imsi) {
+//              if (item.imsi == imsi.imsi) {
 //                this.$set(imsi, 'black', true);
 //                return;
 //              }

@@ -118,8 +118,8 @@
         this.getIP();
         if (this.netParam.length > 0) {
           this.networkData = this.netParam[this.wanItem];
-          if (this.wanItem === 'wired') {
-            if (this.ipWay === this.networkData.ipMode) {
+          if (this.wanItem == 'wired') {
+            if (this.ipWay == this.networkData.ipMode) {
               this.networkData = this.netParam[this.wanItem];
             } else {
               this.networkData = {
@@ -133,7 +133,7 @@
       },
       //默认值
       clearData() {
-        if (this.wanItem === 'wired') {//有线
+        if (this.wanItem == 'wired') {//有线
           this.networkData = {ipMode: 'dhcp', deviceIp: '0.0.0.0', subMask: '0.0.0.0', gateway: '0.0.0.0'};
         } else {//3G
           this.networkData = {deviceIp: '0.0.0.0', subMask: '0.0.0.0', gateway: '0.0.0.0'};
@@ -155,7 +155,7 @@
       },
       //ip地址设置方式
       changeIpset(val) {
-        if (val === this.ipWay) {
+        if (val == this.ipWay) {
           this.networkData = this.netParam[this.wanItem];
           this.networkData.ipMode = val;
         } else {
@@ -173,7 +173,7 @@
         this.$refs['networkData'].validate((valid) => {
           if (valid) {
             this.$confirm('确定要保存设置?', '提示', {type: 'info'}).then(() => {
-              if (this.networkData.ipMode === 'dhcp') {
+              if (this.networkData.ipMode == 'dhcp') {
                 this.networkData = {ipMode: 'dhcp'};
               }
               let param = {
@@ -183,7 +183,7 @@
               this.$emit('openLoading');
               this.$post(param, "命令下发成功").then((data) => {
                 this.$emit('closeLoading');
-                if ("000000" === data.code) {
+                if ("000000" == data.code) {
                   this.$emit('showDialog', false, true);
                   this.getIP();
                 }
@@ -208,7 +208,7 @@
       getNetType() {
         let param = {msgId: "b7518c70", type: 4194, cmd: 4531, moduleID: 255, timestamp: new Date().getTime()};
         this.$post(param).then((data) => {
-          if ("000000" === data.code && data.data) {//"wireless": 1/0,	1为3G，0为固网
+          if ("000000" == data.code && data.data) {//"wireless": 1/0,	1为3G，0为固网
             this.wanItem = (data.data.wireless == 0 ? "wired" : "3Gnet");
             this.getIP();
           }
@@ -222,7 +222,7 @@
         this.$emit('openLoading');
         this.$post(param).then((data) => {
           this.$emit('closeLoading');
-          if ("000000" === data.code && data.data) {
+          if ("000000" == data.code && data.data) {
             this.netParam = data.data;
             this.ipWay = data.data.wired.ipMode;
             this.networkData = this.netParam[this.wanItem];

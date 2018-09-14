@@ -3,7 +3,7 @@ import Router from 'vue-router'
 
 import Home from '../components/Home.vue';
 
-import BandSet from '../components/deviceSet/BandSet.vue';
+import DeviceSet from '../components/deviceSet/DeviceSet.vue';
 import BaseSet from '../components/deviceSet/BaseSet.vue';
 import DeviceOverview from '../components/deviceSet/DeviceOverview.vue';
 import TerminateData from '../components/deviceSet/TerminateData.vue';
@@ -46,7 +46,7 @@ export default new Router({
       index: '3',
       leaf: true,//只有一个节点
       children: [
-        {path: '/bandSet', component: BandSet, name: '载波配置', hidden: true},
+        {path: '/deviceSet', component: DeviceSet, name: '设备配置', hidden: true},
       ]
     },
     // {
