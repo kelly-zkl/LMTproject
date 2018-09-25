@@ -187,10 +187,12 @@
           setTimeout(() => {
             this.listLoading = false
           }, 500);
-          if ("000000" == data.code && data.content.snifferResult.length > 0) {
-            data.content.snifferResult.forEach((item) => {
+          if ("000000" == data.code && data.content.snifferCell.length > 0) {
+            data.content.snifferCell.forEach((item) => {
               if (this.activeItem == item.network) {
-                this.networkData.push(item.cellInfo);
+                item.snifferResult.forEach((cell) => {
+                  this.networkData.push(cell.cellInfo);
+                });
               }
             });
           }
