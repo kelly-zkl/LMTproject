@@ -27,7 +27,7 @@
         </el-form>
       </el-col>
       <el-col :span="24" class="main-footer">
-        All Rights Reserved V2.0.4
+        All Rights Reserved V2.0.20181015
       </el-col>
     </section>
   </div>
@@ -69,10 +69,10 @@
         }).catch((err) => {
           this.logining = false;
         });
-//        let user = {save: this.savePsw, acc: '', psw: ''};
-//        localStorage.setItem("user", JSON.stringify(user));
-//        sessionStorage.setItem("user", JSON.stringify(user));
-//        this.$router.push('/deviceOverview');
+        // let user = {save: this.savePsw, acc: '', psw: ''};
+        // localStorage.setItem("user", JSON.stringify(user));
+        // sessionStorage.setItem("user", JSON.stringify(user));
+        // this.$router.push('/deviceOverview');
       },
       //是否记住密码
       handleChange(val) {
