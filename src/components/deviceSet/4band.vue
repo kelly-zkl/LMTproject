@@ -69,10 +69,10 @@
         <div class="center-block add-appdiv" style="margin-top: 10px">
           <el-row>
             <el-col :span="11">
-              <el-form-item label="tac" prop="tac">
+              <el-form-item label="tac">
                 <el-tooltip placement="bottom">
                   <div slot="content">跟踪区域码 取值范围：[0001－FFFEH]，码组0000H和FFFFH不可以使用</div>
-                  <el-input v-model.number="opDeviceParameter.tac" :maxlength=4></el-input>
+                  <el-input v-model.number="opDeviceParameter.tac" :maxlength=4 readonly></el-input>
                 </el-tooltip>
               </el-form-item>
               <el-form-item label="重定向载波频点" prop="redirected_earfcn">
@@ -243,7 +243,7 @@
           downFrequency: [
             {required: true, message: '请输入下行频点', trigger: "blur"}, {validator: numVal, trigger: "change,blur"}],
           pci: [{required: true, message: '请输入pci', trigger: "blur"}, {validator: pciValid, trigger: "change,blur"}],
-          tac: [{required: true, message: '请输入tac', trigger: "blur"}, {validator: hexValid, trigger: "change,blur"}],
+          // tac: [{required: true, message: '请输入tac', trigger: "blur"}, {validator: hexValid, trigger: "change,blur"}],
           tacPeriod: [{required: true, message: '请输入重复抓取时间', trigger: "blur"},
             {validator: numVal, trigger: "change,blur"}],
           bandWidth: [{required: true, message: '请选择带宽', trigger: "blur"}],
