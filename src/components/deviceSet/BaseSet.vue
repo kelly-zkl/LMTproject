@@ -54,17 +54,17 @@
             </el-button>
           </el-form-item>
         </div>
-        <div class="content add-appdiv">
-          <h4 style="text-align: left;border-left: #33CCFF 3px solid;margin-top: 0;padding-left: 5px">
-            WAN口网络配置
-          </h4>
-          <el-form-item label="网络模式" align="left" style="text-align: left;margin: 0">
-            <el-radio-group v-model="wanItem" @change="handleWanClick" align="left" size="medium">
-              <el-radio-button :label="tab.type" v-for="tab in wanNames" :key="tab.type">{{tab.name}}
-              </el-radio-button>
-            </el-radio-group>
-          </el-form-item>
-        </div>
+        <!--<div class="content add-appdiv">-->
+        <!--<h4 style="text-align: left;border-left: #33CCFF 3px solid;margin-top: 0;padding-left: 5px">-->
+        <!--WAN口网络配置-->
+        <!--</h4>-->
+        <!--<el-form-item label="网络模式" align="left" style="text-align: left;margin: 0">-->
+        <!--<el-radio-group v-model="wanItem" @change="handleWanClick" align="left" size="medium">-->
+        <!--<el-radio-button :label="tab.type" v-for="tab in wanNames" :key="tab.type">{{tab.name}}-->
+        <!--</el-radio-button>-->
+        <!--</el-radio-group>-->
+        <!--</el-form-item>-->
+        <!--</div>-->
         <div class="content add-appdiv">
           <h4 style="text-align: left;border-left: #33CCFF 3px solid;margin-top: 0;padding-left: 5px">配置服务器</h4>
           <el-form-item label="IP地址" style="margin-left: 20px" prop="serverip" align="left">
@@ -441,7 +441,7 @@
     },
     mounted() {
       this.getDeviceParam();
-      this.getNetType();
+      // this.getNetType();
       this.band4 = sessionStorage.getItem("band4");
       if (this.band4 == 1) {
         this.getGps();
