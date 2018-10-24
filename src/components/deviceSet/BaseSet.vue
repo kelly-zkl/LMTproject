@@ -7,7 +7,7 @@
         <div class="content add-appdiv">
           <el-form-item label="设备ID" align="left" required>
             <el-input v-model="deviceMonitor.devId" placeholder="请输入设备ID" :maxlength="20"
-                      class="input-width"></el-input>
+                      class="input-width" readonly></el-input>
           </el-form-item>
           <el-form-item label="设备名称" style="text-align: left" required>
             <el-input v-model="deviceMonitor.devName" placeholder="请输入设备名称" :maxlength="20"
