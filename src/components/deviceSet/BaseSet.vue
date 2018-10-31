@@ -33,27 +33,30 @@
             {{deviceMonitor.phoneNumber ? deviceMonitor.phoneNumber : "--"}}
           </el-form-item>
           <el-form-item label="固件版本" style="text-align: left">
-            {{deviceMonitor.version ? deviceMonitor.version : "未上报"}}
+            {{deviceMonitor.hw_version ? deviceMonitor.hw_version : "未上报"}}
+          </el-form-item>
+          <el-form-item label="软件版本" style="text-align: left">
+            {{deviceMonitor.app_version ? deviceMonitor.app_version : "未上报"}}
           </el-form-item>
           <el-form-item label="MAC地址" prop="mac" style="text-align: left;margin: 0">
             {{deviceMonitor.mac ? deviceMonitor.mac : "未上报"}}
           </el-form-item>
         </div>
-        <div class="content add-appdiv" v-if="band4 == 1">
-          <h4 style="text-align: left;border-left: #33CCFF 3px solid;margin-top: 0;padding-left: 5px">
-            GPS配置
-          </h4>
-          <el-form-item label="GPS" style="text-align: left;margin: 0">
-            <el-radio-group size="medium" v-model="gpsParam.timingMode" style="margin-right: 10px">
-              <el-radio-button :label="1">GPS同步</el-radio-button>
-              <el-radio-button :label="2">空口同步</el-radio-button>
-            </el-radio-group>
-            <el-input v-model.number="gpsParam.gpsOffset" placeholder="请输入帧头偏移" :maxlength="20"
-                      style="width: 200px" v-show="gpsParam.timingMode==1"></el-input>
-            <el-button @click="saveGps()" size="medium" type="primary" style="margin-left: 10px">设置
-            </el-button>
-          </el-form-item>
-        </div>
+        <!--<div class="content add-appdiv" v-if="band4 == 1">-->
+        <!--<h4 style="text-align: left;border-left: #33CCFF 3px solid;margin-top: 0;padding-left: 5px">-->
+        <!--GPS配置-->
+        <!--</h4>-->
+        <!--<el-form-item label="GPS" style="text-align: left;margin: 0">-->
+        <!--<el-radio-group size="medium" v-model="gpsParam.timingMode" style="margin-right: 10px">-->
+        <!--<el-radio-button :label="1">GPS同步</el-radio-button>-->
+        <!--<el-radio-button :label="2">空口同步</el-radio-button>-->
+        <!--</el-radio-group>-->
+        <!--<el-input v-model.number="gpsParam.gpsOffset" placeholder="请输入帧头偏移" :maxlength="20"-->
+        <!--style="width: 200px" v-show="gpsParam.timingMode==1"></el-input>-->
+        <!--<el-button @click="saveGps()" size="medium" type="primary" style="margin-left: 10px">设置-->
+        <!--</el-button>-->
+        <!--</el-form-item>-->
+        <!--</div>-->
         <!--<div class="content add-appdiv">-->
         <!--<h4 style="text-align: left;border-left: #33CCFF 3px solid;margin-top: 0;padding-left: 5px">-->
         <!--WAN口网络配置-->
@@ -184,19 +187,19 @@
         this.setNetType();
       },
       //获取GPS参数
-      getGps() {
-        let param = {msgId: "b7518c70", type: 4194, cmd: 4535, moduleID: 3, timestamp: new Date().getTime()};
-        this.$emit('openLoading');
-        this.$post(param).then((data) => {
-          this.$emit('closeLoading');
-          if ("000000" == data.code && data.data) {
-            this.gpsParam = data.data;
-          }
-        }).catch((err) => {
-          this.$message.error(err);
-          this.$emit('closeLoading');
-        });
-      },
+      // getGps() {
+      //   let param = {msgId: "b7518c70", type: 4194, cmd: 4535, moduleID: 3, timestamp: new Date().getTime()};
+      //   this.$emit('openLoading');
+      //   this.$post(param).then((data) => {
+      //     this.$emit('closeLoading');
+      //     if ("000000" == data.code && data.data) {
+      //       this.gpsParam = data.data;
+      //     }
+      //   }).catch((err) => {
+      //     this.$message.error(err);
+      //     this.$emit('closeLoading');
+      //   });
+      // },
       //设置gps
       saveGps() {
         if (this.gpsParam.timingMode == 1 && (!this.gpsParam.gpsOffset || this.gpsParam.gpsOffset.length == 0)) {
@@ -427,13 +430,24 @@
             sessionStorage.setItem("band4", data.data.band4 ? data.data.band4 : 0);
             sessionStorage.setItem("hasGsmModule", data.data.hasGsmModule ? data.data.hasGsmModule : 0);
             sessionStorage.setItem("hasPaModule", data.data.hasPaModule ? data.data.hasPaModule : 0);
-
+            this.getDeviceType(data.data.devId);
             this.getBand4();
           }
         }).catch((err) => {
           this.$message.error(err);
           this.$emit('closeLoading');
         });
+      },
+      //判断设备是不是ZDM7设备类型，且是2018年12月之前的设备
+      getDeviceType(val) {
+        let bol = '0';
+        if (val.indexOf('ZDM7') == 0) {
+          let time = parseInt(val.substring(4, 8));
+          if (time < 1812) {
+            bol = '1';
+          }
+        }
+        sessionStorage.setItem("isOld", bol);
       },
       getBand4() {
         this.band4 = sessionStorage.getItem("band4");
@@ -443,9 +457,9 @@
       this.getDeviceParam();
       // this.getNetType();
       this.band4 = sessionStorage.getItem("band4");
-      if (this.band4 == 1) {
-        this.getGps();
-      }
+      // if (this.band4 == 1) {
+      //   this.getGps();
+      // }
     }
   }
 </script>

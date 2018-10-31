@@ -27,7 +27,7 @@
               </el-form-item>
               <el-form-item label="lac" prop="lac">
                 <el-tooltip placement="bottom">
-                  <div slot="content">位置区码 取值范围：[0001－FFFEH]，码组0000H和FFFFH不可以使用</div>
+                  <div slot="content">位置区域码 取值范围：[0001－FFFEH]，码组0000H和FFFFH不可以使用</div>
                   <el-input v-model.number="opDeviceParameter.lac" :maxlength=4></el-input>
                 </el-tooltip>
               </el-form-item>
@@ -78,6 +78,12 @@
               <el-form-item label="重定向载波频点" prop="redirected_earfcn">
                 <el-input v-model.number="opDeviceParameter.redirected_earfcn" :maxlength=10></el-input>
               </el-form-item>
+              <el-form-item label="同步方式" style="text-align: left;margin: 0" v-show="activeItem == 'M'">
+                <el-radio-group v-model="opDeviceParameter.syncMode">
+                  <el-radio-button :label="1">GPS同步</el-radio-button>
+                  <el-radio-button :label="2">空口同步</el-radio-button>
+                </el-radio-group>
+              </el-form-item>
             </el-col>
             <el-col :span="11" :offset="2">
               <el-form-item label="tac周期" prop="tacPeriod">
@@ -101,48 +107,50 @@
               <i class="el-icon-remove" @click="minusPlmn(indx)"
                  style="color: #34CBFE;font-size: 20px;text-align: center"></i>
             </el-form-item>
-            <el-form-item label="上行频点" style="margin: 0 0 10px 0">
-              <el-input v-model.number="tab.upFrequency" :maxlength=10 readonly></el-input>
-            </el-form-item>
+            <!--<el-form-item label="上行频点" style="margin: 0 0 10px 0">-->
+            <!--<el-input v-model.number="tab.upFrequency" :maxlength=10 readonly></el-input>-->
+            <!--</el-form-item>-->
             <el-form-item label="下行频点" style="margin: 0 0 10px 0">
               <el-input v-model.number="tab.downFrequency" :maxlength=10 @change="changeTDown($event,indx)"
-                        @blur="changeTDown($event,indx)"></el-input>
+                        @blur="changeTDown($event,indx)" style="width: 100px"></el-input>
             </el-form-item>
             <el-form-item label="pci" prop="pci" style="margin: 0 0 10px 0">
               <el-tooltip placement="bottom">
                 <div slot="content">物理小区标识 取值范围：[0-504]</div>
-                <el-input v-model.number="tab.pci" :maxlength=3></el-input>
+                <el-input v-model.number="tab.pci" :maxlength=3 style="width: 80px"></el-input>
               </el-tooltip>
             </el-form-item>
             <el-form-item label="plmn" style="margin: 0 0 10px 0">
-              <el-radio-group v-model="tab.plmn">
-                <el-radio-button :label="item.type" v-for="item in plmns" :key="item.type">{{item.name}}
-                </el-radio-button>
-              </el-radio-group>
+              <el-select v-model="tab.plmn" style="width: 100px">
+                <el-option :label="item.type" v-for="item in plmns" :key="item.type">{{item.name}}
+                </el-option>
+              </el-select>
             </el-form-item>
             <el-form-item label="优先级" style="margin: 0 0 10px 0">
-              <el-input v-model.number="tab.priority" :maxlength=10 @change="changeOffset"></el-input>
+              <el-tooltip effect="dark" content="现网频点优先级" placement="bottom">
+                <el-input v-model.number="tab.priority" :maxlength=10 @change="changeOffset"
+                          style="width: 100px"></el-input>
+              </el-tooltip>
             </el-form-item>
             <el-form-item label="rsrp" style="margin: 0 0 10px 0">
-              <el-input v-model.number="tab.rsrp" :maxlength=10 @change="changeRsrp"></el-input>
+              <el-tooltip effect="dark" content="现网频点RSRP" placement="bottom">
+                <el-input v-model.number="tab.rsrp" :maxlength=10 @change="changeRsrp" style="width: 100px"></el-input>
+              </el-tooltip>
             </el-form-item>
             <el-form-item label="功率等级" style="margin: 0 0 10px 0">
               <el-tooltip placement="bottom">
                 <div slot="content">功率等级衰减值：<br/>6：0dB&#12288;&#12288;5：3dB&#12288;&#12288;&nbsp;&nbsp;4：6dB
                   <br/>3：9dB&#12288;&#12288;2：12dB&#12288;&#12288;1：15dB
                 </div>
-                <el-radio-group v-model="tab.powerLevel">
-                  <el-radio-button :label="0">6</el-radio-button>
-                  <el-radio-button :label="3">5</el-radio-button>
-                  <el-radio-button :label="6">4</el-radio-button>
-                  <el-radio-button :label="9">3</el-radio-button>
-                  <el-radio-button :label="12">2</el-radio-button>
-                  <el-radio-button :label="15">1</el-radio-button>
-                </el-radio-group>
+                <el-select v-model="tab.powerLevel" style="width: 80px">
+                  <el-option v-for="item in powers" :key="item.value" :label="item.label"
+                             :value="item.value"></el-option>
+                </el-select>
               </el-tooltip>
             </el-form-item>
             <el-form-item label="帧偏移" style="margin: 0 0 10px 0" v-show="activeItem == 'M'">
-              <el-input v-model.number="tab.frameOffset" :maxlength=10 @change="changeOffset"></el-input>
+              <el-input v-model.number="tab.frameOffset" :maxlength=10 @change="changeOffset"
+                        style="width: 100px"></el-input>
             </el-form-item>
           </el-form>
         </div>
@@ -260,8 +268,10 @@
         plmns: [{type: '460.00', name: '460.00'}, {type: '460.01', name: '460.01'}, {type: '460.11', name: '460.11'}],
         frequencyList: [{
           upFrequency: 37900, downFrequency: 37900, plmn: '460.00', rsrp: 0,
-          priority: 7, pci: 5, powerLevel: 6, frameOffset: 0
+          priority: 0, pci: 5, powerLevel: 0, frameOffset: 0
         }],
+        powers: [{value: 0, label: 6}, {value: 3, label: 5}, {value: 6, label: 4}, {value: 9, label: 3},
+          {value: 12, label: 2}, {value: 15, label: 1}],
         plmn: '460.00',
         down: 37900,
         up: 37900,
@@ -281,7 +291,7 @@
       plusPlmn() {
         this.frequencyList.push({
           upFrequency: this.up, downFrequency: this.down, plmn: this.plmn, rsrp: 0,
-          priority: 7, pci: this.pci, powerLevel: 6, frameOffset: 0
+          priority: 0, pci: this.pci, powerLevel: 0, frameOffset: 0
         });
       },
       //删除跳频
@@ -352,7 +362,7 @@
       //初始化
       clear() {
         if (this.activeItem == 'M') {//移动4G38/40
-          this.opDeviceParameter = {redirected_earfcn: 37900, tac: 1, tacPeriod: 180, bandWidth: 5};
+          this.opDeviceParameter = {redirected_earfcn: 37900, tac: 1, tacPeriod: 180, bandWidth: 5, syncMode: 1};
         } else if (this.activeItem == 'U') {//联通4G
           this.opDeviceParameter = {redirected_earfcn: 1650, tac: 1, tacPeriod: 180, bandWidth: 3};
         } else if (this.activeItem == 'T') {//电信4G
@@ -377,7 +387,7 @@
           this.pci = 5;
           this.frequencyList = [{
             upFrequency: this.up, downFrequency: this.down, plmn: this.plmn, rsrp: 0,
-            priority: 7, pci: this.pci, powerLevel: 0, frameOffset: 0
+            priority: 0, pci: this.pci, powerLevel: 0, frameOffset: 0
           }];
         } else if (this.activeItem == 'U') {//联通4G
           this.plmn = '460.01';
@@ -386,7 +396,7 @@
           this.pci = 6;
           this.frequencyList = [{
             upFrequency: this.up, downFrequency: this.down, plmn: this.plmn, rsrp: 0,
-            priority: 7, pci: this.pci, powerLevel: 0, frameOffset: 0
+            priority: 0, pci: this.pci, powerLevel: 0, frameOffset: 0
           }];
         } else if (this.activeItem == 'T') {//电信4G
           this.plmn = '460.11';
@@ -395,12 +405,12 @@
           this.pci = 7;
           this.frequencyList = [{
             upFrequency: this.up, downFrequency: this.down, plmn: this.plmn, rsrp: 0,
-            priority: 7, pci: this.pci, powerLevel: 0, frameOffset: 0
+            priority: 0, pci: this.pci, powerLevel: 0, frameOffset: 0
           }];
         } else {
           this.frequencyList = [{
             upFrequency: 0, downFrequency: 0, plmn: '460.00', rsrp: 0,
-            priority: 7, pci: 5, powerLevel: 0, frameOffset: 0
+            priority: 0, pci: 5, powerLevel: 0, frameOffset: 0
           }];
         }
       },
@@ -500,6 +510,7 @@
         data.operationType = this.activeItem;
         if (this.activeItem !== 'M') {
           delete this.frequencyList['frameOffset'];
+          delete data.commonParameter['syncMode'];
         }
         data.Frequency = this.frequencyList;
 

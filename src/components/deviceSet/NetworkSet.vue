@@ -32,7 +32,7 @@
           </el-radio-group>
         </el-form-item>
       </el-form>
-      <div class="add-appdiv card-width" v-if="networkData.ipMode == 'static'">
+      <div class="add-appdiv card-width" v-show="networkData.ipMode == 'static' && !isOld">
         <el-form ref="networkData" label-width="120px" label-position="left" :model="networkData">
           <!--<el-form-item label="IP设置方式" align="left">-->
           <!--<el-radio-group v-model="networkData.ipMode" size="medium" @change="changeIpset">-->
@@ -55,7 +55,7 @@
         </el-form>
       </div>
       <div class="main-footer">
-        <el-button @click="save()" type="primary" v-show="networkData.ipMode == 'static'">保存配置</el-button>
+        <el-button @click="save()" type="primary" v-show="networkData.ipMode == 'static' && !isOld">保存配置</el-button>
       </div>
       <!--参数是否立即生效-->
       <div class="popu">
@@ -104,7 +104,8 @@
           {name: '启用有线手动', type: 'static'}],
         setTypes: [{name: '自动', type: 'dhcp'}, {name: '手动', type: 'static'}],
         netParam: {},
-        ipWay: ''
+        ipWay: '',
+        isOld: false
       }
     },
     methods: {
@@ -113,6 +114,11 @@
       },
       //WAN标签页的变化
       handleWanClick(val) {
+        if (val == 'static') {
+          if (this.isOld) {
+            window.open("http://192.168.99.20");
+          }
+        }
         this.networkData.ipMode = val;
         this.clearData();
         if (this.networkData.ipMode != 'static') {
@@ -123,7 +129,7 @@
       clearData() {
         if (this.networkData.ipMode == this.ipWay) {
           this.networkData = Object.assign({}, this.netParam);
-          this.networkData.ipMode = val;
+          this.networkData.ipMode = this.ipWay;
         } else {
           if (this.networkData.ipMode == 'dhcp') {//有线
             this.networkData = {ipMode: 'dhcp'};
@@ -150,6 +156,12 @@
       },
       //保存前验证
       save() {
+        if (this.isOld) {
+          if (this.networkData.ipMode == 'static') {
+            window.open("http://192.168.99.20");
+            return;
+          }
+        }
         if (this.networkData.ipMode == 'static') {
           if (!this.changeIpVal(this.networkData.deviceIp) || !this.changeIpVal(this.networkData.subMask) ||
             !this.changeIpVal(this.networkData.gateway)) {
@@ -199,6 +211,7 @@
       }
     },
     mounted() {
+      this.isOld = (sessionStorage.getItem("isOld") == 0 ? false : true);
       this.clearData();
       this.getIP();
     }

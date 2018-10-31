@@ -1,22 +1,25 @@
 <template>
   <div>
     <section>
-      <h4 style="text-align: left;margin-top: 0">PA配置</h4>
+      <h4 style="text-align: left;margin-top: 0">PA信息</h4>
       <div class="content add-appdiv">
-        <el-form :inline="true" v-for="item in paParam" :key="item.index" align="left">
-          <el-form-item label="功放开关" align="left">
-            <el-switch v-model="item.dlSwitch" active-color="#34CBFE" :active-value="1" :inactive-value="0"></el-switch>
+        <el-form :inline="true" v-for="(item,idx) in paParam" :key="item.index" align="left">
+          <el-form-item
+            :label="idx==0?'TDD1900：功放开关':idx==1?'TDD2600：功放开关':idx==2?'FDD2100：功放开关':idx==3?'FDD1800：功放开关':'GSM：功放开关'"
+            align="left">
+            <el-switch v-model="item.dlSwitch" active-color="#34CBFE" inactive-color="#bbb" :active-value="1"
+                       :inactive-value="0"></el-switch>
           </el-form-item>
-          <el-form-item label="功放等级" align="left" style="margin-left: 15px">
-            <el-radio-group v-model="item.dlPower">
-              <el-radio-button :label="0">6</el-radio-button>
-              <el-radio-button :label="3">5</el-radio-button>
-              <el-radio-button :label="6">4</el-radio-button>
-              <el-radio-button :label="9">3</el-radio-button>
-              <el-radio-button :label="12">2</el-radio-button>
-              <el-radio-button :label="15">1</el-radio-button>
-            </el-radio-group>
-          </el-form-item>
+          <!--<el-form-item label="功放等级" align="left" style="margin-left: 15px">-->
+          <!--<el-radio-group v-model="item.dlPower">-->
+          <!--<el-radio-button :label="0">6</el-radio-button>-->
+          <!--<el-radio-button :label="3">5</el-radio-button>-->
+          <!--<el-radio-button :label="6">4</el-radio-button>-->
+          <!--<el-radio-button :label="9">3</el-radio-button>-->
+          <!--<el-radio-button :label="12">2</el-radio-button>-->
+          <!--<el-radio-button :label="15">1</el-radio-button>-->
+          <!--</el-radio-group>-->
+          <!--</el-form-item>-->
         </el-form>
         <el-row style="margin-top: 15px">
           <el-col :span="10">
@@ -26,27 +29,27 @@
       </div>
       <h4 style="text-align: left;margin-top: 0" v-show="paWorkStatus.length>0">PA工作状态</h4>
       <div class="content add-appdiv" v-show="paWorkStatus.length>0">
-        <el-row v-for="item in paWorkStatus" :key="item.index" style="margin-top: 10px">
-          <el-col :span="4" align="left">
-            <span style="font-size: 14px;color: #5F6165">输入功率<span
+        <el-row v-for="(item,idx) in paWorkStatus" :key="item.index" style="margin-top: 10px">
+          <el-col :span="5" align="left">
+            <span style="font-size: 14px;color: #5F6165">{{idx==0?'TDD1900：':idx==1?'TDD2600：':idx==2?'FDD2100：':idx==3?'FDD1800：':'GSM：'}}输入功率<span
               style="margin-left: 15px">{{item.paInputPower}}</span></span>
           </el-col>
-          <el-col :span="4" :offset="1" align="left">
+          <el-col :span="4" align="left">
             <span style="font-size: 14px;color: #5F6165">输出功率
               <span style="margin-left: 15px">{{item.paOutputPower}}</span>
             </span>
           </el-col>
-          <el-col :span="4" :offset="1" align="left">
+          <el-col :span="4" align="left">
             <span style="font-size: 14px;color: #5F6165">PA开关
               <span style="margin-left: 15px">{{item.paSwitch == 1 ? '开' : '关'}}</span>
             </span>
           </el-col>
-          <el-col :span="4" :offset="1" align="left">
+          <el-col :span="4" align="left">
             <span style="font-size: 14px;color: #5F6165">
               PA温度<span v-bind:class="item.paTemp > 80 ? 'text-red' : item.paTemp > 50 ? 'text-yellow' :'text-green'"
                         style="ont-size: 14px;margin-left: 15px">{{item.paTemp}}</span></span>
           </el-col>
-          <el-col :span="4" :offset="1" align="left">
+          <el-col :span="4" align="left">
             <span style="font-size: 14px;color: #5F6165">驻波比
               <span style="margin-left: 15px">{{item.swr}}</span>
             </span>

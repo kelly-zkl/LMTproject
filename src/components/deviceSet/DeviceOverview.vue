@@ -24,7 +24,10 @@
             <el-col :span="12">
               <h4 style="text-align: left;margin-top: 0">版本信息</h4>
               <el-form-item label="固件版本" align="left" style="margin: 0">
-                {{deviceMonitor.version ? deviceMonitor.version : '--'}}
+                {{deviceMonitor.hw_version ? deviceMonitor.hw_version : '未上报'}}
+              </el-form-item>
+              <el-form-item label="软件版本" align="left" style="margin: 0">
+                {{deviceMonitor.app_version ? deviceMonitor.app_version : '未上报'}}
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -76,7 +79,7 @@
           </el-tabs>
           <el-row style="margin-left: 20px">
             <el-col :span="12">
-              <el-form-item label="功放温度：" align="left" style="margin: 0"><span
+              <el-form-item label="基带板温度：" align="left" style="margin: 0"><span
                 v-bind:class="subParam.temperature > 80 ? 'text-red' : subParam.temperature > 50 ? 'text-yellow' :'text-green'">
                   {{subParam.temperature != null ? subParam.temperature : '--'}}°C
                 </span>
@@ -198,6 +201,7 @@
           this.$emit('closeLoading');
           if ("000000" == data.code) {
             this.deviceMonitor = data.data;
+            this.getDeviceType(data.data.devId);
             if (data.data.devType.length > 0) {
               this.devType = this.getDevType(data.data.devForm);
             }
@@ -213,6 +217,17 @@
           this.$message.error(err);
           this.$emit('closeLoading');
         });
+      },
+      //判断设备是不是ZDM7设备类型，且是2018年12月之前的设备
+      getDeviceType(val) {
+        let bol = '0';
+        if (val.indexOf('ZDM7') == 0) {
+          let time = parseInt(val.substring(4, 8));
+          if (time < 1812) {
+            bol = '1';
+          }
+        }
+        sessionStorage.setItem("isOld", bol);
       },
       getDevForm(val) {
         for (let item of this.devForms) {

@@ -4,29 +4,33 @@
       <h4 style="text-align: left;margin-top: 0">设备配置</h4>
       <div class="add-appdiv card-width" style="position: relative">
         <el-tabs v-model="activeItem" type="card" @tab-click="handleClick">
-          <el-tab-pane label="载波信息" name="first" style="margin-left: 20px" v-if="band4== 0">
+          <el-tab-pane label="载波信息" name="band" style="margin-left: 20px" v-if="band4== 0">
             <BandSet @openLoading="openLoading" @closeLoading="closeLoading" ref="band"></BandSet>
           </el-tab-pane>
-          <el-tab-pane label="载波信息" name="second" style="margin-left: 20px" v-if="band4== 1">
+          <el-tab-pane label="载波信息" name="band4" style="margin-left: 20px" v-if="band4== 1">
             <band4 @openLoading="openLoading" @closeLoading="closeLoading" ref="band4"></band4>
           </el-tab-pane>
-          <el-tab-pane label="PA485" name="third" style="margin-left: 20px" v-if="hasPaModule== 1">
+          <el-tab-pane label="PA信息" name="paset" style="margin-left: 20px" v-if="hasPaModule== 1">
             <PaSet @openLoading="openLoading" @closeLoading="closeLoading" ref="paset"></PaSet>
           </el-tab-pane>
-          <el-tab-pane label="GSM扫频工具" name="fourth" style="margin-left: 20px" v-if="hasGsmModule== 1">
+          <el-tab-pane label="GSM扫频工具" name="gsm" style="margin-left: 20px" v-if="hasGsmModule== 1">
             <gsmScan @openLoading="openLoading" @closeLoading="closeLoading" ref="gsmscan"></gsmScan>
           </el-tab-pane>
+          <el-tab-pane label="LTE扫频工具" name="lte" style="margin-left: 20px">
+            <lteScan @openLoading="openLoading" @closeLoading="closeLoading" ref="ltescan"></lteScan>
+          </el-tab-pane>
         </el-tabs>
-        <div style="position: absolute;top: 30px;right: 30px">
-          <!--<span style="color: #999;font-size: 15px;margin-right: 10px">{{snifer.auto ? '已开启' : '关闭'}}</span>-->
-          <el-button type="primary" @click="getSniffer()">自动扫频</el-button>
-        </div>
+        <!--<div style="position: absolute;top: 30px;right: 30px">-->
+        <!--<span style="color: #999;font-size: 15px;margin-right: 10px">{{snifer.auto ? '已开启' : '关闭'}}</span>-->
+        <!--<el-button type="primary" @click="getSniffer()">自动扫频</el-button>-->
+        <!--</div>-->
       </div>
       <!--自动扫频-->
       <el-dialog title="自动扫频设置" :visible.sync="runSetSniffer" :width="dialWidth" class="gray-form">
         <el-form label-width="120px" label-position="right" :model="sniffer">
           <el-form-item label="自动扫频" align="left">
-            <el-switch v-model="sniffer.snifferStart" :active-value="1" :inactive-value="0"></el-switch>
+            <el-switch v-model="sniffer.snifferStart" :active-value="1" :inactive-value="0"
+                       active-color="#34CBFE" inactive-color="#bbb"></el-switch>
           </el-form-item>
           <el-form-item label="扫频模式" align="left" v-show="sniffer.snifferStart==1">
             <el-radio-group v-model="sniffer.snifferMode">
@@ -51,8 +55,9 @@
   import {numValid, intValid, hexValidator, mccValidator, pciValidator} from '../../assets/js/api.js'
   import BandSet from '../deviceSet/BandSet';
   import band4 from '../deviceSet/4band';
-  import gsmScan from '../deviceSet/GsmScan';
   import PaSet from "../deviceSet/PaSet.vue";
+  import gsmScan from '../deviceSet/GsmScan';
+  import lteScan from '../deviceSet/LTEScan';
 
   export default {
     data() {
@@ -68,20 +73,23 @@
     },
     methods: {
       handleClick(tab, event) {
-        if (tab.name == 'first') {
+        if (tab.name == 'band') {
           this.$refs.band.getBandParam();
-        } else if (tab.name == 'second') {
+        } else if (tab.name == 'band4') {
           if (this.hasGsmModule == 0) {//没有GSM
             this.$refs.band4.getParam()
           } else {
             this.$refs.band4.getGsmParam()
           }
-        } else if (tab.name == 'third') {
+        } else if (tab.name == 'paset') {
           this.$refs.paset.getParam();
           this.$refs.paset.getPaStatus();
-        } else if (tab.name == 'fourth') {
+        } else if (tab.name == 'gsm') {
           this.$refs.gsmscan.getNetworkData();
           this.$refs.gsmscan.getScanSwitch();
+        } else if (tab.name == 'lte') {
+          this.$refs.ltescan.getCellData();
+          this.$refs.ltescan.getScanData();
         }
       },
       //调用加载
@@ -133,13 +141,13 @@
       this.hasGsmModule = sessionStorage.getItem("hasGsmModule");
       this.hasPaModule = sessionStorage.getItem("hasPaModule");
       if (this.band4 == 0) {
-        this.activeItem = 'first';
+        this.activeItem = 'band';
       } else {
-        this.activeItem = 'second';
+        this.activeItem = 'band4';
       }
     },
     components: {
-      band4, gsmScan, PaSet, BandSet
+      BandSet, band4, PaSet, gsmScan, lteScan
     }
   }
 </script>

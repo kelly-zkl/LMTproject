@@ -25,9 +25,9 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="上行频点" required>
-              <el-input v-model.number="opDeviceParameter.upFrequency" readonly></el-input>
-            </el-form-item>
+            <!--<el-form-item label="上行频点" required>-->
+            <!--<el-input v-model.number="opDeviceParameter.upFrequency" readonly></el-input>-->
+            <!--</el-form-item>-->
             <el-form-item label="下行频点" prop="downFrequency">
               <el-input v-model.number="opDeviceParameter.downFrequency" @change="changeDown"
                         @blur="changeDown"></el-input>
@@ -80,7 +80,7 @@
           </el-col>
           <el-col :span="3" align="left">
             <el-switch v-model="opDeviceParameter.freqHopSwitch" align="right" :active-value="1"
-                       :inactive-value="0"></el-switch>
+                       :inactive-value="0" active-color="#34CBFE" inactive-color="#bbb"></el-switch>
           </el-col>
           <el-col :span="8" align="left" :offset="1" v-show="opDeviceParameter.freqHopSwitch == 1">
             <span style="font-size: 14px;color: #333;margin-right: 20px">跳频周期</span>
@@ -95,21 +95,22 @@
               <i class="el-icon-remove" @click="minusPlmn(indx)"
                  style="color: #34CBFE;font-size: 20px;text-align: center"></i>
             </el-form-item>
-            <el-form-item label="上行频点" style="margin: 0">
-              <el-input v-model.number="tab.upFrequency" :maxlength=10 readonly></el-input>
-            </el-form-item>
+            <!--<el-form-item label="上行频点" style="margin: 0">-->
+            <!--<el-input v-model.number="tab.upFrequency" :maxlength=10 readonly></el-input>-->
+            <!--</el-form-item>-->
             <el-form-item label="下行频点" style="margin: 0">
               <el-input v-model.number="tab.downFrequency" :maxlength=10 @change="changeTDown($event,indx)"
-                        @blur="changeTDown($event,indx)"></el-input>
+                        @blur="changeTDown($event,indx)" style="width: 100px"></el-input>
             </el-form-item>
             <el-form-item label="plmn" style="margin: 0">
-              <el-radio-group v-model="tab.plmn">
-                <el-radio-button :label="item.type" v-for="item in plmns" :key="item.type">{{item.name}}
-                </el-radio-button>
-              </el-radio-group>
+              <el-select v-model="tab.plmn" style="width: 100px">
+                <el-option :label="item.type" v-for="item in plmns" :key="item.type">{{item.name}}
+                </el-option>
+              </el-select>
             </el-form-item>
             <el-form-item label="帧偏移" style="margin: 0" v-show="activeItem == 'M'">
-              <el-input v-model.number="tab.frameOffset" :maxlength=10 @change="changeOffset"></el-input>
+              <el-input v-model.number="tab.frameOffset" :maxlength=10 @change="changeOffset"
+                        style="width: 100px"></el-input>
             </el-form-item>
           </el-form>
         </div>
