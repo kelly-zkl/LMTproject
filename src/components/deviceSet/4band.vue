@@ -122,8 +122,7 @@
             </el-form-item>
             <el-form-item label="plmn" style="margin: 0 0 10px 0">
               <el-select v-model="tab.plmn" style="width: 100px">
-                <el-option :label="item.type" v-for="item in plmns" :key="item.type">{{item.name}}
-                </el-option>
+                <el-option v-for="item in plmns" :key="item.type" :value="item.type" :label="item.name"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="优先级" style="margin: 0 0 10px 0">

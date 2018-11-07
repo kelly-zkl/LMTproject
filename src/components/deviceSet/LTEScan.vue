@@ -46,12 +46,12 @@
         <el-table-column align="left" label="频点" prop="earfcn" :formatter="formatterAddress"></el-table-column>
         <el-table-column align="left" label="band" prop="band" :formatter="formatterAddress"></el-table-column>
         <el-table-column align="left" label="pci" prop="pci" :formatter="formatterAddress"></el-table-column>
-        <el-table-column align="left" label="帧偏移" prop="frame_offset" :formatter="formatterAddress"></el-table-column>
+        <el-table-column align="left" label="帧偏移" prop="frame_offset" :formatter="formatterAddress"
+                         v-if="activeItem=='CMCC'"></el-table-column>
         <el-table-column align="left" label="rsrp" prop="rsrp" :formatter="formatterAddress"></el-table-column>
         <el-table-column align="left" label="plmn" prop="plmn" :formatter="formatterAddress"></el-table-column>
         <el-table-column align="left" label="小区优先级" prop="priority" :formatter="formatterAddress"></el-table-column>
         <el-table-column align="left" label="邻区列表" prop="nCellInfo" :formatter="formatterAddress"></el-table-column>
-        <!--<el-table-column align="left" label="上报时间" prop="upTime" :formatter="formatterAddress"></el-table-column>-->
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
             <el-button type="text" @click="cells=scope.row.nCellInfo;runCellList=true">查看邻区列表</el-button>
@@ -184,6 +184,7 @@
       //扫频数据列表
       getCellData() {
         this.listLoading = true;
+        this.networkData = [];
         let param = {msgId: "b7518c70", type: 4194, cmd: 4700, moduleID: 255, timestamp: new Date().getTime()};
         this.$post(param).then((data) => {
           setTimeout(() => {
