@@ -175,6 +175,8 @@
       formatterAddress(row, column) {
         if (column.property == 'upTime') {
           return row.upTime ? row.upTime !== 0 ? formatDate(new Date(row.upTime * 1000), 'yyyy-MM-dd hh:mm:ss') : '--' : '--';
+        } else if (column.property === 'frameOffset') {
+          return row.frameOffset == 65535 ? "--" : row.frameOffset;
         } else if (column.property == 'nCellInfo') {
           return row.nCellInfo ? row.nCellInfo.length + '个' : '0个';
         } else {
