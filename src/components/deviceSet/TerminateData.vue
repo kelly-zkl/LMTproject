@@ -110,7 +110,7 @@
         if (!this.intervalid) {
           this.intervalid = setInterval(() => {
             this.getData();
-          }, 3000);
+          }, 10 * 1000);
         }
       },
       //侦码数据

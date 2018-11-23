@@ -175,7 +175,7 @@
         if (!this.intervalid) {
           this.intervalid = setInterval(() => {
             this.getDeviceStatus();
-          }, 5000);
+          }, 30 * 1000);
         }
       },
       //重启设备
