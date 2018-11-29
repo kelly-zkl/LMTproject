@@ -87,7 +87,6 @@
         listLoading1: false,
         runningSetBlack: false,
         dialogWidth: this.$Is_Pc() ? '50%' : '90%',
-        options: [{value: '2', label: '电信'}, {value: '0', label: '移动'}, {value: '1', label: '联通'}],
         list: [],
         blackList: [],
         sels: [],
@@ -154,9 +153,6 @@
               if (this.getIndex(bol, item) >= 0) {//在黑名单里
                 this.list.unshift(item);
               }
-//              if (this.getNoIndex(bol, item)) {//展示不在黑名单里
-//                this.list.unshift(item);
-//              }
             });
           }
         } else {
@@ -256,7 +252,7 @@
         if (column.property == 'uptime') {//上报时间
           return row.uptime ? formatDate(new Date(row.uptime * 1000), 'yyyy-MM-dd hh:mm:ss') : '--';
         } else if (column.property == 'isp') {//运营商
-          return row.isp == 0 ? '移动' : row.isp == 1 ? '联通' : row.isp == 2 ? '电信' : '未知';
+          return row.isp == 0 || row.isp == 3 ? '移动' : row.isp == 1 ? '联通' : row.isp == 2 ? '电信' : '--';
         } else if (column.property == 'netType') {//网络类型 --> 根据运营商判断
           return this.getNetType(row.isp);
         } else {
@@ -274,6 +270,12 @@
             break;
           case 2:
             moduleId = "CMTC";
+            break;
+          case 3:
+            moduleId = "CMCC2";
+            break;
+          case 5:
+            moduleId = "GSM";
             break;
           default:
             break;
@@ -296,7 +298,7 @@
         if (terminate) {
           this.getList(terminate);
         }
-        this.setBlackList();
+        // this.setBlackList();
       },
       //添加进缓存
       addImsi(imsi) {
@@ -346,25 +348,12 @@
     },
     mounted() {
       let terminate = JSON.parse(sessionStorage.getItem("terminate"));
-//      this.list = terminate;
       if (terminate && terminate.length > 0) {
         this.getList(terminate);
-//        this.list.forEach((imsi) => {
-//          let black = JSON.parse(localStorage.getItem("black"));
-//          this.$set(imsi, 'black', false);
-//          if (black && black.length > 0) {
-//            for (let item of black) {
-//              if (item.imsi == imsi.imsi) {
-//                this.$set(imsi, 'black', true);
-//                return;
-//              }
-//            }
-//          }
-//        })
       } else {
         this.getData();
       }
-      this.getBlackList();
+      // this.getBlackList();
       this.dataTask();
     }
   }
