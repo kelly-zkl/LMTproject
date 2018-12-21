@@ -94,6 +94,11 @@
                   {{subParam.memory != null ? (subParam.memory * 100).toFixed(2) : '--'}}%
                 </span>
               </el-form-item>
+              <el-form-item label="磁盘使用率：" align="left" style="margin: 0"><span
+                v-bind:class="subParam.disk > 0.8 ? 'text-red' : subParam.disk > 0.5 ? 'text-yellow' :'text-green'">
+                  {{subParam.disk != null ? (subParam.disk * 100).toFixed(2) : '--'}}%
+                </span>
+              </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="输出功率：" align="left" style="margin: 0">
@@ -170,7 +175,7 @@
         this.activeItem = tab.name;
         this.getSubStatus();
       },
-      //定时刷新侦码数据
+      //定时刷新设备状态
       dataTask() {
         if (!this.intervalid) {
           this.intervalid = setInterval(() => {
@@ -211,6 +216,16 @@
             sessionStorage.setItem("band4", data.data.band4 ? data.data.band4 : 0);
             sessionStorage.setItem("hasGsmModule", data.data.hasGsmModule ? data.data.hasGsmModule : 0);
             sessionStorage.setItem("hasPaModule", data.data.hasPaModule ? data.data.hasPaModule : 0);
+            if (data.data.hasGsmModule == 1) {
+              this.activeName = [{name: 'GSM', type: 'G'}, {name: '电信', type: 'T'}, {name: '移动', type: 'M'},
+                {name: '联通', type: 'U'}];
+              this.activeItem = 'G';
+            } else {
+              this.activeName = [{name: '电信', type: 'T'}, {name: '移动', type: 'M'}, {name: '联通', type: 'U'}];
+              this.activeItem = 'T';
+            }
+            this.getDeviceStatus();
+            this.dataTask();
             this.$emit('showDialog', false, false);
           }
         }).catch((err) => {
@@ -271,8 +286,6 @@
     },
     mounted() {
       this.getDeviceParam();
-      this.getDeviceStatus();
-      this.dataTask();
     }
   }
 </script>

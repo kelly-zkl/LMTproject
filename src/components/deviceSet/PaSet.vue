@@ -4,9 +4,9 @@
       <h4 style="text-align: left;margin-top: 0">PA信息</h4>
       <div class="content add-appdiv">
         <el-form :inline="true" v-for="(item,idx) in paParam" :key="item.index" align="left">
-          <el-form-item
-            :label="idx==0?'TDD1900：功放开关':idx==1?'TDD2600：功放开关':idx==2?'FDD2100：功放开关':idx==3?'FDD1800：功放开关':'GSM：功放开关'"
-            align="left">
+          <el-form-item style="margin: 0 0 10px 0"
+                        :label="idx==0?'TDD1900：功放开关':idx==1?'TDD2600：功放开关':idx==2?'FDD2100：功放开关':idx==3?'FDD1800：功放开关':'GSM：功放开关'"
+                        align="left">
             <el-switch v-model="item.dlSwitch" active-color="#34CBFE" inactive-color="#bbb" :active-value="1"
                        :inactive-value="0"></el-switch>
           </el-form-item>

@@ -34,6 +34,17 @@
               <el-form-item label="重复上号间隔" prop="reCapFilterPeriod">
                 <el-input v-model.number="opDeviceParameter.reCapFilterPeriod" :maxlength=10></el-input>
               </el-form-item>
+              <el-form-item label="功率等级" prop="powerLevel" required style="text-align: left">
+                <el-tooltip placement="bottom">
+                  <div slot="content">功率等级衰减值：<br/>6：0dB&#12288;&#12288;5：3dB&#12288;&#12288;&nbsp;&nbsp;4：6dB
+                    <br/>3：9dB&#12288;&#12288;2：12dB&#12288;&#12288;1：15dB
+                  </div>
+                  <el-select v-model="opDeviceParameter.powerLevel">
+                    <el-option v-for="item in powers" :key="item.value" :label="item.label"
+                               :value="item.value"></el-option>
+                  </el-select>
+                </el-tooltip>
+              </el-form-item>
             </el-col>
             <el-col :span="11" :offset="2">
               <el-form-item label="bcc" prop="bcc">

@@ -19,7 +19,7 @@ import 'babel-polyfill';
 axios.defaults.withCredentials = true;
 Vue.config.productionTip = true;
 
-// axios.defaults.baseURL = "http://192.168.0.115:8086/ubus";
+// axios.defaults.baseURL = "http://192.168.0.112:8086/ubus";
 axios.defaults.baseURL = "/ubus";
 axios.defaults.timeout = 10 * 1000;
 
