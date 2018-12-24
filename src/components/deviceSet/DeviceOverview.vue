@@ -104,8 +104,14 @@
               <el-form-item label="输出功率：" align="left" style="margin: 0">
                 {{subParam.power != null ? subParam.power : '--'}}mW
               </el-form-item>
-              <el-form-item label="抓取条数：" align="left" style="margin: 0">
+              <el-form-item label="抓取条数：" align="left" style="margin: 0" v-show="activeItem != 'G'">
                 {{subParam.catchCount != null ? subParam.catchCount : '--'}}条
+              </el-form-item>
+              <el-form-item label="移动抓取条数：" align="left" style="margin: 0" v-show="activeItem == 'G'">
+                {{subParam.catchCount_CMCC != null ? subParam.catchCount_CMCC : '--'}}条
+              </el-form-item>
+              <el-form-item label="联通抓取条数：" align="left" style="margin: 0" v-show="activeItem == 'G'">
+                {{subParam.catchCount_CMUC != null ? subParam.catchCount_CMUC : '--'}}条
               </el-form-item>
               <el-form-item label="持续工作时间：" align="left" style="margin: 0">
                 {{subParam.duration != null ? subParam.duration : '--'}}秒
@@ -217,15 +223,9 @@
             sessionStorage.setItem("hasGsmModule", data.data.hasGsmModule ? data.data.hasGsmModule : 0);
             sessionStorage.setItem("hasPaModule", data.data.hasPaModule ? data.data.hasPaModule : 0);
             if (data.data.hasGsmModule == 1) {
-              this.activeName = [{name: 'GSM', type: 'G'}, {name: '电信', type: 'T'}, {name: '移动', type: 'M'},
-                {name: '联通', type: 'U'}];
-              this.activeItem = 'G';
-            } else {
-              this.activeName = [{name: '电信', type: 'T'}, {name: '移动', type: 'M'}, {name: '联通', type: 'U'}];
-              this.activeItem = 'T';
+              this.activeName = [{name: '电信', type: 'T'}, {name: '移动', type: 'M'},
+                {name: '联通', type: 'U'}, {name: 'GSM', type: 'G'}];
             }
-            this.getDeviceStatus();
-            this.dataTask();
             this.$emit('showDialog', false, false);
           }
         }).catch((err) => {
@@ -277,15 +277,21 @@
       },
       //各个基带板的参数
       getSubStatus() {
-        this.deviceParam.deviceMonitorList.forEach((item) => {
-          if (this.activeItem == item.operationType) {
-            this.subParam = item;
+        if (this.deviceParam != null) {
+          if (this.deviceParam.deviceMonitorList.length > 0) {
+            this.deviceParam.deviceMonitorList.forEach((item) => {
+              if (this.activeItem == item.operationType) {
+                this.subParam = item;
+              }
+            });
           }
-        });
+        }
       }
     },
     mounted() {
       this.getDeviceParam();
+      this.getDeviceStatus();
+      this.dataTask();
     }
   }
 </script>
