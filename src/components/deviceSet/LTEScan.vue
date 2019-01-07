@@ -235,8 +235,8 @@
       }
     },
     mounted() {
-      this.getCellData();
-      this.getScanData();
+      // this.getCellData();
+      // this.getScanData();
     }
   }
 </script>

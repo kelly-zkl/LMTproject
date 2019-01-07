@@ -543,13 +543,13 @@
         this.activeName = [{moduleID: 0, name: '移动', type: 'M'},
           {moduleID: 1, name: '联通', type: 'U'}, {moduleID: 2, name: '电信', type: 'T'}];
         this.activeItem = 'M';
-        this.getParam();
+        // this.getParam();
       } else {//有GSM
         this.activeName = [{moduleID: -1, name: '移动（GSM）', type: 'GSMCMCC'},
           {moduleID: -1, name: '联通（GSM）', type: 'GSMCMUC'}, {moduleID: 0, name: '移动', type: 'M'},
           {moduleID: 1, name: '联通', type: 'U'}, {moduleID: 2, name: '电信', type: 'T'}];
         this.activeItem = 'GSMCMCC';
-        this.getGsmParam();
+        // this.getGsmParam();
       }
     }
   }

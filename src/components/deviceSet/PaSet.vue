@@ -114,8 +114,8 @@
       }
     },
     mounted() {
-      this.getParam();
-      this.getPaStatus();
+      // this.getParam();
+      // this.getPaStatus();
     }
   }
 </script>

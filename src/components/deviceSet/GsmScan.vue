@@ -230,8 +230,8 @@
       }
     },
     mounted() {
-      this.getNetworkData();
-      this.getScanSwitch();
+      // this.getNetworkData();
+      // this.getScanSwitch();
     }
   }
 </script>

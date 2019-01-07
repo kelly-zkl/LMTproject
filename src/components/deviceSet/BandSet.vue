@@ -433,7 +433,7 @@
     },
     mounted() {
 //      this.clearData();
-      this.getBandParam();
+//       this.getBandParam();
     }
   }
 </script>

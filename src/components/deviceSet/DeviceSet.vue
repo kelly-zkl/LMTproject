@@ -4,6 +4,12 @@
       <h4 style="text-align: left;margin-top: 0">设备配置</h4>
       <div class="add-appdiv card-width" style="position: relative">
         <el-tabs v-model="activeItem" type="card" @tab-click="handleClick">
+          <el-tab-pane label="LTE扫频工具" name="lte" style="margin-left: 20px">
+            <lteScan @openLoading="openLoading" @closeLoading="closeLoading" ref="ltescan"></lteScan>
+          </el-tab-pane>
+          <el-tab-pane label="GSM扫频工具" name="gsm" style="margin-left: 20px" v-if="hasGsmModule== 1">
+            <gsmScan @openLoading="openLoading" @closeLoading="closeLoading" ref="gsmscan"></gsmScan>
+          </el-tab-pane>
           <el-tab-pane label="载波信息" name="band" style="margin-left: 20px" v-if="band4== 0">
             <BandSet @openLoading="openLoading" @closeLoading="closeLoading" ref="band"></BandSet>
           </el-tab-pane>
@@ -12,12 +18,6 @@
           </el-tab-pane>
           <el-tab-pane label="PA信息" name="paset" style="margin-left: 20px" v-if="hasPaModule== 1">
             <PaSet @openLoading="openLoading" @closeLoading="closeLoading" ref="paset"></PaSet>
-          </el-tab-pane>
-          <el-tab-pane label="GSM扫频工具" name="gsm" style="margin-left: 20px" v-if="hasGsmModule== 1">
-            <gsmScan @openLoading="openLoading" @closeLoading="closeLoading" ref="gsmscan"></gsmScan>
-          </el-tab-pane>
-          <el-tab-pane label="LTE扫频工具" name="lte" style="margin-left: 20px">
-            <lteScan @openLoading="openLoading" @closeLoading="closeLoading" ref="ltescan"></lteScan>
           </el-tab-pane>
         </el-tabs>
         <!--<div style="position: absolute;top: 30px;right: 30px">-->
@@ -65,7 +65,7 @@
         band4: 0,
         hasGsmModule: 0,
         hasPaModule: 0,
-        activeItem: 'first',
+        activeItem: 'lte',
         dialWidth: this.$Is_Pc() ? '40%' : '90%',
         runSetSniffer: false,
         sniffer: {snifferStart: 0, snifferMode: 0, startTime: ''}
@@ -73,21 +73,24 @@
     },
     methods: {
       handleClick(tab, event) {
-        if (tab.name == 'band') {
+        this.clickTab();
+      },
+      clickTab() {
+        if (this.activeItem == 'band') {
           this.$refs.band.getBandParam();
-        } else if (tab.name == 'band4') {
+        } else if (this.activeItem == 'band4') {
           if (this.hasGsmModule == 0) {//没有GSM
             this.$refs.band4.getParam()
           } else {
             this.$refs.band4.getGsmParam()
           }
-        } else if (tab.name == 'paset') {
+        } else if (this.activeItem == 'paset') {
           this.$refs.paset.getParam();
           this.$refs.paset.getPaStatus();
-        } else if (tab.name == 'gsm') {
+        } else if (this.activeItem == 'gsm') {
           this.$refs.gsmscan.getNetworkData();
           this.$refs.gsmscan.getScanSwitch();
-        } else if (tab.name == 'lte') {
+        } else if (this.activeItem == 'lte') {
           this.$refs.ltescan.getCellData();
           this.$refs.ltescan.getScanData();
         }
@@ -140,11 +143,8 @@
       this.band4 = sessionStorage.getItem("band4");
       this.hasGsmModule = sessionStorage.getItem("hasGsmModule");
       this.hasPaModule = sessionStorage.getItem("hasPaModule");
-      if (this.band4 == 0) {
-        this.activeItem = 'band';
-      } else {
-        this.activeItem = 'band4';
-      }
+
+      this.clickTab();
     },
     components: {
       BandSet, band4, PaSet, gsmScan, lteScan
