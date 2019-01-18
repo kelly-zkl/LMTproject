@@ -12,7 +12,7 @@
           </el-form-item>
           <el-form-item label="选频模式" align="left" style="margin: 20px 0 0 15px" prop="selectFreqMode">
             <el-select v-model="lteSniffer.selectFreqMode" placeholder="请选择" filterable>
-              <el-option v-for="item in autoBccModes" :key="item.value" :label="item.label" :value="item.value">
+              <el-option v-for="item in selectFreqModes" :key="item.value" :label="item.label" :value="item.value">
               </el-option>
             </el-select>
           </el-form-item>
@@ -110,9 +110,9 @@
         activeItem: "CMCC",
         activeName: [{name: '移动(LTE)', type: 'CMCC'}, {name: '联通(LTE)', type: 'CMUC'},
           {name: '电信(LTE)', type: 'CMTC'}],
-        autoBccModes: [{value: 10, label: '手动'}, {value: 2, label: '自动'}],
-        snifferModes: [{value: 0, label: '关闭'}, {value: 1, label: '手动'},
-          {value: 2, label: '上电扫'}, {value: 3, label: '定时扫'}],
+        selectFreqModes: [{value: 10, label: '手动'}, {value: 2, label: '自动算法一'},
+          {value: 3, label: '自动算法二'}, {value: 4, label: '自动算法三'}, {value: 5, label: '自动算法四'}],
+        snifferModes: [{value: 0, label: '关闭'}, {value: 1, label: '手动'}, {value: 3, label: '定时扫'}],// {value: 2, label: '上电扫'},
         rules: {
           snifferMode: [{required: true, message: '请输入选择扫频模式', trigger: "blur"}],
           selectFreqMode: [{required: true, message: '请输入选择选频模式', trigger: "blur"}],

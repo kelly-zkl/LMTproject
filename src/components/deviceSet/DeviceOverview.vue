@@ -116,6 +116,10 @@
               <el-form-item label="持续工作时间：" align="left" style="margin: 0">
                 {{subParam.duration != null ? subParam.duration : '--'}}秒
               </el-form-item>
+              <el-form-item label="同步状态：" align="left" style="margin: 0" v-show="activeItem=='M'">
+                {{subParam.sync_status==0?'空口失步':subParam.sync_status==1?'空口同步':subParam.sync_status==2?'GPS失步':subParam.sync_status==3?'GPS同步':
+                '--'}}
+              </el-form-item>
             </el-col>
           </el-row>
         </div>

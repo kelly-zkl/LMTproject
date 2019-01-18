@@ -10,7 +10,7 @@
         <div class="center-block add-appdiv" style="margin-top: 10px">
           <el-row>
             <el-col :span="11">
-              <el-form-item label="band" prop="band" required align="left">
+              <el-form-item label="band" prop="band" align="left">
                 <el-tooltip placement="bottom">
                   <div slot="content">基站频段号 取值范围：<br/>GSM：900/1800<br/>FDD：1/3<br/>TDD：[38-41]</div>
                   <el-select v-model="opDeviceParameter.band" placeholder="请选择" style="width: 100%" filterable>
@@ -31,10 +31,12 @@
                   <el-input v-model.number="opDeviceParameter.lac" :maxlength=4></el-input>
                 </el-tooltip>
               </el-form-item>
-              <el-form-item label="重复上号间隔" prop="reCapFilterPeriod">
-                <el-input v-model.number="opDeviceParameter.reCapFilterPeriod" :maxlength=10></el-input>
+              <el-form-item label="重复上报间隔" prop="reCapFilterPeriod">
+                <el-input v-model.number="opDeviceParameter.reCapFilterPeriod" :maxlength=10>
+                  <template slot="append">秒</template>
+                </el-input>
               </el-form-item>
-              <el-form-item label="功率等级" prop="powerLevel" required style="text-align: left">
+              <el-form-item label="功率等级" prop="powerLevel" style="text-align: left">
                 <el-tooltip placement="bottom">
                   <div slot="content">功率等级衰减值：<br/>6：0dB&#12288;&#12288;5：3dB&#12288;&#12288;&nbsp;&nbsp;4：6dB
                     <br/>3：9dB&#12288;&#12288;2：12dB&#12288;&#12288;1：15dB
@@ -63,11 +65,15 @@
               <el-form-item label="小区 ID" prop="cellId">
                 <el-input v-model.number="opDeviceParameter.cellId" :maxlength=4></el-input>
               </el-form-item>
-              <el-form-item label="plmn" align="left" required>
+              <el-form-item label="plmn" align="left" prop="plmn">
                 <el-radio-group v-model="opDeviceParameter.plmn" align="left">
                   <el-radio-button :label="tab.type" v-for="tab in plmns" :key="tab.type">{{tab.name}}
                   </el-radio-button>
                 </el-radio-group>
+              </el-form-item>
+              <el-form-item label="无线电" align="left">
+                <el-switch v-model="radioSwitch" active-color="#34CBFE"
+                           inactive-color="#C1C1C1" :active-value="1" :inactive-value="0"></el-switch>
               </el-form-item>
             </el-col>
           </el-row>
@@ -80,7 +86,7 @@
         <div class="center-block add-appdiv" style="margin-top: 10px">
           <el-row>
             <el-col :span="11">
-              <el-form-item label="tac">
+              <el-form-item label="tac" prop="tac">
                 <el-tooltip placement="bottom">
                   <div slot="content">跟踪区域码 取值范围：[0001－FFFEH]，码组0000H和FFFFH不可以使用</div>
                   <el-input v-model.number="opDeviceParameter.tac" :maxlength=4 readonly></el-input>
@@ -89,7 +95,12 @@
               <el-form-item label="重定向载波频点" prop="redirected_earfcn">
                 <el-input v-model.number="opDeviceParameter.redirected_earfcn" :maxlength=10></el-input>
               </el-form-item>
-              <el-form-item label="同步方式" style="text-align: left;margin: 0" v-show="activeItem == 'M'">
+              <el-form-item label="重复上报间隔" prop="imsiReportInterval" align="left">
+                <el-input v-model.number="opDeviceParameter.imsiReportInterval" :maxlength=10>
+                  <template slot="append">秒</template>
+                </el-input>
+              </el-form-item>
+              <el-form-item label="同步方式" prop="syncMode" style="text-align: left;margin: 0" v-show="activeItem == 'M'">
                 <el-radio-group v-model="opDeviceParameter.syncMode">
                   <el-radio-button :label="1">GPS同步</el-radio-button>
                   <el-radio-button :label="2">空口同步</el-radio-button>
@@ -100,12 +111,16 @@
               <el-form-item label="tac周期" prop="tacPeriod">
                 <el-input v-model.number="opDeviceParameter.tacPeriod" :maxlength=4></el-input>
               </el-form-item>
-              <el-form-item label="bandWidth" required align="left" prop="bandWidth">
+              <el-form-item label="bandWidth" align="left" prop="bandWidth">
                 <el-select v-model="opDeviceParameter.bandWidth" placeholder="带宽BandWidth" filterable
                            style="width: 100%">
                   <el-option v-for="item in bandwidths" :key="item.value" :label="item.label" :value="item.value">
                   </el-option>
                 </el-select>
+              </el-form-item>
+              <el-form-item label="无线电" align="left" prop="radioSwitch">
+                <el-switch v-model="opDeviceParameter.radioSwitch" active-color="#34CBFE"
+                           inactive-color="#C1C1C1" :active-value="1" :inactive-value="0"></el-switch>
               </el-form-item>
             </el-col>
           </el-row>
@@ -205,45 +220,31 @@
 <script>
   import {numValid, intValid, hexValidator, mccValidator, pciValidator} from '../../assets/js/api.js'
 
+  let numVal = (rule, value, callback) => {
+    if (!numValid(value)) {
+      callback(new Error("只能输入整数"));
+    } else {
+      callback();
+    }
+  };
+  let hexValid = (rule, value, callback) => {
+    if (!hexValidator(value)) {
+      callback(new Error("只能输入0001－FFFE"));
+    } else {
+      callback();
+    }
+  };
+  let pciValid = (rule, value, callback) => {
+    if (!pciValidator(value)) {
+      callback(new Error("请输入正确的pci：0-504"));
+    } else if (parseInt(value) < 0 || parseInt(value) > 504) {
+      callback(new Error("pci的范围是0-504"));
+    } else {
+      callback();
+    }
+  };
   export default {
     data() {
-      let numVal = (rule, value, callback) => {
-        if (!numValid(value)) {
-          callback(new Error("只能输入整数"));
-        } else {
-          callback();
-        }
-      };
-      let intVal = (rule, value, callback) => {
-        if (!intValid(value)) {
-          callback(new Error("只能输入整数"));
-        } else {
-          callback();
-        }
-      };
-      let hexValid = (rule, value, callback) => {
-        if (!hexValidator(value)) {
-          callback(new Error("只能输入0001－FFFE"));
-        } else {
-          callback();
-        }
-      };
-      let mccValid = (rule, value, callback) => {
-        if (!mccValidator(value)) {
-          callback(new Error("请输入正确的mcc：000-999"));
-        } else {
-          callback();
-        }
-      };
-      let pciValid = (rule, value, callback) => {
-        if (!pciValidator(value)) {
-          callback(new Error("请输入正确的pci：0-504"));
-        } else if (parseInt(value) < 0 || parseInt(value) > 504) {
-          callback(new Error("pci的范围是0-504"));
-        } else {
-          callback();
-        }
-      };
       return {
         hasGsmModule: 0,
         runStartDevice: false,
@@ -257,24 +258,7 @@
         bands: [{value: 900, label: 900}, {value: 1800, label: 1800}],
         bandwidths: [{value: 1, label: '3MHz'}, {value: 2, label: '5MHz'}, {value: 3, label: '10MHz'},
           {value: 4, label: '15MHz'}, {value: 5, label: '20MHz'}],
-        rules: {
-          downFrequency: [
-            {required: true, message: '请输入下行频点', trigger: "blur"}, {validator: numVal, trigger: "change,blur"}],
-          pci: [{required: true, message: '请输入pci', trigger: "blur"}, {validator: pciValid, trigger: "change,blur"}],
-          // tac: [{required: true, message: '请输入tac', trigger: "blur"}, {validator: hexValid, trigger: "change,blur"}],
-          tacPeriod: [{required: true, message: '请输入重复抓取时间', trigger: "blur"},
-            {validator: numVal, trigger: "change,blur"}],
-          bandWidth: [{required: true, message: '请选择带宽', trigger: "blur"}],
-          redirected_earfcn: [{required: true, message: '请输入重定向载波频点', trigger: "blur"},
-            {validator: numVal, trigger: "change,blur"}],
-          bcc: [{required: true, message: '请输入bcc', trigger: "blur"}, {validator: numVal, trigger: "change,blur"}],
-          lac: [
-            {required: true, message: '请输入lac', trigger: "blur"}, {validator: hexValid, trigger: "change,blur"}],
-          reCapFilterPeriod: [{required: true, message: '请输入重复上号间隔', trigger: "blur"},
-            {validator: numVal, trigger: "change,blur"}],
-          cellId: [{required: true, message: '请输入小区ID', trigger: "blur"},
-            {validator: numVal, trigger: "change,blur"}]
-        },
+        rules: {},
         plmns: [{type: '460.00', name: '460.00'}, {type: '460.01', name: '460.01'}, {type: '460.11', name: '460.11'}],
         frequencyList: [{
           upFrequency: 37900, downFrequency: 37900, plmn: '460.00', rsrp: 0,
@@ -285,7 +269,8 @@
         plmn: '460.00',
         down: 37900,
         up: 37900,
-        deviceType: ''
+        deviceType: '',
+        radioSwitch: 0
       }
     },
     methods: {
@@ -371,19 +356,64 @@
       },
       //初始化
       clear() {
+        if (this.activeItem == 'GSMCMUC' || this.activeItem == 'GSMCMCC') {//2G
+          this.rules = {
+            band: [{required: true, message: '请选择band', trigger: "blur"}],
+            reCapFilterPeriod: [{required: true, message: '请输入重复上报间隔', trigger: "blur"},
+              {validator: numVal, trigger: "change,blur"}],
+            pci: [{required: true, message: '请输入pci', trigger: "blur"}, {validator: pciValid, trigger: "change,blur"}],
+            lac: [{required: true, message: '请输入lac', trigger: "blur"}, {validator: hexValid, trigger: "change,blur"}],
+            bcc: [{required: true, message: '请输入bcc', trigger: "blur"}, {validator: numVal, trigger: "change,blur"}],
+            tacPeriod: [{required: true, message: '请输入重复抓取时间', trigger: "blur"},
+              {validator: numVal, trigger: "change,blur"}],
+            cellId: [{required: true, message: '请输入小区ID', trigger: "blur"},
+              {validator: numVal, trigger: "change,blur"}],
+            plmn: [{required: true, message: '请选择plmn', trigger: "blur"}],
+            powerLevel: [{required: true, message: '请选择功率等级', trigger: "blur"}],
+          }
+        } else {//4G
+          this.rules = {
+            tac: [{required: true, message: '请输入tac', trigger: "blur"}],
+            tacPeriod: [{required: true, message: '请输入重复抓取时间', trigger: "blur"},
+              {validator: numVal, trigger: "change,blur"}],
+            bandWidth: [{required: true, message: '请选择带宽', trigger: "blur"}],
+            redirected_earfcn: [{required: true, message: '请输入重定向载波频点', trigger: "blur"},
+              {validator: numVal, trigger: "change,blur"}],
+            imsiReportInterval: [{required: true, message: '请输入重复上报间隔', trigger: "blur"},
+              {validator: numVal, trigger: "change,blur"}],
+            syncMode: [{required: true, message: '请选择同步模式', trigger: "blur"}],
+            radioSwitch: [{required: true, message: '请选择无线电开关', trigger: "blur"}]
+          };
+          if (this.activeItem !== 'M') {//移动4G
+            delete this.rules['syncMode'];
+          }
+        }
         if (this.activeItem == 'M') {//移动4G38/40
-          this.opDeviceParameter = {redirected_earfcn: 37900, tac: 1, tacPeriod: 180, bandWidth: 5, syncMode: 1};
-        } else if (this.activeItem == 'U') {//联通4G
-          this.opDeviceParameter = {redirected_earfcn: 1650, tac: 1, tacPeriod: 180, bandWidth: 3};
-        } else if (this.activeItem == 'T') {//电信4G
-          this.opDeviceParameter = {redirected_earfcn: 100, tac: 1, tacPeriod: '180', bandWidth: 3};
-        } else if (this.activeItem == 'GSMCMCC') {
           this.opDeviceParameter = {
-            band: 900, bcc: 1, lac: 9, pci: 1, tacPeriod: 180, plmn: "460.11", reCapFilterPeriod: 300, cellId: 3
+            redirected_earfcn: 37900, tac: 1, tacPeriod: 180, bandWidth: 5,
+            imsiReportInterval: 0, syncMode: 1, radioSwitch: 0
+          };
+        } else if (this.activeItem == 'U') {//联通4G
+          this.opDeviceParameter = {
+            redirected_earfcn: 1650, tac: 1, tacPeriod: 180, bandWidth: 3,
+            imsiReportInterval: 0, radioSwitch: 0
+          };
+        } else if (this.activeItem == 'T') {//电信4G
+          this.opDeviceParameter = {
+            redirected_earfcn: 100, tac: 1, tacPeriod: '180', bandWidth: 3,
+            imsiReportInterval: 0, radioSwitch: 0
+          };
+        } else if (this.activeItem == 'GSMCMCC') {
+          this.radioSwitch = 0;
+          this.opDeviceParameter = {
+            band: 900, bcc: 1, lac: 9, pci: 1, tacPeriod: 180, plmn: "460.11", reCapFilterPeriod: 300,
+            powerLevel: 0, cellId: 3
           };
         } else if (this.activeItem == 'GSMCMUC') {
+          this.radioSwitch = 0;
           this.opDeviceParameter = {
-            band: 900, bcc: 96, lac: 9, pci: 1, tacPeriod: 180, plmn: "460.11", reCapFilterPeriod: 300, cellId: 3
+            band: 900, bcc: 96, lac: 9, pci: 1, tacPeriod: 180, plmn: "460.11", reCapFilterPeriod: 300,
+            powerLevel: 0, cellId: 3
           };
         }
         this.defaultFrequencyList();
@@ -475,7 +505,8 @@
           if ("000000" == data.code && data.content.opDeviceParameter.length > 0) {
             data.content.opDeviceParameter.forEach((item) => {
               if (this.activeItem == item.network) {
-                this.opDeviceParameter = item.frequency
+                this.opDeviceParameter = item.frequency;
+                this.radioSwitch = item.radioSwitch
               }
             });
             this.opDeviceParameter.tacPeriod = data.content.tacPeriod;
@@ -499,6 +530,7 @@
         delete device['reCapFilterPeriod'];
         data.frequency = device;
         data.network = this.activeItem;
+        data.radioSwitch = this.radioSwitch;
         content.opDeviceParameter = [data];
 
         let param = {
