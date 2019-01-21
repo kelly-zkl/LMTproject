@@ -297,36 +297,12 @@
           this.$message.error('请完善安装地址');
           return;
         }
-//        if (this.deviceMonitor.devpos.latitude.length == 0 || this.deviceMonitor.devpos.longitude.length == 0) {
-//          this.$message.error('请输入经纬度');
-//          return;
-//        }
         if (this.deviceMonitor.devpos.height.length == 0) {
           this.$message.error('请输入高度');
           return;
         }
-//        if (this.deviceMonitor.devpos.longitude) {
-//          if (!this.changeLon(this.deviceMonitor.devpos.longitude)) {
-//            return;
-//          }
-//        }
-//        if (this.deviceMonitor.devpos.latitude) {
-//          if (!this.changeLat(this.deviceMonitor.devpos.latitude)) {
-//            return;
-//          }
-//        }
         if (this.deviceMonitor.devpos.height) {
           if (!this.checkHeight(this.deviceMonitor.devpos.height)) {
-            return;
-          }
-        }
-//        if (this.deviceMonitor.phoneNumber) {
-//          if (!this.changePhone(this.deviceMonitor.phoneNumber)) {
-//            return;
-//          }
-//        }
-        if (this.deviceMonitor.mac) {
-          if (!this.changeMAC(this.deviceMonitor.mac)) {
             return;
           }
         }
