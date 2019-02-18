@@ -80,11 +80,11 @@
           </el-form-item>
           <el-form-item label="APP_ID" style="margin-left: 20px" prop="appId" align="left">
             <el-input v-model="deviceMonitor.appId" placeholder="请输入APP_ID" :maxlength="50"
-                      class="input-width"></el-input>
+                      class="input-width" readonly></el-input>
           </el-form-item>
           <el-form-item label="APP_KEY" style="margin-left: 20px" prop="appKey" align="left">
             <el-input v-model="deviceMonitor.appKey" placeholder="请输入APP_KEY" :maxlength="50"
-                      class="input-width"></el-input>
+                      class="input-width" readonly></el-input>
           </el-form-item>
         </div>
       </el-form>
