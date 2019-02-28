@@ -30,6 +30,14 @@ export const numValid = (num) => {
   }
   return isNum;
 };
+//plmn验证
+export const plmnValidator = (num) => {
+  let isPlmn = false;
+  if (/^460\.[0-9]{2}$/.test(num)) {
+    isPlmn = true;
+  }
+  return isPlmn;
+};
 //小数
 export const doubleValid = (num) => {
   let isNum = false;

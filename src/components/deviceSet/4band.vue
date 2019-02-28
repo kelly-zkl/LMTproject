@@ -19,12 +19,12 @@
                   </el-select>
                 </el-tooltip>
               </el-form-item>
-              <el-form-item label="pci" prop="pci">
-                <el-tooltip placement="bottom">
-                  <div slot="content">物理小区标识 取值范围：[0-504]</div>
-                  <el-input v-model.number="opDeviceParameter.pci" :maxlength=3></el-input>
-                </el-tooltip>
-              </el-form-item>
+              <!--<el-form-item label="pci" prop="pci">-->
+              <!--<el-tooltip placement="bottom">-->
+              <!--<div slot="content">物理小区标识 取值范围：[0-504]</div>-->
+              <!--<el-input v-model.number="opDeviceParameter.pci" :maxlength=3></el-input>-->
+              <!--</el-tooltip>-->
+              <!--</el-form-item>-->
               <el-form-item label="lac" prop="lac">
                 <el-tooltip placement="bottom">
                   <div slot="content">位置区域码 取值范围：[0001－FFFEH]，码组0000H和FFFFH不可以使用</div>
@@ -46,6 +46,10 @@
                                :value="item.value"></el-option>
                   </el-select>
                 </el-tooltip>
+              </el-form-item>
+              <el-form-item label="无线电" align="left">
+                <el-switch v-model="radioSwitch" active-color="#34CBFE"
+                           inactive-color="#C1C1C1" :active-value="1" :inactive-value="0"></el-switch>
               </el-form-item>
             </el-col>
             <el-col :span="11" :offset="2">
@@ -70,10 +74,6 @@
                   <el-radio-button :label="tab.type" v-for="tab in plmns" :key="tab.type">{{tab.name}}
                   </el-radio-button>
                 </el-radio-group>
-              </el-form-item>
-              <el-form-item label="无线电" align="left">
-                <el-switch v-model="radioSwitch" active-color="#34CBFE"
-                           inactive-color="#C1C1C1" :active-value="1" :inactive-value="0"></el-switch>
               </el-form-item>
             </el-col>
           </el-row>
@@ -133,33 +133,26 @@
               <i class="el-icon-remove" @click="minusPlmn(indx)"
                  style="color: #34CBFE;font-size: 20px;text-align: center"></i>
             </el-form-item>
-            <!--<el-form-item label="上行频点" style="margin: 0 0 10px 0">-->
-            <!--<el-input v-model.number="tab.upFrequency" :maxlength=10 readonly></el-input>-->
-            <!--</el-form-item>-->
             <el-form-item label="下行频点" style="margin: 0 0 10px 0">
               <el-input v-model.number="tab.downFrequency" :maxlength=10 @change="changeTDown($event,indx)"
-                        @blur="changeTDown($event,indx)" style="width: 100px"></el-input>
+                        @blur="changeTDown($event,indx)" style="width: 100px" size="small"></el-input>
             </el-form-item>
             <el-form-item label="pci" prop="pci" style="margin: 0 0 10px 0">
               <el-tooltip placement="bottom">
                 <div slot="content">物理小区标识 取值范围：[0-504]</div>
-                <el-input v-model.number="tab.pci" :maxlength=3 style="width: 80px"></el-input>
+                <el-input v-model.number="tab.pci" :maxlength=3 style="width: 80px" size="small"></el-input>
               </el-tooltip>
-            </el-form-item>
-            <el-form-item label="plmn" style="margin: 0 0 10px 0">
-              <el-select v-model="tab.plmn" style="width: 100px">
-                <el-option v-for="item in plmns" :key="item.type" :value="item.type" :label="item.name"></el-option>
-              </el-select>
             </el-form-item>
             <el-form-item label="优先级" style="margin: 0 0 10px 0">
               <el-tooltip effect="dark" content="现网频点优先级" placement="bottom">
                 <el-input v-model.number="tab.priority" :maxlength=10 @change="changeOffset"
-                          style="width: 100px"></el-input>
+                          style="width: 100px" size="small"></el-input>
               </el-tooltip>
             </el-form-item>
             <el-form-item label="rsrp" style="margin: 0 0 10px 0">
               <el-tooltip effect="dark" content="现网频点RSRP" placement="bottom">
-                <el-input v-model.number="tab.rsrp" :maxlength=10 @change="changeRsrp" style="width: 100px"></el-input>
+                <el-input v-model.number="tab.rsrp" :maxlength=10 @change="changeRsrp" style="width: 100px"
+                          size="small"></el-input>
               </el-tooltip>
             </el-form-item>
             <el-form-item label="功率等级" style="margin: 0 0 10px 0">
@@ -167,7 +160,7 @@
                 <div slot="content">功率等级衰减值：<br/>6：0dB&#12288;&#12288;5：3dB&#12288;&#12288;&nbsp;&nbsp;4：6dB
                   <br/>3：9dB&#12288;&#12288;2：12dB&#12288;&#12288;1：15dB
                 </div>
-                <el-select v-model="tab.powerLevel" style="width: 80px">
+                <el-select v-model="tab.powerLevel" style="width: 80px" size="small">
                   <el-option v-for="item in powers" :key="item.value" :label="item.label"
                              :value="item.value"></el-option>
                 </el-select>
@@ -175,13 +168,25 @@
             </el-form-item>
             <el-form-item label="帧偏移" style="margin: 0 0 10px 0" v-show="activeItem == 'M'">
               <el-input v-model.number="tab.frameOffset" :maxlength=10 @change="changeOffset"
-                        style="width: 100px"></el-input>
+                        style="width: 100px" size="small"></el-input>
+            </el-form-item>
+            <el-form-item label="plmn" style="margin: 0 0 10px 0">
+              <el-tag v-for="tag in tab.plmn" closable :key="tag"
+                      :disable-transitions="false" @close="handleClose(tag,indx)">{{tag}}
+              </el-tag>
+              <el-input class="input-tag" v-show="inputVisible&&tab.plmn.length<5&&idx==indx" v-model="inputValue"
+                        size="small" @keyup.enter.native="handleInputConfirm($event,indx)"
+                        :maxlength="6" @blur="handleInputConfirm($event,indx)">
+              </el-input>
+              <el-button v-show="!inputVisible && tab.plmn.length<5" class="button-tag" size="small"
+                         @click="showInput(indx)" type="primary" icon="el-icon-plus">
+              </el-button>
             </el-form-item>
           </el-form>
         </div>
         <el-row v-show="frequencyList.length < 16">
           <el-col :span="5" align="left" style="margin-left: 80px">
-            <el-button type="primary" icon="el-icon-plus" @click="plusPlmn()" size="medium">增加</el-button>
+            <el-button type="primary" icon="el-icon-plus" @click="plusPlmn()" size="small">增加</el-button>
           </el-col>
         </el-row>
       </div>
@@ -218,7 +223,7 @@
   </section>
 </template>
 <script>
-  import {numValid, intValid, hexValidator, mccValidator, pciValidator} from '../../assets/js/api.js'
+  import {numValid, intValid, hexValidator, plmnValidator, pciValidator} from '../../assets/js/api.js'
 
   let numVal = (rule, value, callback) => {
     if (!numValid(value)) {
@@ -261,19 +266,58 @@
         rules: {},
         plmns: [{type: '460.00', name: '460.00'}, {type: '460.01', name: '460.01'}, {type: '460.11', name: '460.11'}],
         frequencyList: [{
-          upFrequency: 37900, downFrequency: 37900, plmn: '460.00', rsrp: 0,
+          upFrequency: 37900, downFrequency: 37900, plmn: ['460.00'], rsrp: 0,
           priority: 0, pci: 5, powerLevel: 0, frameOffset: 0
         }],
         powers: [{value: 0, label: 6}, {value: 3, label: 5}, {value: 6, label: 4}, {value: 9, label: 3},
           {value: 12, label: 2}, {value: 15, label: 1}],
-        plmn: '460.00',
+        plmn: ['460.00'],
         down: 37900,
         up: 37900,
         deviceType: '',
-        radioSwitch: 0
+        radioSwitch: 0,
+        inputVisible: false,
+        inputValue: '',
+        idx: -1
       }
     },
     methods: {
+      //删除标签
+      handleClose(tag, indx) {
+        this.frequencyList[indx].plmn.splice(this.frequencyList[indx].plmn.indexOf(tag), 1);
+      },
+      //输入频点
+      showInput(indx) {
+        this.idx = indx;
+        this.inputVisible = true;
+      },
+      //输入框回车添加tag标签
+      handleInputConfirm(val, indx) {
+        let inputValue = this.inputValue;
+        if (inputValue) {
+          if (!plmnValidator(inputValue) || inputValue.length != 6) {
+            this.$message.error('请输入正确的plmn');
+            return;
+          }
+          if (this.isMultiple(inputValue, indx)) {
+            this.frequencyList[indx].plmn.push(inputValue);
+          }
+        }
+        this.inputVisible = false;
+        this.idx = -1;
+        this.inputValue = '';
+      },
+      //是否重复
+      isMultiple(val, indx) {
+        let bol = true;
+        this.frequencyList[indx].plmn.forEach((item) => {
+          if (val == item) {
+            this.$message.error('重复plmn');
+            bol = false;
+          }
+        });
+        return bol;
+      },
       handleClick(tab, event) {
         this.clear();
         if (this.getModuleID() >= 0) {//4G
@@ -361,7 +405,7 @@
             band: [{required: true, message: '请选择band', trigger: "blur"}],
             reCapFilterPeriod: [{required: true, message: '请输入重复上报间隔', trigger: "blur"},
               {validator: numVal, trigger: "change,blur"}],
-            pci: [{required: true, message: '请输入pci', trigger: "blur"}, {validator: pciValid, trigger: "change,blur"}],
+            // pci: [{required: true, message: '请输入pci', trigger: "blur"}, {validator: pciValid, trigger: "change,blur"}],
             lac: [{required: true, message: '请输入lac', trigger: "blur"}, {validator: hexValid, trigger: "change,blur"}],
             bcc: [{required: true, message: '请输入bcc', trigger: "blur"}, {validator: numVal, trigger: "change,blur"}],
             tacPeriod: [{required: true, message: '请输入重复抓取时间', trigger: "blur"},
@@ -406,13 +450,13 @@
         } else if (this.activeItem == 'GSMCMCC') {
           this.radioSwitch = 0;
           this.opDeviceParameter = {
-            band: 900, bcc: 1, lac: 9, pci: 1, tacPeriod: 180, plmn: "460.11", reCapFilterPeriod: 300,
+            band: 900, bcc: 1, lac: 9, tacPeriod: 180, plmn: "460.11", reCapFilterPeriod: 300,
             powerLevel: 0, cellId: 3
           };
         } else if (this.activeItem == 'GSMCMUC') {
           this.radioSwitch = 0;
           this.opDeviceParameter = {
-            band: 900, bcc: 96, lac: 9, pci: 1, tacPeriod: 180, plmn: "460.11", reCapFilterPeriod: 300,
+            band: 900, bcc: 96, lac: 9, tacPeriod: 180, plmn: "460.11", reCapFilterPeriod: 300,
             powerLevel: 0, cellId: 3
           };
         }
@@ -421,7 +465,7 @@
       //跳频默认参数
       defaultFrequencyList() {
         if (this.activeItem == 'M') {//移动4G38/40
-          this.plmn = '460.00';
+          this.plmn = ['460.00'];
           this.down = 37900;
           this.up = 37900;
           this.pci = 5;
@@ -430,7 +474,7 @@
             priority: 0, pci: this.pci, powerLevel: 0, frameOffset: 0
           }];
         } else if (this.activeItem == 'U') {//联通4G
-          this.plmn = '460.01';
+          this.plmn = ['460.01'];
           this.down = 1650;
           this.up = 19650;
           this.pci = 6;
@@ -439,7 +483,7 @@
             priority: 0, pci: this.pci, powerLevel: 0, frameOffset: 0
           }];
         } else if (this.activeItem == 'T') {//电信4G
-          this.plmn = '460.11';
+          this.plmn = ['460.11'];
           this.down = 100;
           this.up = 18100;
           this.pci = 7;
@@ -449,7 +493,7 @@
           }];
         } else {
           this.frequencyList = [{
-            upFrequency: 0, downFrequency: 0, plmn: '460.00', rsrp: 0,
+            upFrequency: 0, downFrequency: 0, plmn: ['460.00'], rsrp: 0,
             priority: 0, pci: 5, powerLevel: 0, frameOffset: 0
           }];
         }
