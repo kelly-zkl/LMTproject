@@ -171,8 +171,9 @@
                         style="width: 100px" size="small"></el-input>
             </el-form-item>
             <el-form-item label="plmn" style="margin: 0 0 10px 0">
-              <el-input v-model="tab.plmn" :maxlength=34 @change="changePlmn"
-                        placeholder="plmn可输入1-5个，用逗号(英文)隔开" style="width: 300px" size="small"></el-input>
+              <el-select v-model="tab.plmn" align="left" multiple collapse-tags size="small" style="width: 150px">
+                <el-option v-for="item in plmns" :label="item.name" :key="item.type" :value="item.type"></el-option>
+              </el-select>
             </el-form-item>
           </el-form>
         </div>
@@ -258,7 +259,7 @@
         rules: {},
         plmns: [{type: '460.00', name: '460.00'}, {type: '460.01', name: '460.01'}, {type: '460.11', name: '460.11'}],
         frequencyList: [{
-          upFrequency: 37900, downFrequency: 37900, plmn: '460.00', rsrp: 0,
+          upFrequency: 37900, downFrequency: 37900, plmn: ['460.00'], rsrp: 0,
           priority: 0, pci: 5, powerLevel: 0, frameOffset: 0
         }],
         powers: [{value: 0, label: 6}, {value: 3, label: 5}, {value: 6, label: 4}, {value: 9, label: 3},
@@ -268,7 +269,7 @@
         up: 37900,
         pci: 5,
         deviceType: '',
-        radioSwitch: 0,
+        radioSwitch: 0
       }
     },
     methods: {
@@ -291,24 +292,9 @@
       minusPlmn(index) {
         this.frequencyList.splice(index, 1);
       },
-      //plmn的大小判断
-      changePlmn(val) {
-        let isVaild = true;
-        if (val) {
-          if (!plmnValidator(val)) {
-            this.$message.error('请输入正确的plmn');
-            isVaild = false;
-          }
-        } else {
-          this.$message.error('请输入plmn');
-          isVaild = false;
-        }
-        return isVaild;
-      },
       //下行频点变化
       changeTDown(val, idx) {
         if (val.length > 0) {
-          console.log(val);
           if (this.activeItem == 'M') {//小站移动
             this.frequencyList[idx].upFrequency = (val ? parseInt(val) : 0);
           } else {//联通电信
@@ -433,9 +419,8 @@
       },
       //跳频默认参数
       defaultFrequencyList() {
-        this.inputVisible = [false];
         if (this.activeItem == 'M') {//移动4G38/40
-          this.plmn = '460.00';
+          this.plmn = ['460.00'];
           this.down = 37900;
           this.up = 37900;
           this.pci = 5;
@@ -444,7 +429,7 @@
             priority: 0, pci: this.pci, powerLevel: 0, frameOffset: 0
           }];
         } else if (this.activeItem == 'U') {//联通4G
-          this.plmn = '460.01';
+          this.plmn = ['460.01'];
           this.down = 1650;
           this.up = 19650;
           this.pci = 6;
@@ -453,7 +438,7 @@
             priority: 0, pci: this.pci, powerLevel: 0, frameOffset: 0
           }];
         } else if (this.activeItem == 'T') {//电信4G
-          this.plmn = '460.11';
+          this.plmn = ['460.11'];
           this.down = 100;
           this.up = 18100;
           this.pci = 7;
@@ -463,7 +448,7 @@
           }];
         } else {
           this.frequencyList = [{
-            upFrequency: 0, downFrequency: 0, plmn: '460.00', rsrp: 0,
+            upFrequency: 0, downFrequency: 0, plmn: ['460.00'], rsrp: 0,
             priority: 0, pci: 5, powerLevel: 0, frameOffset: 0
           }];
         }
@@ -489,9 +474,9 @@
               let plmnVlue = true;
               for (var i = 0; i < this.frequencyList.length; i++) {
                 var item = this.frequencyList[i];
-                if (!this.changePlmn(item.plmn)) {
+                if (item.plmn.length == 0) {
                   plmnVlue = false;
-                  return;
+                  this.$message.error('请选择plmn');
                 }
               }
               if (plmnVlue) {
@@ -505,7 +490,6 @@
       getParam() {
         let param = {msgId: "b7518c70", type: 4194, cmd: 4523, moduleID: 255, timestamp: new Date().getTime()};
         this.$emit('openLoading');
-        this.inputVisible = [];
         this.$post(param).then((data) => {
           this.$emit('closeLoading');
           if ("000000" == data.code && data.opDeviceParameter.length > 0) {
@@ -530,7 +514,7 @@
                   if (item1.plmn5) {
                     pararr.push(item1.plmn5);
                   }
-                  item1.plmn = pararr.join(",");
+                  item1.plmn = pararr;
                   item.Frequency[i] = item1;
                 }
                 this.frequencyList = item.Frequency;
@@ -602,16 +586,15 @@
         }
         for (var i = 0; i < this.frequencyList.length; i++) {
           var item = this.frequencyList[i];
-          var arr = item.plmn.split(",");
-          if (arr.length > 1) {
-            for (var j = 1; j < arr.length; j++) {
-              var item1 = arr[j];
+          if (item.plmn.length > 1) {
+            for (var j = 1; j < item.plmn.length; j++) {
+              var item1 = item.plmn[j];
               var paStr = 'plmn' + (j + 1);
               item[paStr] = item1;
             }
-            item.plmn = arr[0];
+            item.plmn = item.plmn[0];
           } else {
-            item.plmn = arr[0];
+            item.plmn = item.plmn[0];
           }
           this.frequencyList[i] = item;
         }
