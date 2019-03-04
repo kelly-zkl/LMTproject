@@ -201,7 +201,7 @@
       padding-right: 20px;
       background-color: #ECF0F5;
       flex: 1;
-      overflow-y: scroll;
+      overflow-y: auto;
     }
     .header-width {
       width: 100%;
@@ -228,7 +228,7 @@
       padding-right: 5%;
       background-color: #ECF0F5;
       flex: 1;
-      overflow-y: scroll;
+      overflow-y: auto;
     }
     .header-width {
       width: 95%;

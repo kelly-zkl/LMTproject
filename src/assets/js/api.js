@@ -33,7 +33,7 @@ export const numValid = (num) => {
 //plmn验证
 export const plmnValidator = (num) => {
   let isPlmn = false;
-  if (/^460\.[0-9]{2}$/.test(num)) {
+  if (/^((460\.[0-9]{2})|(460\.[0-9]{2}((,460\.[0-9]{2}){1,4})))$/.test(num)) {
     isPlmn = true;
   }
   return isPlmn;

@@ -52,7 +52,6 @@
   </div>
 </template>
 <script>
-  import {numValid, intValid, hexValidator, mccValidator, pciValidator} from '../../assets/js/api.js'
   import BandSet from '../deviceSet/BandSet';
   import band4 from '../deviceSet/4band';
   import PaSet from "../deviceSet/PaSet.vue";
