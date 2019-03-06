@@ -586,6 +586,18 @@
         }
         for (var i = 0; i < this.frequencyList.length; i++) {
           var item = this.frequencyList[i];
+          if (item.plmn2) {
+            delete item['plmn2'];
+          }
+          if (item.plmn3) {
+            delete item['plmn3'];
+          }
+          if (item.plmn4) {
+            delete item['plmn4'];
+          }
+          if (item.plmn5) {
+            delete item['plmn5'];
+          }
           if (item.plmn.length > 1) {
             for (var j = 1; j < item.plmn.length; j++) {
               var item1 = item.plmn[j];
