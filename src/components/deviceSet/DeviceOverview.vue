@@ -102,7 +102,7 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="输出功率：" align="left" style="margin: 0">
-                {{subParam.power != null ? subParam.power : '--'}}mW
+                {{subParam.power != null ? subParam.power : '--'}}dBm
               </el-form-item>
               <el-form-item label="抓取条数：" align="left" style="margin: 0" v-show="activeItem != 'G'">
                 {{subParam.catchCount != null ? subParam.catchCount : '--'}}条
