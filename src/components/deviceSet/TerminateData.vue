@@ -24,6 +24,8 @@
                          :formatter="formatterAddress"></el-table-column>
         <el-table-column align="left" prop="netType" label="网络类型" min-width="150" max-width="200"
                          :formatter="formatterAddress"></el-table-column>
+        <el-table-column align="left" prop="rsrp" label="RSRP" min-width="150" max-width="200"
+                         :formatter="formatterAddress"></el-table-column>
         <el-table-column align="left" prop="uptime" label="获取时间" min-width="150" max-width="200"
                          :formatter="formatterAddress" sortable></el-table-column>
       </el-table>
@@ -253,6 +255,8 @@
           return row.uptime ? formatDate(new Date(row.uptime * 1000), 'yyyy-MM-dd hh:mm:ss') : '--';
         } else if (column.property == 'isp') {//运营商
           return row.isp == 0 || row.isp == 3 ? '移动' : row.isp == 1 ? '联通' : row.isp == 2 ? '电信' : '--';
+        } else if (column.property == 'rsrp') {//rsrp
+          return row.rsrp == undefined ? '--' : row.rsrp;
         } else if (column.property == 'netType') {//网络类型 --> 根据运营商判断
           return this.getNetType(row.isp);
         } else {
