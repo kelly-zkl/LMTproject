@@ -104,6 +104,7 @@
                 <el-radio-group v-model="opDeviceParameter.syncMode">
                   <el-radio-button :label="1">GPS同步</el-radio-button>
                   <el-radio-button :label="2">空口同步</el-radio-button>
+                  <el-radio-button :label="3">异频空口同步</el-radio-button>
                 </el-radio-group>
               </el-form-item>
             </el-col>
