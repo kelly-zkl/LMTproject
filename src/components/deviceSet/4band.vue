@@ -92,6 +92,11 @@
                   <el-input v-model.number="opDeviceParameter.tac" :maxlength=4 readonly></el-input>
                 </el-tooltip>
               </el-form-item>
+              <el-form-item label="tac下限" prop="tacMin">
+                <el-tooltip class="item" effect="dark" content="取值范围:0-65530" placement="bottom">
+                  <el-input v-model.number="opDeviceParameter.tacMin" :maxlength=5></el-input>
+                </el-tooltip>
+              </el-form-item>
               <el-form-item label="重定向载波频点" prop="redirected_earfcn">
                 <el-input v-model.number="opDeviceParameter.redirected_earfcn" :maxlength=10></el-input>
               </el-form-item>
@@ -111,6 +116,11 @@
             <el-col :span="11" :offset="2">
               <el-form-item label="tac周期" prop="tacPeriod">
                 <el-input v-model.number="opDeviceParameter.tacPeriod" :maxlength=4></el-input>
+              </el-form-item>
+              <el-form-item label="tac上限" prop="tacMax">
+                <el-tooltip class="item" effect="dark" content="取值范围:0-65530" placement="bottom">
+                  <el-input v-model.number="opDeviceParameter.tacMax" :maxlength=5></el-input>
+                </el-tooltip>
               </el-form-item>
               <el-form-item label="bandWidth" align="left" prop="bandWidth">
                 <el-select v-model="opDeviceParameter.bandWidth" placeholder="带宽BandWidth" filterable
@@ -376,6 +386,10 @@
             tac: [{required: true, message: '请输入tac', trigger: "blur"}],
             tacPeriod: [{required: true, message: '请输入重复抓取时间', trigger: "blur"},
               {validator: numVal, trigger: "change,blur"}],
+            tacMin: [{required: true, message: '请输入tac下限', trigger: "blur"},
+              {validator: numVal, trigger: "change,blur"}],
+            tacMax: [{required: true, message: '请输入tac上限', trigger: "blur"},
+              {validator: numVal, trigger: "change,blur"}],
             bandWidth: [{required: true, message: '请选择带宽', trigger: "blur"}],
             redirected_earfcn: [{required: true, message: '请输入重定向载波频点', trigger: "blur"},
               {validator: numVal, trigger: "change,blur"}],
@@ -391,17 +405,17 @@
         if (this.activeItem == 'M') {//移动4G38/40
           this.opDeviceParameter = {
             redirected_earfcn: 37900, tac: 1, tacPeriod: 180, bandWidth: 5,
-            imsiReportInterval: 0, syncMode: 1, radioSwitch: 0
+            imsiReportInterval: 0, syncMode: 1, radioSwitch: 0, tacMin: 0, tacMax: 65530
           };
         } else if (this.activeItem == 'U') {//联通4G
           this.opDeviceParameter = {
             redirected_earfcn: 1650, tac: 1, tacPeriod: 180, bandWidth: 3,
-            imsiReportInterval: 0, radioSwitch: 0
+            imsiReportInterval: 0, radioSwitch: 0, tacMin: 0, tacMax: 65530
           };
         } else if (this.activeItem == 'T') {//电信4G
           this.opDeviceParameter = {
             redirected_earfcn: 100, tac: 1, tacPeriod: '180', bandWidth: 3,
-            imsiReportInterval: 0, radioSwitch: 0
+            imsiReportInterval: 0, radioSwitch: 0, tacMin: 0, tacMax: 65530
           };
         } else if (this.activeItem == 'GSMCMCC') {
           this.radioSwitch = 0;
@@ -479,6 +493,14 @@
                   plmnVlue = false;
                   this.$message.error('请选择plmn');
                 }
+              }
+              if (this.opDeviceParameter.tacMin < 0 || this.opDeviceParameter.tacMin > 65530 || this.opDeviceParameter.tacMax < 0 || this.opDeviceParameter.tacMax > 65530) {
+                plmnVlue = false;
+                this.$message.error('tac上/下限的取值范围是0-65530');
+              }
+              if (this.opDeviceParameter.tacMin >= this.opDeviceParameter.tacMax) {
+                plmnVlue = false;
+                this.$message.error('tac上限应大于tac下限');
               }
               if (plmnVlue) {
                 this.runStartDevice = true;

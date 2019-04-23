@@ -46,6 +46,10 @@
     },
     methods: {
       login() {
+        // let user = {save: this.savePsw, acc: '', psw: ''};
+        // localStorage.setItem("user", JSON.stringify(user));
+        // sessionStorage.setItem("user", JSON.stringify(user));
+        // this.$router.push('/deviceOverview');
         if (!this.account.username || !this.account.password) {
           this.$message.error('请输入账号、密码');
           return;
@@ -69,10 +73,6 @@
         }).catch((err) => {
           this.logining = false;
         });
-        // let user = {save: this.savePsw, acc: '', psw: ''};
-        // localStorage.setItem("user", JSON.stringify(user));
-        // sessionStorage.setItem("user", JSON.stringify(user));
-        // this.$router.push('/deviceOverview');
       },
       //是否记住密码
       handleChange(val) {
