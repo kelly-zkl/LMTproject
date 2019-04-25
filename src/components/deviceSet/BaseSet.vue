@@ -406,24 +406,13 @@
             sessionStorage.setItem("band4", data.data.band4 ? data.data.band4 : 0);
             sessionStorage.setItem("hasGsmModule", data.data.hasGsmModule ? data.data.hasGsmModule : 0);
             sessionStorage.setItem("hasPaModule", data.data.hasPaModule ? data.data.hasPaModule : 0);
-            this.getDeviceType(data.data.devId);
+            sessionStorage.setItem("isOld", data.data.setWifiStaticIp);
             this.getBand4();
           }
         }).catch((err) => {
           this.$message.error(err);
           this.$emit('closeLoading');
         });
-      },
-      //判断设备是不是ZDM7设备类型，且是2018年12月之前的设备
-      getDeviceType(val) {
-        let bol = '0';
-        if (val.indexOf('ZDM7') == 0) {
-          let time = parseInt(val.substring(4, 8));
-          if (time < 1812) {
-            bol = '1';
-          }
-        }
-        sessionStorage.setItem("isOld", bol);
       },
       getBand4() {
         this.band4 = sessionStorage.getItem("band4");

@@ -216,7 +216,6 @@
           this.$emit('closeLoading');
           if ("000000" == data.code) {
             this.deviceMonitor = data.data;
-            this.getDeviceType(data.data.devId);
             if (data.data.devType.length > 0) {
               this.devType = this.getDevType(data.data.devType);
             }
@@ -226,6 +225,7 @@
             sessionStorage.setItem("band4", data.data.band4 ? data.data.band4 : 0);
             sessionStorage.setItem("hasGsmModule", data.data.hasGsmModule ? data.data.hasGsmModule : 0);
             sessionStorage.setItem("hasPaModule", data.data.hasPaModule ? data.data.hasPaModule : 0);
+            sessionStorage.setItem("isOld", data.data.setWifiStaticIp);
             if (data.data.hasGsmModule == 1) {
               this.activeName = [{name: '电信', type: 'T'}, {name: '移动', type: 'M'},
                 {name: '联通', type: 'U'}, {name: 'GSM', type: 'G'}];
@@ -236,17 +236,6 @@
           this.$message.error(err);
           this.$emit('closeLoading');
         });
-      },
-      //判断设备是不是ZDM7设备类型，且是2018年12月之前的设备
-      getDeviceType(val) {
-        let bol = '0';
-        if (val.indexOf('ZDM7') == 0) {
-          let time = parseInt(val.substring(4, 8));
-          if (time < 1812) {
-            bol = '1';
-          }
-        }
-        sessionStorage.setItem("isOld", bol);
       },
       getDevForm(val) {
         for (let item of this.devForms) {
