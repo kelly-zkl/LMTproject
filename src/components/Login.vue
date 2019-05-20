@@ -27,7 +27,7 @@
         </el-form>
       </el-col>
       <el-col :span="24" class="main-footer">
-        All Rights Reserved V2.0.8
+        All Rights Reserved V2.1.3
       </el-col>
     </section>
   </div>

@@ -10,7 +10,7 @@
                :model="opDeviceParameter" class="add-appdiv" style="padding: 30px 20px">
         <el-row>
           <el-col :span="11">
-            <el-form-item label="band" prop="band" align="left">
+            <el-form-item label="BAND" prop="band" align="left">
               <el-tooltip placement="bottom">
                 <div slot="content">基站频段号 取值范围：<br/>电信/联通：1/3<br/>移动：[38-41]</div>
                 <el-select v-model="opDeviceParameter.band" placeholder="请选择频段" style="width: 100%">
@@ -19,7 +19,7 @@
                 </el-select>
               </el-tooltip>
             </el-form-item>
-            <el-form-item label="bandWidth" prop="bandWidth" align="left">
+            <el-form-item label="BANDWIDTH" prop="bandWidth" align="left">
               <el-select v-model="opDeviceParameter.bandWidth" placeholder="请选择带宽" style="width: 100%">
                 <el-option v-for="item in bandwidths" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
@@ -35,7 +35,7 @@
             <el-form-item label="帧偏移" v-show="activeItem == 'M'" prop="frameOffset">
               <el-input v-model.number="opDeviceParameter.frameOffset" :maxlength=10></el-input>
             </el-form-item>
-            <el-form-item label="plmn" prop="plmn" align="left">
+            <el-form-item label="PLMN" prop="plmn" align="left">
               <el-radio-group v-model="opDeviceParameter.plmn" align="left">
                 <el-radio-button :label="tab.type" v-for="tab in plmns" :key="tab.type">{{tab.name}}
                 </el-radio-button>
@@ -43,22 +43,22 @@
             </el-form-item>
           </el-col>
           <el-col :span="11" :offset="2">
-            <el-form-item label="pci" prop="pci">
+            <el-form-item label="PCI" prop="pci">
               <el-tooltip placement="bottom">
                 <div slot="content">物理小区标识 取值范围：[0-504]</div>
                 <el-input v-model.number="opDeviceParameter.pci" :maxlength=3></el-input>
               </el-tooltip>
             </el-form-item>
-            <el-form-item label="tac">
+            <el-form-item label="TAC">
               <el-tooltip placement="bottom">
                 <div slot="content">跟踪区域码 取值范围：[0001－FFFEH]，码组0000H和FFFFH不可以使用</div>
                 <el-input v-model.number="opDeviceParameter.tac" :maxlength=4 readonly></el-input>
               </el-tooltip>
             </el-form-item>
-            <el-form-item label="tac周期" prop="tacPeroid">
+            <el-form-item label="TAC周期" prop="tacPeroid">
               <el-input v-model.number="opDeviceParameter.tacPeroid" :maxlength=4></el-input>
             </el-form-item>
-            <el-form-item label="pa调节" prop="powerLevel">
+            <el-form-item label="PA调节" prop="powerLevel">
               <el-input v-model.number="opDeviceParameter.powerLevel" :maxlength=3></el-input>
             </el-form-item>
             <el-form-item label="重定向载波频点" prop="redirected_earfcn">
@@ -102,7 +102,7 @@
               <el-input v-model.number="tab.downFrequency" :maxlength=10 @change="changeTDown($event,indx)"
                         @blur="changeTDown($event,indx)" style="width: 100px"></el-input>
             </el-form-item>
-            <el-form-item label="plmn" style="margin: 0">
+            <el-form-item label="PLMN" style="margin: 0">
               <el-select v-model="tab.plmn" style="width: 100px">
                 <el-option v-for="item in plmns" :key="item.type" :value="item.type" :label="item.name"></el-option>
               </el-select>

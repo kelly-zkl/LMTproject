@@ -3,9 +3,9 @@
     <section>
       <h4 style="text-align: left;margin-top: 0">PA信息</h4>
       <div class="content add-appdiv">
-        <el-form :inline="true" v-for="(item,idx) in paParam" :key="item.index" align="left">
+        <el-form :inline="true" v-for="(item,idx) in paParam" :key="item.index" align="left" v-if="item.isShow==1">
           <el-form-item style="margin: 0 0 10px 0"
-                        :label="idx==0?'TDD1900：功放开关':idx==1?'TDD2600：功放开关':idx==2?'FDD2100：功放开关':idx==3?'FDD1800：功放开关':'GSM：功放开关'"
+                        :label="idx==0?'TDD B34/39：功放开关':idx==1?'TDD B38/40/41：功放开关':idx==2?'FDD B1：功放开关':idx==3?'FDD B3：功放开关':'FDD/GSM B5/8：功放开关'"
                         align="left">
             <el-switch v-model="item.dlSwitch" active-color="#34CBFE" inactive-color="#bbb" :active-value="1"
                        :inactive-value="0"></el-switch>
@@ -29,9 +29,9 @@
       </div>
       <h4 style="text-align: left;margin-top: 0" v-show="paWorkStatus.length>0">PA工作状态</h4>
       <div class="content add-appdiv" v-show="paWorkStatus.length>0">
-        <el-row v-for="(item,idx) in paWorkStatus" :key="item.index" style="margin-top: 10px">
-          <el-col :span="5" align="left">
-            <span style="font-size: 14px;color: #5F6165">{{idx==0?'TDD1900：':idx==1?'TDD2600：':idx==2?'FDD2100：':idx==3?'FDD1800：':'GSM：'}}输入功率<span
+        <el-row v-for="(item,idx) in paWorkStatus" :key="item.index" style="margin-top: 10px" v-if="item.isShow==1">
+          <el-col :span="6" align="left">
+            <span style="font-size: 14px;color: #5F6165">{{idx==0?'TDD B34/39：':idx==1?'TDD B38/40/41：':idx==2?'FDD B1：':idx==3?'FDD B3：':'FDD/GSM B5/8：'}}输入功率<span
               style="margin-left: 15px">{{item.paInputPower}}</span></span>
           </el-col>
           <el-col :span="4" align="left">
@@ -63,15 +63,15 @@
   export default {
     data() {
       return {
-        paParam: [{dlSwitch: 0, dlPower: 0, index: 0}, {dlSwitch: 0, dlPower: 0, index: 1},
-          {dlSwitch: 0, dlPower: 0, index: 2}, {dlSwitch: 0, dlPower: 0, index: 3},
-          {dlSwitch: 0, dlPower: 0, index: 4}],
+        paParam: [{dlSwitch: 0, dlPower: 0, index: 0, isShow: 1}, {dlSwitch: 0, dlPower: 0, index: 1, isShow: 1},
+          {dlSwitch: 0, dlPower: 0, index: 2, isShow: 1}, {dlSwitch: 0, dlPower: 0, index: 3, isShow: 1},
+          {dlSwitch: 0, dlPower: 0, index: 4, isShow: 1}],
         paWorkStatus: []
       }
     },
     methods: {
       //获取PA设置
-      getParam() {
+      getPaParam() {
         let param = {msgId: "b7518c70", type: 4194, cmd: 4537, moduleID: 3, timestamp: new Date().getTime()};
         this.$emit('openLoading');
         this.$post(param).then((data) => {

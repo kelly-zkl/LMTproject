@@ -18,15 +18,15 @@
         <el-table-column align="center" type="index" label="序号" width="65"></el-table-column>
         <el-table-column align="left" prop="deviceId" label="设备ID" min-width="150" max-width="200"
                          :formatter="formatterAddress"></el-table-column>
-        <el-table-column align="left" prop="imsi" label="IMSI" min-width="150" max-width="200"
+        <el-table-column align="left" prop="imsi" label="IMSI" min-width="180" max-width="200"
                          :formatter="formatterAddress"></el-table-column>
-        <el-table-column align="left" prop="isp" label="运营商" min-width="150" max-width="200"
+        <el-table-column align="left" prop="isp" label="运营商" min-width="100" max-width="150"
                          :formatter="formatterAddress"></el-table-column>
-        <el-table-column align="left" prop="netType" label="网络类型" min-width="150" max-width="200"
+        <el-table-column align="left" prop="netType" label="网络类型" min-width="100" max-width="150"
                          :formatter="formatterAddress"></el-table-column>
-        <el-table-column align="left" prop="rsrp" label="RSRP" min-width="150" max-width="200"
+        <el-table-column align="left" prop="rsrp" label="RSRP" min-width="100" max-width="150"
                          :formatter="formatterAddress"></el-table-column>
-        <el-table-column align="left" prop="uptime" label="获取时间" min-width="150" max-width="200"
+        <el-table-column align="left" prop="uptime" label="获取时间" min-width="170" max-width="200"
                          :formatter="formatterAddress" sortable></el-table-column>
       </el-table>
     </div>
@@ -254,37 +254,44 @@
         if (column.property == 'uptime') {//上报时间
           return row.uptime ? formatDate(new Date(row.uptime * 1000), 'yyyy-MM-dd hh:mm:ss') : '--';
         } else if (column.property == 'isp') {//运营商
-          return row.isp == 0 || row.isp == 3 ? '移动' : row.isp == 1 ? '联通' : row.isp == 2 ? '电信' : '--';
-        } else if (column.property == 'rsrp') {//rsrp
-          return row.rsrp == undefined ? '--' : row.rsrp;
+          var isp = this.getNetType(row.imsi).isp;
+          return isp == 0 ? '移动' : isp == 1 ? '联通' : isp == 2 ? '电信' : '--';
+        } else if (column.property == 'rsrp' || column.property == 'ta' || column.property == 'rssi') {//rsrp、ta、rssi
+          return row[column.property] == undefined ? '--' : row[column.property];
         } else if (column.property == 'netType') {//网络类型 --> 根据运营商判断
-          return this.getNetType(row.isp);
+          return this.getNetType(row.imsi).netType;
         } else {
           return row[column.property] && row[column.property] !== "null" ? row[column.property] : '--';
         }
       },
-      getNetType(isp) {
-        let moduleId = "未知";
-        switch (isp) {
-          case 0:
-            moduleId = "CMCC";
-            break;
-          case 1:
-            moduleId = "CMUC";
-            break;
-          case 2:
-            moduleId = "CMTC";
-            break;
-          case 3:
-            moduleId = "CMCC2";
-            break;
-          case 5:
-            moduleId = "GSM";
-            break;
-          default:
-            break;
+      getNetType(imsi) {
+        let msg = {isp: -1, netType: '--'};
+        if (!!imsi && imsi.indexOf("460") >= 0 && imsi.length > 5) {
+          var sub = imsi.replace('.', '').substring(3, 5);
+          switch (sub) {
+            case "00":
+            case "02":
+            case "04":
+            case "07":
+            case "08":
+              msg = {isp: 0, netType: 'CMCC'};
+              break;
+            case "01":
+            case "06":
+            case "09":
+            case "10":
+              msg = {isp: 1, netType: 'CMUC'};
+              break;
+            case "03":
+            case "11":
+            case "12":
+              msg = {isp: 2, netType: 'CMTC'};
+              break;
+            default:
+              break;
+          }
         }
-        return moduleId;
+        return msg;
       },
       getIndex(arr, item) {
         let index = -1;

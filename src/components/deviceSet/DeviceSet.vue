@@ -4,17 +4,17 @@
       <h4 style="text-align: left;margin-top: 0">设备配置</h4>
       <div class="add-appdiv card-width" style="position: relative">
         <el-tabs v-model="activeItem" type="card" @tab-click="handleClick">
+          <el-tab-pane label="载波信息" name="band4" style="margin-left: 20px" v-if="band4== 1">
+            <band4 @openLoading="openLoading" @closeLoading="closeLoading" ref="band4"></band4>
+          </el-tab-pane>
+          <el-tab-pane label="载波信息" name="band" style="margin-left: 20px" v-else>
+            <BandSet @openLoading="openLoading" @closeLoading="closeLoading" ref="band"></BandSet>
+          </el-tab-pane>
           <el-tab-pane label="LTE扫频工具" name="lte" style="margin-left: 20px">
             <lteScan @openLoading="openLoading" @closeLoading="closeLoading" ref="ltescan"></lteScan>
           </el-tab-pane>
           <el-tab-pane label="GSM扫频工具" name="gsm" style="margin-left: 20px" v-if="hasGsmModule== 1">
             <gsmScan @openLoading="openLoading" @closeLoading="closeLoading" ref="gsmscan"></gsmScan>
-          </el-tab-pane>
-          <el-tab-pane label="载波信息" name="band" style="margin-left: 20px" v-if="band4== 0">
-            <BandSet @openLoading="openLoading" @closeLoading="closeLoading" ref="band"></BandSet>
-          </el-tab-pane>
-          <el-tab-pane label="载波信息" name="band4" style="margin-left: 20px" v-if="band4== 1">
-            <band4 @openLoading="openLoading" @closeLoading="closeLoading" ref="band4"></band4>
           </el-tab-pane>
           <el-tab-pane label="PA信息" name="paset" style="margin-left: 20px" v-if="hasPaModule== 1">
             <PaSet @openLoading="openLoading" @closeLoading="closeLoading" ref="paset"></PaSet>
@@ -64,7 +64,7 @@
         band4: 0,
         hasGsmModule: 0,
         hasPaModule: 0,
-        activeItem: 'lte',
+        activeItem: 'band',
         dialWidth: this.$Is_Pc() ? '40%' : '90%',
         runSetSniffer: false,
         sniffer: {snifferStart: 0, snifferMode: 0, startTime: ''}
@@ -76,22 +76,34 @@
       },
       clickTab() {
         if (this.activeItem == 'band') {
-          this.$refs.band.getBandParam();
+          this.$nextTick(() => {
+            this.$refs.band.getBandParam();
+          })
         } else if (this.activeItem == 'band4') {
-          if (this.hasGsmModule == 0) {//没有GSM
-            this.$refs.band4.getParam()
+          if (this.hasGsmModule == 1) {//有GSM
+            this.$nextTick(() => {
+              this.$refs.band4.getGsmParam()
+            })
           } else {
-            this.$refs.band4.getGsmParam()
+            this.$nextTick(() => {
+              this.$refs.band4.getParam()
+            })
           }
         } else if (this.activeItem == 'paset') {
-          this.$refs.paset.getParam();
-          this.$refs.paset.getPaStatus();
+          this.$nextTick(() => {
+            this.$refs.paset.getPaParam();
+            this.$refs.paset.getPaStatus();
+          })
         } else if (this.activeItem == 'gsm') {
-          this.$refs.gsmscan.getNetworkData();
-          this.$refs.gsmscan.getScanSwitch();
+          this.$nextTick(() => {
+            this.$refs.gsmscan.getNetworkData();
+            this.$refs.gsmscan.getScanSwitch();
+          })
         } else if (this.activeItem == 'lte') {
-          this.$refs.ltescan.getCellData();
-          this.$refs.ltescan.getScanData();
+          this.$nextTick(() => {
+            this.$refs.ltescan.getCellData();
+            this.$refs.ltescan.getScanData();
+          })
         }
       },
       //调用加载
@@ -142,6 +154,10 @@
       this.band4 = sessionStorage.getItem("band4");
       this.hasGsmModule = sessionStorage.getItem("hasGsmModule");
       this.hasPaModule = sessionStorage.getItem("hasPaModule");
+
+      if (this.band4 == 1) {
+        this.activeItem = 'band4';
+      }
 
       this.clickTab();
     },

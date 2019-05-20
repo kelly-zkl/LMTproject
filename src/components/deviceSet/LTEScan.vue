@@ -108,8 +108,7 @@
         },
         listLoading: false,
         activeItem: "CMCC",
-        activeName: [{name: '移动(LTE)', type: 'CMCC'}, {name: '联通(LTE)', type: 'CMUC'},
-          {name: '电信(LTE)', type: 'CMTC'}],
+        activeName: [{name: '移动', type: 'CMCC'}, {name: '联通', type: 'CMUC'}, {name: '电信', type: 'CMTC'}],
         selectFreqModes: [{value: 10, label: '手动'}, {value: 2, label: '自动算法一'},
           {value: 3, label: '自动算法二'}, {value: 4, label: '自动算法三'}, {value: 5, label: '自动算法四'}],
         snifferModes: [{value: 0, label: '关闭'}, {value: 1, label: '手动'}, {value: 3, label: '定时扫'}],// {value: 2, label: '上电扫'},
@@ -235,8 +234,15 @@
       }
     },
     mounted() {
-      // this.getCellData();
-      // this.getScanData();
+      this.hasGsmModule = sessionStorage.getItem("hasGsmModule");
+      if (this.hasGsmModule == 0) {//只有2个标签
+        this.activeName = [{moduleID: 0, name: '移动', type: 'CMCC'}, {moduleID: 1, name: '联通', type: 'CMUC'}];
+        this.activeItem = 'CMCC';
+      } else {//没有GSM模块
+        this.activeName = [{moduleID: 0, name: '移动', type: 'CMCC'}, {moduleID: 1, name: '联通', type: 'CMUC'},
+          {moduleID: 2, name: '电信', type: 'CMTC'}];
+        this.activeItem = 'CMCC';
+      }
     }
   }
 </script>

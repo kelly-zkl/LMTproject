@@ -10,7 +10,7 @@
         <div class="center-block add-appdiv" style="margin-top: 10px">
           <el-row>
             <el-col :span="11">
-              <el-form-item label="band" prop="band" align="left">
+              <el-form-item label="BAND" prop="band" align="left">
                 <el-tooltip placement="bottom">
                   <div slot="content">基站频段号 取值范围：<br/>GSM：900/1800<br/>FDD：1/3<br/>TDD：[38-41]</div>
                   <el-select v-model="opDeviceParameter.band" placeholder="请选择" style="width: 100%" filterable>
@@ -25,7 +25,7 @@
               <!--<el-input v-model.number="opDeviceParameter.pci" :maxlength=3></el-input>-->
               <!--</el-tooltip>-->
               <!--</el-form-item>-->
-              <el-form-item label="lac" prop="lac">
+              <el-form-item label="LAC" prop="lac">
                 <el-tooltip placement="bottom">
                   <div slot="content">位置区域码 取值范围：[0001－FFFEH]，码组0000H和FFFFH不可以使用</div>
                   <el-input v-model.number="opDeviceParameter.lac" :maxlength=4></el-input>
@@ -53,7 +53,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="11" :offset="2">
-              <el-form-item label="bcc" prop="bcc">
+              <el-form-item label="BCCH" prop="bcc">
                 <el-tooltip placement="bottom">
                   <div slot="content">频点号 取值范围：<br/>GSM：移动band900[1-94],band1800[512-562],联通band900[96-124],band1800[686-735]
                     <br/>FDD:band1[0-599],band3[1200-1949]
@@ -63,13 +63,13 @@
                             @blur="changeBcc"></el-input>
                 </el-tooltip>
               </el-form-item>
-              <el-form-item label="tac周期" prop="tacPeriod">
+              <el-form-item label="TAC周期" prop="tacPeriod">
                 <el-input v-model.number="opDeviceParameter.tacPeriod" :maxlength=4></el-input>
               </el-form-item>
-              <el-form-item label="小区 ID" prop="cellId">
+              <el-form-item label="CI" prop="cellId">
                 <el-input v-model.number="opDeviceParameter.cellId" :maxlength=4></el-input>
               </el-form-item>
-              <el-form-item label="plmn" align="left" prop="plmn">
+              <el-form-item label="PLMN" align="left" prop="plmn">
                 <el-radio-group v-model="opDeviceParameter.plmn" align="left">
                   <el-radio-button :label="tab.type" v-for="tab in plmns" :key="tab.type">{{tab.name}}
                   </el-radio-button>
@@ -86,13 +86,13 @@
         <div class="center-block add-appdiv" style="margin-top: 10px">
           <el-row>
             <el-col :span="11">
-              <el-form-item label="tac" prop="tac">
+              <el-form-item label="TAC" prop="tac">
                 <el-tooltip placement="bottom">
                   <div slot="content">跟踪区域码 取值范围：[0001－FFFEH]，码组0000H和FFFFH不可以使用</div>
                   <el-input v-model.number="opDeviceParameter.tac" :maxlength=4 readonly></el-input>
                 </el-tooltip>
               </el-form-item>
-              <el-form-item label="tac下限" prop="tacMin">
+              <el-form-item label="TAC下限" prop="tacMin">
                 <el-tooltip class="item" effect="dark" content="取值范围:0-65530" placement="bottom">
                   <el-input v-model.number="opDeviceParameter.tacMin" :maxlength=5></el-input>
                 </el-tooltip>
@@ -106,23 +106,22 @@
                 </el-input>
               </el-form-item>
               <el-form-item label="同步方式" prop="syncMode" style="text-align: left;margin: 0" v-show="activeItem == 'M'">
-                <el-radio-group v-model="opDeviceParameter.syncMode">
-                  <el-radio-button :label="1">GPS同步</el-radio-button>
-                  <el-radio-button :label="2">空口同步</el-radio-button>
-                  <el-radio-button :label="3">异频空口同步</el-radio-button>
-                </el-radio-group>
+                <el-select v-model="opDeviceParameter.syncMode" placeholder="同步模式" filterable style="width: 100%">
+                  <el-option v-for="item in syncModes" :key="item.value" :label="item.label" :value="item.value">
+                  </el-option>
+                </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="11" :offset="2">
-              <el-form-item label="tac周期" prop="tacPeriod">
+              <el-form-item label="TAC周期" prop="tacPeriod">
                 <el-input v-model.number="opDeviceParameter.tacPeriod" :maxlength=4></el-input>
               </el-form-item>
-              <el-form-item label="tac上限" prop="tacMax">
+              <el-form-item label="TAC上限" prop="tacMax">
                 <el-tooltip class="item" effect="dark" content="取值范围:0-65530" placement="bottom">
                   <el-input v-model.number="opDeviceParameter.tacMax" :maxlength=5></el-input>
                 </el-tooltip>
               </el-form-item>
-              <el-form-item label="bandWidth" align="left" prop="bandWidth">
+              <el-form-item label="BANDWIDTH" align="left" prop="bandWidth">
                 <el-select v-model="opDeviceParameter.bandWidth" placeholder="带宽BandWidth" filterable
                            style="width: 100%">
                   <el-option v-for="item in bandwidths" :key="item.value" :label="item.label" :value="item.value">
@@ -160,7 +159,7 @@
                           style="width: 100px" size="small"></el-input>
               </el-tooltip>
             </el-form-item>
-            <el-form-item label="rsrp" style="margin: 0 0 10px 0">
+            <el-form-item label="RSRP" style="margin: 0 0 10px 0">
               <el-tooltip effect="dark" content="现网频点RSRP" placement="bottom">
                 <el-input v-model.number="tab.rsrp" :maxlength=10 @change="changeRsrp" style="width: 100px"
                           size="small"></el-input>
@@ -181,7 +180,7 @@
               <el-input v-model.number="tab.frameOffset" :maxlength=10 @change="changeOffset"
                         style="width: 100px" size="small"></el-input>
             </el-form-item>
-            <el-form-item label="plmn" style="margin: 0 0 10px 0">
+            <el-form-item label="PLMN" style="margin: 0 0 10px 0">
               <el-select v-model="tab.plmn" align="left" multiple collapse-tags size="small" style="width: 150px">
                 <el-option v-for="item in plmns" :label="item.name" :key="item.type" :value="item.type"></el-option>
               </el-select>
@@ -275,6 +274,7 @@
         }],
         powers: [{value: 0, label: 6}, {value: 3, label: 5}, {value: 6, label: 4}, {value: 9, label: 3},
           {value: 12, label: 2}, {value: 15, label: 1}],
+        syncModes: [{value: 1, label: 'gps同步'}, {value: 2, label: '空口同步'}, {value: 3, label: '异频空口同步'}],
         plmn: ['460.00'],
         down: 37900,
         up: 37900,
@@ -651,17 +651,18 @@
     mounted() {
       this.clear();
       this.hasGsmModule = sessionStorage.getItem("hasGsmModule");
-      if (this.hasGsmModule == 0) {//没有GSM
-        this.activeName = [{moduleID: 0, name: '移动', type: 'M'},
-          {moduleID: 1, name: '联通', type: 'U'}, {moduleID: 2, name: '电信', type: 'T'}];
+      if (this.hasGsmModule == 0) {//只有2个标签
+        this.activeName = [{moduleID: 0, name: '移动', type: 'M'}, {moduleID: 1, name: '联通', type: 'U'}];
         this.activeItem = 'M';
-        // this.getParam();
-      } else {//有GSM
+      } else if (this.hasGsmModule == 1) {//有GSM
         this.activeName = [{moduleID: -1, name: '移动（GSM）', type: 'GSMCMCC'},
           {moduleID: -1, name: '联通（GSM）', type: 'GSMCMUC'}, {moduleID: 0, name: '移动', type: 'M'},
           {moduleID: 1, name: '联通', type: 'U'}, {moduleID: 2, name: '电信', type: 'T'}];
         this.activeItem = 'GSMCMCC';
-        // this.getGsmParam();
+      } else {//没有GSM
+        this.activeName = [{moduleID: 0, name: '移动', type: 'M'},
+          {moduleID: 1, name: '联通', type: 'U'}, {moduleID: 2, name: '电信', type: 'T'}];
+        this.activeItem = 'M';
       }
     }
   }

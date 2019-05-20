@@ -15,7 +15,9 @@
               <el-form-item label="设备名称" align="left" style="margin: 0">
                 {{deviceMonitor.devName ? deviceMonitor.devName : '--'}}
               </el-form-item>
-              <el-form-item label="设备类型" align="left" style="margin: 0">{{devType}}</el-form-item>
+              <el-form-item label="设备类型" align="left" style="margin: 0">
+                {{deviceMonitor.devType?deviceMonitor.devType:'--'}}
+              </el-form-item>
             </el-col>
           </el-row>
         </div>
@@ -160,18 +162,8 @@
         activeItem: 'T',
         activeName: [{name: '电信', type: 'T'}, {name: '移动', type: 'M'}, {name: '联通', type: 'U'}],
         dialogWidth: this.$Is_Pc() ? '380px' : '300px',
-        devTypes: [{code: "TYPE_MULTI", name: "多合一设备"}, {code: "TYPE_GSM", name: "GSM 设备"},
-          {code: "TYPE_WIFI", name: "WIFI 设备"}, {code: "TYPE_LTE", name: "LTE 设备"},
-          {code: "TYPE_CDMA", name: "CDMA 设备"}, {code: "TYPE_WCDMA", name: "WCDMA 设备"},
-          {code: "TYPE_TDSCDMA", name: "TDSCDMA 设备"}, {code: "GSM_CDMA_MU_MODE", name: "GSM+CDMA 多模"},
-          {code: "GSM_CDMA_WCDMA_MU_MODE", name: "GSM+CDMA+WCDMA 多模"}, {code: "ZDM8", name: "4BandLTE"},
-          {code: "CDMA_WCDMA_MU_MODE", name: "CDMA+WCDMA 多模"}, {code: "GSM_LTE_MU_MODE", name: "GSM+LTE 多模"},
-          {code: "ZDM1", name: "3BandLTE"}, {code: "ZDM2", name: "GSM+4BandLTE"}, {code: "ZDM3", name: "GSM+CDMA+LTE"},
-          {code: "ZDM4", name: "GSM+CDMA+WCDMA+LTE"}, {code: "ZDM5", name: "GSM+CDMA+WCDMA+TD-SSCDMA+LTE"},
-          {code: "ZDM6", name: "GSM+WCDMA+LTE"}, {code: "ZDM7", name: "3BandLTE+WIFI"},
-          {code: "ZDM9", name: "4BandLTE+WIFI"}, {code: "ZDKA", name: "2BandLTE"},
-          {code: "ZDKB", name: "2BandLTE+WIFI"}, {code: "ZDKC", name: "2BabdLTE+GSM+WIFI"}],
-        devForms: [{code: "CON_OUTDOOR_POLE", name: "通用室外抱杆型"}, {code: "CON_OUTDOOR_MOCRO", name: "室外微热点"}],
+        devForms: [{code: "ENHANCED_OUTDOOR_POLE", name: "增强室外抱杆型"}, {code: "CON_OUTDOOR_MOCRO", name: "室外微热点"},
+          {code: "MID_OUTDOOR_POLE", name: "中功率卡口"}, {code: 'CON_OUTDOOR_POLE', name: '通用室外抱杆型'}],
         intervalid: null
       }
     },
@@ -216,14 +208,12 @@
           this.$emit('closeLoading');
           if ("000000" == data.code) {
             this.deviceMonitor = data.data;
-            if (data.data.devType.length > 0) {
-              this.devType = this.getDevType(data.data.devType);
-            }
             if (data.data.devForm.length > 0) {
               this.devForm = this.getDevForm(data.data.devForm);
             }
+            let gsm = data.data.devId.indexOf('ZDKD') == 0 ? 0 : data.data.devId.indexOf('ZDKB') == 0 ? 1 : 2;
             sessionStorage.setItem("band4", data.data.band4 ? data.data.band4 : 0);
-            sessionStorage.setItem("hasGsmModule", data.data.hasGsmModule ? data.data.hasGsmModule : 0);
+            sessionStorage.setItem("hasGsmModule", gsm);
             sessionStorage.setItem("hasPaModule", data.data.hasPaModule ? data.data.hasPaModule : 0);
             sessionStorage.setItem("isOld", data.data.setWifiStaticIp);
             if (data.data.hasGsmModule == 1) {
@@ -239,13 +229,6 @@
       },
       getDevForm(val) {
         for (let item of this.devForms) {
-          if (val == item.code) {
-            return item.name;
-          }
-        }
-      },
-      getDevType(val) {
-        for (let item of this.devTypes) {
           if (val == item.code) {
             return item.name;
           }
