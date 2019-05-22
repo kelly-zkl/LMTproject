@@ -116,6 +116,7 @@
       handleWanClick(val) {
         if (val == 'static') {
           if (this.isOld) {
+            this.setOldIp();
             window.open("http://192.168.99.20");
           }
         }
@@ -124,6 +125,23 @@
         if (this.networkData.ipMode != 'static') {
           this.save();
         }
+      },
+      //跳转的页面之前下发默认数据
+      setOldIp() {
+        let param = {
+          msgId: "b7518c70", type: 4193, cmd: 4525, moduleID: 255, timestamp: new Date().getTime(),
+          data: {ipMode: 'static', gateway: '192.168.238.2', subMask: '255.255.255.0', deviceIp: '192.168.238.100'},
+          activeNow: 0
+        };
+        this.$emit('openLoading');
+        this.$post(param, "命令下发成功").then((data) => {
+          this.$emit('closeLoading');
+          if ("000000" == data.code) {
+            this.getIP();
+          }
+        }).catch((error) => {
+          this.$emit('closeLoading');
+        });
       },
       //默认值
       clearData() {
@@ -158,6 +176,7 @@
       save() {
         if (this.isOld) {
           if (this.networkData.ipMode == 'static') {
+            this.setOldIp();
             window.open("http://192.168.99.20");
             return;
           }
