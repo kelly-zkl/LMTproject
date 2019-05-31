@@ -231,6 +231,12 @@
     },
     mounted() {
       this.isOld = (sessionStorage.getItem("isOld") == 0 ? false : true);
+      if (this.isOld == 1) {
+        this.wanNames = [{name: '启用3G', type: 'none'}, {name: '启用有线', type: 'static'}]
+      } else {
+        this.wanNames = [{name: '启用3G', type: 'none'}, {name: '启用有线自动', type: 'dhcp'},
+          {name: '启用有线手动', type: 'static'}]
+      }
       this.clearData();
       this.getIP();
     }

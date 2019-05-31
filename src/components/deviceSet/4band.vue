@@ -12,7 +12,7 @@
             <el-col :span="11">
               <el-form-item label="BAND" prop="band" align="left">
                 <el-tooltip placement="bottom">
-                  <div slot="content">基站频段号 取值范围：<br/>GSM：900/1800<br/>FDD：1/3<br/>TDD：[38-41]</div>
+                  <div slot="content">基站频段号 取值范围：<br/>GSM：900/1800</div>
                   <el-select v-model="opDeviceParameter.band" placeholder="请选择" style="width: 100%" filterable>
                     <el-option v-for="item in bands" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
@@ -21,31 +21,25 @@
               </el-form-item>
               <!--<el-form-item label="pci" prop="pci">-->
               <!--<el-tooltip placement="bottom">-->
-              <!--<div slot="content">物理小区标识 取值范围：[0-504]</div>-->
+              <!--<div slot="content">物理小区标识 取值范围：[0-503]</div>-->
               <!--<el-input v-model.number="opDeviceParameter.pci" :maxlength=3></el-input>-->
               <!--</el-tooltip>-->
               <!--</el-form-item>-->
               <el-form-item label="LAC" prop="lac">
                 <el-tooltip placement="bottom">
-                  <div slot="content">位置区域码 取值范围：[0001－FFFEH]，码组0000H和FFFFH不可以使用</div>
+                  <div slot="content">位置区域码 取值范围：[0001－FFFE]，码组0000H和FFFFH不可以使用</div>
                   <el-input v-model.number="opDeviceParameter.lac" :maxlength=4></el-input>
                 </el-tooltip>
               </el-form-item>
               <el-form-item label="重复上报间隔" prop="reCapFilterPeriod">
-                <el-input v-model.number="opDeviceParameter.reCapFilterPeriod" :maxlength=10>
-                  <template slot="append">秒</template>
-                </el-input>
-              </el-form-item>
-              <el-form-item label="功率等级" prop="powerLevel" style="text-align: left">
-                <el-tooltip placement="bottom">
-                  <div slot="content">功率等级衰减值：<br/>6：0dB&#12288;&#12288;5：3dB&#12288;&#12288;&nbsp;&nbsp;4：6dB
-                    <br/>3：9dB&#12288;&#12288;2：12dB&#12288;&#12288;1：15dB
-                  </div>
-                  <el-select v-model="opDeviceParameter.powerLevel">
-                    <el-option v-for="item in powers" :key="item.value" :label="item.label"
-                               :value="item.value"></el-option>
-                  </el-select>
+                <el-tooltip placement="bottom" content="重复上报间隔 取值范围：0-3600">
+                  <el-input v-model.number="opDeviceParameter.reCapFilterPeriod" :maxlength=4>
+                    <template slot="append">秒</template>
+                  </el-input>
                 </el-tooltip>
+              </el-form-item>
+              <el-form-item label="功率衰减" prop="powerLevel" style="text-align: left">
+                <el-input v-model.number="opDeviceParameter.powerLevel" :maxlength=2></el-input>
               </el-form-item>
               <el-form-item label="无线电" align="left">
                 <el-switch v-model="radioSwitch" active-color="#34CBFE"
@@ -55,16 +49,18 @@
             <el-col :span="11" :offset="2">
               <el-form-item label="BCCH" prop="bcc">
                 <el-tooltip placement="bottom">
-                  <div slot="content">频点号 取值范围：<br/>GSM：移动band900[1-94],band1800[512-562],联通band900[96-124],band1800[686-735]
-                    <br/>FDD:band1[0-599],band3[1200-1949]
-                    <br/>TDD：移动-38 [37750-38249],移动-39 [38250-38649],移动-40 [38650-39649],移动-41 [39650-41589]
+                  <div slot="content">频点号 取值范围：
+                    <br/>移动：band900[1-94],band1800[512-562]
+                    <br/>联通：band900[96-124],band1800[686-735]
                   </div>
-                  <el-input v-model.number="opDeviceParameter.bcc" :maxlength=5 @change="changeBcc"
+                  <el-input v-model.number="opDeviceParameter.bcc" :maxlength=3 @change="changeBcc"
                             @blur="changeBcc"></el-input>
                 </el-tooltip>
               </el-form-item>
               <el-form-item label="TAC周期" prop="tacPeriod">
-                <el-input v-model.number="opDeviceParameter.tacPeriod" :maxlength=4></el-input>
+                <el-tooltip placement="bottom" content="TAC周期 取值范围：1-86400">
+                  <el-input v-model.number="opDeviceParameter.tacPeriod" :maxlength=5></el-input>
+                </el-tooltip>
               </el-form-item>
               <el-form-item label="CI" prop="cellId">
                 <el-input v-model.number="opDeviceParameter.cellId" :maxlength=4></el-input>
@@ -88,22 +84,24 @@
             <el-col :span="11">
               <el-form-item label="TAC" prop="tac">
                 <el-tooltip placement="bottom">
-                  <div slot="content">跟踪区域码 取值范围：[0001－FFFEH]，码组0000H和FFFFH不可以使用</div>
+                  <div slot="content">跟踪区域码 取值范围：[0001－FFFE]，码组0000H和FFFFH不可以使用</div>
                   <el-input v-model.number="opDeviceParameter.tac" :maxlength=4 readonly></el-input>
                 </el-tooltip>
               </el-form-item>
               <el-form-item label="TAC下限" prop="tacMin">
-                <el-tooltip class="item" effect="dark" content="取值范围:0-65530" placement="bottom">
+                <el-tooltip class="item" effect="dark" content="TAC下限 取值范围:0-65530" placement="bottom">
                   <el-input v-model.number="opDeviceParameter.tacMin" :maxlength=5></el-input>
                 </el-tooltip>
               </el-form-item>
-              <el-form-item label="重定向载波频点" prop="redirected_earfcn">
-                <el-input v-model.number="opDeviceParameter.redirected_earfcn" :maxlength=10></el-input>
-              </el-form-item>
               <el-form-item label="重复上报间隔" prop="imsiReportInterval" align="left">
-                <el-input v-model.number="opDeviceParameter.imsiReportInterval" :maxlength=10>
-                  <template slot="append">秒</template>
-                </el-input>
+                <el-tooltip placement="bottom" content="重复上报间隔 取值范围：0-3600">
+                  <el-input v-model.number="opDeviceParameter.imsiReportInterval" :maxlength=4>
+                    <template slot="append">秒</template>
+                  </el-input>
+                </el-tooltip>
+              </el-form-item>
+              <el-form-item label="重定向载波频点" prop="redirected_earfcn">
+                <el-input v-model.number="opDeviceParameter.redirected_earfcn" :maxlength=5></el-input>
               </el-form-item>
               <el-form-item label="同步方式" prop="syncMode" style="text-align: left;margin: 0" v-show="activeItem == 'M'">
                 <el-select v-model="opDeviceParameter.syncMode" placeholder="同步模式" filterable style="width: 100%">
@@ -114,10 +112,12 @@
             </el-col>
             <el-col :span="11" :offset="2">
               <el-form-item label="TAC周期" prop="tacPeriod">
-                <el-input v-model.number="opDeviceParameter.tacPeriod" :maxlength=4></el-input>
+                <el-tooltip placement="bottom" content="TAC周期 取值范围：1-86400">
+                  <el-input v-model.number="opDeviceParameter.tacPeriod" :maxlength=5></el-input>
+                </el-tooltip>
               </el-form-item>
               <el-form-item label="TAC上限" prop="tacMax">
-                <el-tooltip class="item" effect="dark" content="取值范围:0-65530" placement="bottom">
+                <el-tooltip class="item" effect="dark" content="TAC上限 取值范围:0-65530" placement="bottom">
                   <el-input v-model.number="opDeviceParameter.tacMax" :maxlength=5></el-input>
                 </el-tooltip>
               </el-form-item>
@@ -144,12 +144,24 @@
                  style="color: #34CBFE;font-size: 20px;text-align: center"></i>
             </el-form-item>
             <el-form-item label="下行频点" style="margin: 0 0 10px 0">
-              <el-input v-model.number="tab.downFrequency" :maxlength=10 @change="changeTDown($event,indx)"
-                        @blur="changeTDown($event,indx)" style="width: 100px" size="small"></el-input>
+              <el-tooltip placement="bottom">
+                <div slot="content" v-if="has34">频点号 取值范围<br/>
+                  <br/>FDD:band1[25-575],band3[1225-1925],band5[2425-2625],band8[3475-3775]<br/>
+                  <br/>TDD:band34[36225-36325],band38[37750-38250],band39[38275-38625],<br/>
+                  &#12288;&#12288;band40[38675-39625],band41[39675-41565]
+                </div>
+                <div slot="content" v-else>频点号 取值范围<br/>
+                  <br/>FDD:band1[25-575],band3[1225-1925]<br/>
+                  <br/>TDD:band38[37750-38250],band39[38275-38625],<br/>
+                  &#12288;&#12288;band40[38675-39625],band41[39675-41565]
+                </div>
+                <el-input v-model.number="tab.downFrequency" :maxlength=10 @change="changeTDown($event,indx)"
+                          @blur="changeTDown($event,indx)" style="width: 100px" size="small"></el-input>
+              </el-tooltip>
             </el-form-item>
             <el-form-item label="pci" prop="pci" style="margin: 0 0 10px 0">
               <el-tooltip placement="bottom">
-                <div slot="content">物理小区标识 取值范围：[0-504]</div>
+                <div slot="content">物理小区标识 取值范围：[0-503]</div>
                 <el-input v-model.number="tab.pci" :maxlength=3 style="width: 80px" size="small"></el-input>
               </el-tooltip>
             </el-form-item>
@@ -165,16 +177,8 @@
                           size="small"></el-input>
               </el-tooltip>
             </el-form-item>
-            <el-form-item label="功率等级" style="margin: 0 0 10px 0">
-              <el-tooltip placement="bottom">
-                <div slot="content">功率等级衰减值：<br/>6：0dB&#12288;&#12288;5：3dB&#12288;&#12288;&nbsp;&nbsp;4：6dB
-                  <br/>3：9dB&#12288;&#12288;2：12dB&#12288;&#12288;1：15dB
-                </div>
-                <el-select v-model="tab.powerLevel" style="width: 80px" size="small">
-                  <el-option v-for="item in powers" :key="item.value" :label="item.label"
-                             :value="item.value"></el-option>
-                </el-select>
-              </el-tooltip>
+            <el-form-item label="功率衰减" style="margin: 0 0 10px 0">
+              <el-input v-model.number="tab.powerLevel" :maxlength=2 style="width: 80px" size="small"></el-input>
             </el-form-item>
             <el-form-item label="帧偏移" style="margin: 0 0 10px 0" v-show="activeItem == 'M'">
               <el-input v-model.number="tab.frameOffset" :maxlength=10 @change="changeOffset"
@@ -244,9 +248,9 @@
   };
   let pciValid = (rule, value, callback) => {
     if (!pciValidator(value)) {
-      callback(new Error("请输入正确的pci：0-504"));
-    } else if (parseInt(value) < 0 || parseInt(value) > 504) {
-      callback(new Error("pci的范围是0-504"));
+      callback(new Error("请输入正确的pci：0-503"));
+    } else if (parseInt(value) < 0 || parseInt(value) > 503) {
+      callback(new Error("pci的范围是0-503"));
     } else {
       callback();
     }
@@ -257,7 +261,7 @@
         hasGsmModule: 0,
         runStartDevice: false,
         dialogWidth: this.$Is_Pc() ? '380px' : '300px',
-        activeNow: 1,
+        activeNow: 1, has34: true,
         opDeviceParameter: {},
         activeName: [{moduleID: -1, name: '移动（GSM）', type: 'GSMCMCC'},
           {moduleID: -1, name: '联通（GSM）', type: 'GSMCMUC'}, {moduleID: 0, name: '移动', type: 'M'},
@@ -272,8 +276,6 @@
           upFrequency: 37900, downFrequency: 37900, plmn: ['460.00'], rsrp: 0,
           priority: 0, pci: 5, powerLevel: 0, frameOffset: 0
         }],
-        powers: [{value: 0, label: 6}, {value: 3, label: 5}, {value: 6, label: 4}, {value: 9, label: 3},
-          {value: 12, label: 2}, {value: 15, label: 1}],
         syncModes: [{value: 1, label: 'gps同步'}, {value: 2, label: '空口同步'}, {value: 3, label: '异频空口同步'}],
         plmn: ['460.00'],
         down: 37900,
@@ -361,6 +363,33 @@
               isVaild = false;
             }
           }
+        } else if (this.activeItem === 'M') {//移动4G band34[36225-36325],band38[37750-38250],band39[38275-38625],band40[38675-39625],band41[39675-41565]
+          if (this.has34) {//有band34
+            if (parseInt(val) < 36225 || (parseInt(val) > 36325 && parseInt(val) < 37750) || (parseInt(val) > 38250 && parseInt(val) < 38275)
+              || (parseInt(val) > 38625 && parseInt(val) < 38675) || (parseInt(val) > 39625 && parseInt(val) < 39675) || parseInt(val) > 41565) {
+              this.$message.error('下行频点的范围为band34[36225-36325],band38[37750-38250],band39[38275-38625],band40[38675-39625],band41[39675-41565]');
+              isVaild = false;
+            }
+          } else {//没有band34
+            if (parseInt(val) < 37750 || (parseInt(val) > 38250 && parseInt(val) < 38275) || (parseInt(val) > 38625 && parseInt(val) < 38675)
+              || (parseInt(val) > 39625 && parseInt(val) < 39675) || parseInt(val) > 41565) {
+              this.$message.error('下行频点的范围为band38[37750-38250],band39[38275-38625],band40[38675-39625],band41[39675-41565]');
+              isVaild = false;
+            }
+          }
+        } else {//联通4G、电信4G band1[25-575],band3[1225-1925],band5[2425-2625],band8[3475-3775]
+          if (this.has34) {//有band5、band8
+            if (parseInt(val) < 25 || (parseInt(val) > 575 && parseInt(val) < 1225) || (parseInt(val) > 1925 && parseInt(val) < 2425)
+              || (parseInt(val) > 2625 && parseInt(val) < 3475) || parseInt(val) > 3775) {
+              this.$message.error('下行频点的范围为band1[25-575],band3[1225-1925],band5[2425-2625],band8[3475-3775]');
+              isVaild = false;
+            }
+          } else {//没有band5、band8
+            if (parseInt(val) < 25 || (parseInt(val) > 575 && parseInt(val) < 1225) || parseInt(val) > 1925) {
+              this.$message.error('下行频点的范围为band1[25-575],band3[1225-1925]');
+              isVaild = false;
+            }
+          }
         }
         return isVaild;
       },
@@ -379,7 +408,7 @@
             cellId: [{required: true, message: '请输入小区ID', trigger: "blur"},
               {validator: numVal, trigger: "change,blur"}],
             plmn: [{required: true, message: '请选择plmn', trigger: "blur"}],
-            powerLevel: [{required: true, message: '请选择功率等级', trigger: "blur"}],
+            powerLevel: [{required: true, message: '请输入功率衰减', trigger: "blur"}],
           }
         } else {//4G
           this.rules = {
@@ -477,30 +506,83 @@
         }
         return idx;
       },
+      //验证tac周期 1-86400
+      changeTacPeriod(val) {
+        let isVaild = true;
+        if (parseInt(val) < 1 || parseInt(val) > 86400) {
+          this.$message.error('TAC周期的范围为[1-86400]');
+          isVaild = false;
+        }
+        return isVaild;
+      },
+      //验证重复上报间隔 0-3600
+      changereCapFilterPeriod(val) {
+        let isVaild = true;
+        if (parseInt(val) < 0 || parseInt(val) > 3600) {
+          this.$message.error('TAC周期的范围为[0-3600]');
+          isVaild = false;
+        }
+        return isVaild;
+      },
+      //验证PCI 0-503
+      changePCI(val) {
+        let isVaild = true;
+        if (parseInt(val) < 0 || parseInt(val) > 503) {
+          this.$message.error('PCI的范围为[0-503]');
+          isVaild = false;
+        }
+        return isVaild;
+      },
+      //验证功率衰减 0-60
+      changePowerLevel(val) {
+        let isVaild = true;
+        if (parseInt(val) < 0 || parseInt(val) > 60) {
+          this.$message.error('功率衰减的范围为[0-60]');
+          isVaild = false;
+        }
+        return isVaild;
+      },
       //保存前验证
       save() {
         this.$refs['opDeviceParameter'].validate((valid) => {
           if (valid) {
             if (this.getModuleID() < 0) {
-              if (this.changeBcc(this.opDeviceParameter.bcc)) {
+              if (this.changeTacPeriod(this.opDeviceParameter.tacPeriod) && this.changeBcc(this.opDeviceParameter.bcc)
+                && this.changereCapFilterPeriod(this.opDeviceParameter.reCapFilterPeriod) && this.changePowerLevel(this.opDeviceParameter.powerLevel)) {
                 this.runStartDevice = true;
               }
             } else {
               let plmnVlue = true;
-              for (var i = 0; i < this.frequencyList.length; i++) {
-                var item = this.frequencyList[i];
-                if (item.plmn.length == 0) {
-                  plmnVlue = false;
-                  this.$message.error('请选择plmn');
-                }
+              if (!this.changeTacPeriod(this.opDeviceParameter.tacPeriod) || !this.changereCapFilterPeriod(this.opDeviceParameter.imsiReportInterval)) {
+                plmnVlue = false;
+                return;
               }
               if (this.opDeviceParameter.tacMin < 0 || this.opDeviceParameter.tacMin > 65530 || this.opDeviceParameter.tacMax < 0 || this.opDeviceParameter.tacMax > 65530) {
                 plmnVlue = false;
                 this.$message.error('tac上/下限的取值范围是0-65530');
+                return;
               }
               if (this.opDeviceParameter.tacMin >= this.opDeviceParameter.tacMax) {
                 plmnVlue = false;
                 this.$message.error('tac上限应大于tac下限');
+                return;
+              }
+              this.frequencyList.forEach((item) => {
+                if (!(item.plmn instanceof Array)) {
+                  item.plmn = [];
+                }
+              });
+              for (let i = 0; i < this.frequencyList.length; i++) {
+                let item = this.frequencyList[i];
+                if (!this.changeBcc(item.downFrequency) || !this.changePCI(item.pci) || !this.changePowerLevel(item.powerLevel)) {
+                  plmnVlue = false;
+                  return;
+                }
+                if (item.plmn.length == 0) {
+                  plmnVlue = false;
+                  this.$message.error('请选择plmn');
+                  return;
+                }
               }
               if (plmnVlue) {
                 this.runStartDevice = true;
@@ -511,6 +593,11 @@
       },
       //获取载波参数
       getParam() {
+        this.frequencyList.forEach((item) => {
+          if (!(item.plmn instanceof Array)) {
+            item.plmn = [];
+          }
+        });
         let param = {msgId: "b7518c70", type: 4194, cmd: 4523, moduleID: 255, timestamp: new Date().getTime()};
         this.$emit('openLoading');
         this.$post(param).then((data) => {
@@ -593,6 +680,7 @@
         this.$emit('openLoading');
         this.$post(param, "命令下发成功").then((data) => {
           this.$emit('closeLoading');
+          this.getGsmParam();
         }).catch((error) => {
           this.$emit('closeLoading');
         });
@@ -663,6 +751,12 @@
         this.activeName = [{moduleID: 0, name: '移动', type: 'M'},
           {moduleID: 1, name: '联通', type: 'U'}, {moduleID: 2, name: '电信', type: 'T'}];
         this.activeItem = 'M';
+      }
+      let deviceId = sessionStorage.getItem("deviceId");
+      if (deviceId.indexOf('ZDK') == 0) {//卡口
+        this.has34 = true;
+      } else {//微热点 ZDM 没有band5、band8、band34
+        this.has34 = false;
       }
     }
   }
