@@ -147,15 +147,15 @@
               <el-tooltip placement="bottom">
                 <div slot="content" v-if="has34">频点号 取值范围<br/>
                   <br/>FDD:band1[25-575],band3[1225-1925],band5[2425-2625],band8[3475-3775]<br/>
-                  <br/>TDD:band34[36225-36325],band38[37750-38250],band39[38275-38625],<br/>
+                  <br/>TDD:band34[36225-36325],band38[37750-38249],band39[38275-38625],<br/>
                   &#12288;&#12288;band40[38675-39625],band41[39675-41565]
                 </div>
                 <div slot="content" v-else>频点号 取值范围<br/>
                   <br/>FDD:band1[25-575],band3[1225-1925]<br/>
-                  <br/>TDD:band38[37750-38250],band39[38275-38625],<br/>
+                  <br/>TDD:band38[37750-38249],band39[38275-38625],<br/>
                   &#12288;&#12288;band40[38675-39625],band41[39675-41565]
                 </div>
-                <el-input v-model.number="tab.downFrequency" :maxlength=10 @change="changeTDown($event,indx)"
+                <el-input v-model.number="tab.downFrequency" :maxlength=5 @change="changeTDown($event,indx)"
                           @blur="changeTDown($event,indx)" style="width: 100px" size="small"></el-input>
               </el-tooltip>
             </el-form-item>
@@ -336,7 +336,7 @@
         return isVaild;
       },
       //bcc取值范围 GSM：移动[1-94][512-562],联通[96-124][686-735]FDD：[0-599][1200-1949]
-      //TDD：移动-38 [37750-38249],移动-39 [38250-38649],移动-40 [38650-39649],移动-41 [39650-41589]
+      //TDD：移动-38 [37750-38249],移动-39 [38249-38649],移动-40 [38650-39649],移动-41 [39650-41589]
       changeBcc(val) {
         let isVaild = true;
         if (this.activeItem == 'GSMCMCC') {//移动2G
@@ -363,17 +363,17 @@
               isVaild = false;
             }
           }
-        } else if (this.activeItem === 'M') {//移动4G band34[36225-36325],band38[37750-38250],band39[38275-38625],band40[38675-39625],band41[39675-41565]
+        } else if (this.activeItem === 'M') {//移动4G band34[36225-36325],band38[37750-38249],band39[38275-38625],band40[38675-39625],band41[39675-41565]
           if (this.has34) {//有band34
-            if (parseInt(val) < 36225 || (parseInt(val) > 36325 && parseInt(val) < 37750) || (parseInt(val) > 38250 && parseInt(val) < 38275)
+            if (parseInt(val) < 36225 || (parseInt(val) > 36325 && parseInt(val) < 37750) || (parseInt(val) > 38249 && parseInt(val) < 38275)
               || (parseInt(val) > 38625 && parseInt(val) < 38675) || (parseInt(val) > 39625 && parseInt(val) < 39675) || parseInt(val) > 41565) {
-              this.$message.error('下行频点的范围为band34[36225-36325],band38[37750-38250],band39[38275-38625],band40[38675-39625],band41[39675-41565]');
+              this.$message.error('下行频点的范围为band34[36225-36325],band38[37750-38249],band39[38275-38625],band40[38675-39625],band41[39675-41565]');
               isVaild = false;
             }
           } else {//没有band34
-            if (parseInt(val) < 37750 || (parseInt(val) > 38250 && parseInt(val) < 38275) || (parseInt(val) > 38625 && parseInt(val) < 38675)
+            if (parseInt(val) < 37750 || (parseInt(val) > 38249 && parseInt(val) < 38275) || (parseInt(val) > 38625 && parseInt(val) < 38675)
               || (parseInt(val) > 39625 && parseInt(val) < 39675) || parseInt(val) > 41565) {
-              this.$message.error('下行频点的范围为band38[37750-38250],band39[38275-38625],band40[38675-39625],band41[39675-41565]');
+              this.$message.error('下行频点的范围为band38[37750-38249],band39[38275-38625],band40[38675-39625],band41[39675-41565]');
               isVaild = false;
             }
           }

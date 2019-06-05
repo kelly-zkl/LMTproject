@@ -254,44 +254,29 @@
         if (column.property == 'uptime') {//上报时间
           return row.uptime ? formatDate(new Date(row.uptime * 1000), 'yyyy-MM-dd hh:mm:ss') : '--';
         } else if (column.property == 'isp') {//运营商
-          var isp = this.getNetType(row.imsi).isp;
+          var isp = this.getOperator(row.imsi);
           return isp == 0 ? '移动' : isp == 1 ? '联通' : isp == 2 ? '电信' : '--';
         } else if (column.property == 'rsrp' || column.property == 'ta' || column.property == 'rssi') {//rsrp、ta、rssi
           return row[column.property] == undefined ? '--' : row[column.property];
         } else if (column.property == 'netType') {//网络类型 --> 根据运营商判断
-          return this.getNetType(row.imsi).netType;
+          return row.isp == 0 ? 'CMCC' : row.isp == 1 ? 'CMUC' : row.isp == 2 ? 'CMTC' : row.isp == 3 ? 'CMCC2' : row.isp == 50 ? 'GSM0' : row.isp == 51 ? 'GSM1' : '--';
         } else {
           return row[column.property] && row[column.property] !== "null" ? row[column.property] : '--';
         }
       },
-      getNetType(imsi) {
-        let msg = {isp: -1, netType: '--'};
+      getOperator(imsi) {
+        let num = -1;
         if (!!imsi && imsi.indexOf("460") >= 0 && imsi.length > 5) {
-          var sub = imsi.replace('.', '').substring(3, 5);
-          switch (sub) {
-            case "00":
-            case "02":
-            case "04":
-            case "07":
-            case "08":
-              msg = {isp: 0, netType: 'CMCC'};
-              break;
-            case "01":
-            case "06":
-            case "09":
-            case "10":
-              msg = {isp: 1, netType: 'CMUC'};
-              break;
-            case "03":
-            case "11":
-            case "12":
-              msg = {isp: 2, netType: 'CMTC'};
-              break;
-            default:
-              break;
+          var sub = parseInt(imsi.replace('.', '').substring(3, 5));
+          if (sub == 0 || sub == 2 || sub == 4 || sub == 7 || sub == 8 || (sub >= 13 && sub <= 29)) {
+            num = 0;
+          } else if (sub == 1 || sub == 6 || sub == 9 || sub == 10 || (sub >= 30 && sub <= 39)) {
+            num = 1;
+          } else if (sub == 3 || sub == 5 || sub == 11 || sub == 12 || (sub >= 50 && sub <= 59)) {
+            num = 2;
           }
         }
-        return msg;
+        return num;
       },
       getIndex(arr, item) {
         let index = -1;
