@@ -39,7 +39,9 @@
                 </el-tooltip>
               </el-form-item>
               <el-form-item label="功率衰减" prop="powerLevel" style="text-align: left">
-                <el-input v-model.number="opDeviceParameter.powerLevel" :maxlength=2></el-input>
+                <el-tooltip placement="bottom" content="功率衰减 取值范围：0-50">
+                  <el-input v-model.number="opDeviceParameter.powerLevel" :maxlength=2></el-input>
+                </el-tooltip>
               </el-form-item>
               <el-form-item label="无线电" align="left">
                 <el-switch v-model="radioSwitch" active-color="#34CBFE"
@@ -178,7 +180,9 @@
               </el-tooltip>
             </el-form-item>
             <el-form-item label="功率衰减" style="margin: 0 0 10px 0">
-              <el-input v-model.number="tab.powerLevel" :maxlength=2 style="width: 80px" size="small"></el-input>
+              <el-tooltip placement="bottom" content="功率衰减 取值范围：0-50">
+                <el-input v-model.number="tab.powerLevel" :maxlength=2 style="width: 80px" size="small"></el-input>
+              </el-tooltip>
             </el-form-item>
             <el-form-item label="帧偏移" style="margin: 0 0 10px 0" v-show="activeItem == 'M'">
               <el-input v-model.number="tab.frameOffset" :maxlength=10 @change="changeOffset"
@@ -533,11 +537,11 @@
         }
         return isVaild;
       },
-      //验证功率衰减 0-60
+      //验证功率衰减 0-50
       changePowerLevel(val) {
         let isVaild = true;
-        if (parseInt(val) < 0 || parseInt(val) > 60) {
-          this.$message.error('功率衰减的范围为[0-60]');
+        if (parseInt(val) < 0 || parseInt(val) > 50) {
+          this.$message.error('功率衰减的范围为[0-50]');
           isVaild = false;
         }
         return isVaild;
@@ -562,9 +566,9 @@
                 this.$message.error('tac上/下限的取值范围是0-65530');
                 return;
               }
-              if (this.opDeviceParameter.tacMin >= this.opDeviceParameter.tacMax) {
+              if (this.opDeviceParameter.tacMax - this.opDeviceParameter.tacMin < 10) {
                 plmnVlue = false;
-                this.$message.error('tac上限应大于tac下限');
+                this.$message.error('tac上/下限相差应大于10');
                 return;
               }
               this.frequencyList.forEach((item) => {
