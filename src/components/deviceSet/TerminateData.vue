@@ -26,6 +26,10 @@
                          :formatter="formatterAddress"></el-table-column>
         <el-table-column align="left" prop="rsrp" label="RSRP" min-width="100" max-width="150"
                          :formatter="formatterAddress"></el-table-column>
+        <el-table-column align="left" prop="rssi" label="RSSI" min-width="100" max-width="150"
+                         :formatter="formatterAddress"></el-table-column>
+        <el-table-column align="left" prop="ta" label="TA" min-width="100" max-width="150"
+                         :formatter="formatterAddress"></el-table-column>
         <el-table-column align="left" prop="uptime" label="获取时间" min-width="170" max-width="200"
                          :formatter="formatterAddress" sortable></el-table-column>
       </el-table>
