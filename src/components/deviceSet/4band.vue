@@ -523,7 +523,7 @@
       changereCapFilterPeriod(val) {
         let isVaild = true;
         if (parseInt(val) < 0 || parseInt(val) > 3600) {
-          this.$message.error('TAC周期的范围为[0-3600]');
+          this.$message.error('重复上报间隔的范围为[0-3600]');
           isVaild = false;
         }
         return isVaild;
