@@ -43,9 +43,10 @@
                   <el-input v-model.number="opDeviceParameter.powerLevel" :maxlength=2></el-input>
                 </el-tooltip>
               </el-form-item>
-              <el-form-item label="无线电" align="left">
-                <el-switch v-model="radioSwitch" active-color="#34CBFE"
-                           inactive-color="#C1C1C1" :active-value="1" :inactive-value="0"></el-switch>
+              <el-form-item label="最小接入电平" prop="qRxLevMin">
+                <el-tooltip placement="bottom" content="最小接入电平 取值范围：-70-0">
+                  <el-input v-model.number="opDeviceParameter.qRxLevMin" :maxlength=3></el-input>
+                </el-tooltip>
               </el-form-item>
             </el-col>
             <el-col :span="11" :offset="2">
@@ -72,6 +73,10 @@
                   <el-radio-button :label="tab.type" v-for="tab in plmns" :key="tab.type">{{tab.name}}
                   </el-radio-button>
                 </el-radio-group>
+              </el-form-item>
+              <el-form-item label="无线电" align="left">
+                <el-switch v-model="radioSwitch" active-color="#34CBFE"
+                           inactive-color="#C1C1C1" :active-value="1" :inactive-value="0"></el-switch>
               </el-form-item>
             </el-col>
           </el-row>
@@ -111,6 +116,11 @@
                   </el-option>
                 </el-select>
               </el-form-item>
+              <el-form-item label="最小接入电平" prop="qRxLevMin" v-if="activeItem !== 'M'">
+                <el-tooltip placement="bottom" content="最小接入电平 取值范围：-70-0">
+                  <el-input v-model.number="opDeviceParameter.qRxLevMin" :maxlength=3></el-input>
+                </el-tooltip>
+              </el-form-item>
             </el-col>
             <el-col :span="11" :offset="2">
               <el-form-item label="TAC周期" prop="tacPeriod">
@@ -133,6 +143,11 @@
               <el-form-item label="无线电" align="left" prop="radioSwitch">
                 <el-switch v-model="opDeviceParameter.radioSwitch" active-color="#34CBFE"
                            inactive-color="#C1C1C1" :active-value="1" :inactive-value="0"></el-switch>
+              </el-form-item>
+              <el-form-item label="最小接入电平" prop="qRxLevMin" v-if="activeItem == 'M'">
+                <el-tooltip placement="bottom" content="最小接入电平 取值范围：-70-0">
+                  <el-input v-model.number="opDeviceParameter.qRxLevMin" :maxlength=3></el-input>
+                </el-tooltip>
               </el-form-item>
             </el-col>
           </el-row>
@@ -402,17 +417,18 @@
         if (this.activeItem == 'GSMCMUC' || this.activeItem == 'GSMCMCC') {//2G
           this.rules = {
             band: [{required: true, message: '请选择band', trigger: "blur"}],
-            reCapFilterPeriod: [{required: true, message: '请输入重复上报间隔', trigger: "blur"},
-              {validator: numVal, trigger: "change,blur"}],
-            // pci: [{required: true, message: '请输入pci', trigger: "blur"}, {validator: pciValid, trigger: "change,blur"}],
             lac: [{required: true, message: '请输入lac', trigger: "blur"}, {validator: hexValid, trigger: "change,blur"}],
             bcc: [{required: true, message: '请输入bcc', trigger: "blur"}, {validator: numVal, trigger: "change,blur"}],
             tacPeriod: [{required: true, message: '请输入重复抓取时间', trigger: "blur"},
               {validator: numVal, trigger: "change,blur"}],
             cellId: [{required: true, message: '请输入小区ID', trigger: "blur"},
               {validator: numVal, trigger: "change,blur"}],
+            reCapFilterPeriod: [{required: true, message: '请输入重复上报间隔', trigger: "blur"},
+              {validator: numVal, trigger: "change,blur"}],
             plmn: [{required: true, message: '请选择plmn', trigger: "blur"}],
             powerLevel: [{required: true, message: '请输入功率衰减', trigger: "blur"}],
+            qRxLevMin: [{required: true, message: '请输入最小接入电平', trigger: "blur"}],
+            radioSwitch: [{required: true, message: '请选择无线电开关', trigger: "blur"}]
           }
         } else {//4G
           this.rules = {
@@ -429,6 +445,7 @@
             imsiReportInterval: [{required: true, message: '请输入重复上报间隔', trigger: "blur"},
               {validator: numVal, trigger: "change,blur"}],
             syncMode: [{required: true, message: '请选择同步模式', trigger: "blur"}],
+            qRxLevMin: [{required: true, message: '请输入最小接入电平', trigger: "blur"}],
             radioSwitch: [{required: true, message: '请选择无线电开关', trigger: "blur"}]
           };
           if (this.activeItem !== 'M') {//移动4G
@@ -437,30 +454,30 @@
         }
         if (this.activeItem == 'M') {//移动4G38/40
           this.opDeviceParameter = {
-            redirected_earfcn: 37900, tac: 1, tacPeriod: 180, bandWidth: 5,
+            redirected_earfcn: 37900, tac: 1, tacPeriod: 180, bandWidth: 5, qRxLevMin: -70,
             imsiReportInterval: 0, syncMode: 1, radioSwitch: 0, tacMin: 0, tacMax: 65530
           };
         } else if (this.activeItem == 'U') {//联通4G
           this.opDeviceParameter = {
-            redirected_earfcn: 1650, tac: 1, tacPeriod: 180, bandWidth: 3,
+            redirected_earfcn: 1650, tac: 1, tacPeriod: 180, bandWidth: 3, qRxLevMin: -70,
             imsiReportInterval: 0, radioSwitch: 0, tacMin: 0, tacMax: 65530
           };
         } else if (this.activeItem == 'T') {//电信4G
           this.opDeviceParameter = {
-            redirected_earfcn: 100, tac: 1, tacPeriod: '180', bandWidth: 3,
+            redirected_earfcn: 100, tac: 1, tacPeriod: '180', bandWidth: 3, qRxLevMin: -70,
             imsiReportInterval: 0, radioSwitch: 0, tacMin: 0, tacMax: 65530
           };
         } else if (this.activeItem == 'GSMCMCC') {
           this.radioSwitch = 0;
           this.opDeviceParameter = {
             band: 900, bcc: 1, lac: 9, tacPeriod: 180, plmn: "460.11", reCapFilterPeriod: 300,
-            powerLevel: 0, cellId: 3
+            powerLevel: 0, cellId: 3, qRxLevMin: -70
           };
         } else if (this.activeItem == 'GSMCMUC') {
           this.radioSwitch = 0;
           this.opDeviceParameter = {
             band: 900, bcc: 96, lac: 9, tacPeriod: 180, plmn: "460.11", reCapFilterPeriod: 300,
-            powerLevel: 0, cellId: 3
+            powerLevel: 0, cellId: 3, qRxLevMin: -70
           };
         }
         this.defaultFrequencyList();
@@ -546,18 +563,28 @@
         }
         return isVaild;
       },
+      //验证最小接入电平 -70-0
+      changeqRxLevMin(val) {
+        let isVaild = true;
+        if (parseInt(val) < -70 || parseInt(val) > 0) {
+          this.$message.error('最小接入电平的范围为[-70-0]');
+          isVaild = false;
+        }
+        return isVaild;
+      },
       //保存前验证
       save() {
         this.$refs['opDeviceParameter'].validate((valid) => {
           if (valid) {
             if (this.getModuleID() < 0) {
-              if (this.changeTacPeriod(this.opDeviceParameter.tacPeriod) && this.changeBcc(this.opDeviceParameter.bcc)
+              if (this.changeTacPeriod(this.opDeviceParameter.tacPeriod) && this.changeBcc(this.opDeviceParameter.bcc) && this.changeqRxLevMin(this.opDeviceParameter.qRxLevMin)
                 && this.changereCapFilterPeriod(this.opDeviceParameter.reCapFilterPeriod) && this.changePowerLevel(this.opDeviceParameter.powerLevel)) {
                 this.runStartDevice = true;
               }
             } else {
               let plmnVlue = true;
-              if (!this.changeTacPeriod(this.opDeviceParameter.tacPeriod) || !this.changereCapFilterPeriod(this.opDeviceParameter.imsiReportInterval)) {
+              if (!this.changeTacPeriod(this.opDeviceParameter.tacPeriod) || !this.changereCapFilterPeriod(this.opDeviceParameter.imsiReportInterval)
+                || !this.changeqRxLevMin(this.opDeviceParameter.qRxLevMin)) {
                 plmnVlue = false;
                 return;
               }
