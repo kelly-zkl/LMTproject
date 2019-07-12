@@ -1,77 +1,85 @@
 <template>
   <div>
     <section class="content">
-      <h4 style="text-align: left;margin-top: 0">侦码数据</h4></section>
-    <el-row style="margin:0 0 10px 0">
-      <el-col :span="24" align="right">
-        <el-button type="primary" @click="getBlack();device = {imsi: ''};runningSetBlack= true" style="margin-top: 10px"
-                   size="medium">设置黑名单
-        </el-button>
-        <el-button type="primary" @click="exportExcel()" style="margin-top: 10px" v-show="list.length > 0"
-                   size="medium">导出Excel
-        </el-button>
-      </el-col>
-    </el-row>
-    <div class="block" style="height: 60%;background-color: #33CCFF">
-      <el-table :data="list" class="center-block" stripe id="out-table"
-                :default-sort="{prop: 'uptime', order: 'descending'}">
-        <el-table-column align="center" type="index" label="序号" width="65"></el-table-column>
-        <el-table-column align="left" prop="deviceId" label="设备ID" min-width="150" max-width="200"
-                         :formatter="formatterAddress"></el-table-column>
-        <el-table-column align="left" prop="imsi" label="IMSI" min-width="180" max-width="200"
-                         :formatter="formatterAddress"></el-table-column>
-        <el-table-column align="left" prop="isp" label="运营商" min-width="100" max-width="150"
-                         :formatter="formatterAddress"></el-table-column>
-        <el-table-column align="left" prop="netType" label="网络类型" min-width="100" max-width="150"
-                         :formatter="formatterAddress"></el-table-column>
-        <el-table-column align="left" prop="rsrp" label="RSRP" min-width="100" max-width="150"
-                         :formatter="formatterAddress"></el-table-column>
-        <el-table-column align="left" prop="rssi" label="RSSI" min-width="100" max-width="150"
-                         :formatter="formatterAddress"></el-table-column>
-        <el-table-column align="left" prop="ta" label="TA" min-width="100" max-width="150"
-                         :formatter="formatterAddress"></el-table-column>
-        <el-table-column align="left" prop="uptime" label="获取时间" min-width="170" max-width="200"
-                         :formatter="formatterAddress" sortable></el-table-column>
-      </el-table>
-    </div>
-
-    <!--设置黑名单-->
-    <el-dialog title="设置黑名单" :visible.sync="runningSetBlack" :width="dialogWidth" center>
-      <div>
-        <el-row v-show="blackList.length > 0">
-          <el-col :span="24">
-            <el-button size="medium" @click="deleteBlack(sels,1)" :disabled="sels.length == 0">移除</el-button>
-            <span style="margin-left: 20px">已选 {{sels.length}} 个 / 共 {{blackList.length}} 个</span>
-          </el-col>
-        </el-row>
-        <el-row style="margin-top: 10px">
-          <el-col :span="16">
-            <el-table :data="blackList" v-loading="listLoading1" class="center-block" stripe
-                      @selection-change="handleSelectionChange">
-              <el-table-column type="selection" width="55" label="全选"></el-table-column>
-              <el-table-column type="index" width="50" label="序号"></el-table-column>
-              <el-table-column align="left" prop="imsi" label="imsi" min-width="100" max-width="200"
-                               :formatter="formatterAddress"></el-table-column>
-              <el-table-column align="left" label="操作" width="80">
-                <template slot-scope="scope">
-                  <el-button icon="el-icon-close" type="text" size="medium" style="font-size: 22px"
-                             @click="deleteBlack(scope.row,2)"></el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-col>
-          <el-col :span="8" style="padding-left: 20px">
-            <el-form :model="device" :rules="rules">
-              <h4 style="text-align: left;margin-top: 0">添加黑名单</h4>
-              <el-form-item prop="imsi">
-                <el-input v-model="device.imsi" placeholder="请输入黑名单" :maxlength="30"></el-input>
-              </el-form-item>
-              <el-button type="primary" size="medium" @click="addBlack">添加</el-button>
-            </el-form>
-          </el-col>
-        </el-row>
+      <h4 style="text-align: left;margin: 0">侦码数据</h4>
+      <el-row style="margin:0 0 10px 0">
+        <el-col :span="24" align="right">
+          <el-button type="primary" @click="getBlack();device = {imsi: ''};runningSetBlack= true"
+                     style="margin-top: 10px"
+                     size="medium">设置黑名单
+          </el-button>
+          <el-button type="primary" @click="exportExcel()" style="margin-top: 10px" v-show="list.length > 0"
+                     size="medium">导出Excel
+          </el-button>
+        </el-col>
+      </el-row>
+      <div class="block" style="height: 60%;background-color: #33CCFF">
+        <el-table :data="list" class="center-block" stripe id="out-table"
+                  :default-sort="{prop: 'uptime', order: 'descending'}">
+          <el-table-column align="center" type="index" label="序号" width="65"></el-table-column>
+          <el-table-column align="left" prop="deviceId" label="设备ID" min-width="150" max-width="200"
+                           :formatter="formatterAddress"></el-table-column>
+          <el-table-column align="left" prop="imei" label="IMEI" min-width="100" max-width="200"
+                           :formatter="formatterAddress"></el-table-column>
+          <el-table-column align="left" prop="imsi" label="IMSI" min-width="180" max-width="200"
+                           :formatter="formatterAddress"></el-table-column>
+          <el-table-column align="left" prop="isp" label="运营商" min-width="100" max-width="150"
+                           :formatter="formatterAddress"></el-table-column>
+          <el-table-column align="left" prop="netType" label="网络类型" min-width="100" max-width="150"
+                           :formatter="formatterAddress"></el-table-column>
+          <el-table-column align="left" prop="rsrp" label="RSRP" min-width="100" max-width="150"
+                           :formatter="formatterAddress"></el-table-column>
+          <el-table-column align="left" prop="rssi" label="RSSI" min-width="100" max-width="150"
+                           :formatter="formatterAddress"></el-table-column>
+          <el-table-column align="left" prop="ta" label="TA" min-width="100" max-width="150"
+                           :formatter="formatterAddress"></el-table-column>
+          <el-table-column align="left" prop="msg1ta" label="MSG1TA" min-width="100" max-width="150"
+                           :formatter="formatterAddress"></el-table-column>
+          <el-table-column align="left" prop="measNum" label="测量个数" min-width="100" max-width="150"
+                           :formatter="formatterAddress"></el-table-column>
+          <el-table-column align="left" prop="uptime" label="获取时间" min-width="170" max-width="200"
+                           :formatter="formatterAddress" sortable></el-table-column>
+        </el-table>
       </div>
-    </el-dialog>
+
+      <!--设置黑名单-->
+      <el-dialog title="设置黑名单" :visible.sync="runningSetBlack" :width="dialogWidth" center>
+        <div>
+          <el-row v-show="blackList.length > 0">
+            <el-col :span="24">
+              <el-button size="medium" @click="deleteBlack(sels,1)" :disabled="sels.length == 0">移除</el-button>
+              <span style="margin-left: 20px">已选 {{sels.length}} 个 / 共 {{blackList.length}} 个</span>
+            </el-col>
+          </el-row>
+          <el-row style="margin-top: 10px">
+            <el-col :span="16">
+              <el-table :data="blackList" v-loading="listLoading1" class="center-block" stripe
+                        @selection-change="handleSelectionChange">
+                <el-table-column type="selection" width="55" label="全选"></el-table-column>
+                <el-table-column type="index" width="50" label="序号"></el-table-column>
+                <el-table-column align="left" prop="imsi" label="imsi" min-width="100" max-width="200"
+                                 :formatter="formatterAddress"></el-table-column>
+                <el-table-column align="left" label="操作" width="80">
+                  <template slot-scope="scope">
+                    <el-button icon="el-icon-close" type="text" size="medium" style="font-size: 22px"
+                               @click="deleteBlack(scope.row,2)"></el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-col>
+            <el-col :span="8" style="padding-left: 20px">
+              <el-form :model="device" :rules="rules">
+                <h4 style="text-align: left;margin-top: 0">添加黑名单</h4>
+                <el-form-item prop="imsi">
+                  <el-input v-model="device.imsi" placeholder="请输入黑名单" :maxlength="30"></el-input>
+                </el-form-item>
+                <el-button type="primary" size="medium" @click="addBlack">添加</el-button>
+              </el-form>
+            </el-col>
+          </el-row>
+        </div>
+      </el-dialog>
+    </section>
   </div>
 </template>
 
@@ -258,10 +266,12 @@
         if (column.property == 'uptime') {//上报时间
           return row.uptime ? formatDate(new Date(row.uptime * 1000), 'yyyy-MM-dd hh:mm:ss') : '--';
         } else if (column.property == 'isp') {//运营商
-          var isp = this.getOperator(row.imsi);
+          let isp = this.getOperator(row.imsi);
           return isp == 0 ? '移动' : isp == 1 ? '联通' : isp == 2 ? '电信' : '--';
-        } else if (column.property == 'rsrp' || column.property == 'ta' || column.property == 'rssi') {//rsrp、ta、rssi
+        } else if (column.property == 'msg1ta' || column.property == 'measNum') {
           return row[column.property] == undefined ? '--' : row[column.property];
+        } else if (column.property == 'rsrp' || column.property == 'ta' || column.property == 'rssi') {//rsrp、ta、rssi
+          return row[column.property] == undefined ? '--' : row[column.property][0];
         } else if (column.property == 'netType') {//网络类型 --> 根据运营商判断
           return row.isp == 0 ? 'CMCC' : row.isp == 1 ? 'CMUC' : row.isp == 2 ? 'CMTC' : row.isp == 3 ? 'CMCC2' : row.isp == 50 ? 'GSM0' : row.isp == 51 ? 'GSM1' : '--';
         } else {

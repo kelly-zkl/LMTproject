@@ -110,13 +110,13 @@
               <el-form-item label="重定向载波频点" prop="redirected_earfcn">
                 <el-input v-model.number="opDeviceParameter.redirected_earfcn" :maxlength=5></el-input>
               </el-form-item>
-              <el-form-item label="同步方式" prop="syncMode" style="text-align: left;margin: 0" v-show="activeItem == 'M'">
+              <el-form-item label="同步方式" prop="syncMode" style="text-align: left" v-show="activeItem == 'M'">
                 <el-select v-model="opDeviceParameter.syncMode" placeholder="同步模式" filterable style="width: 100%">
                   <el-option v-for="item in syncModes" :key="item.value" :label="item.label" :value="item.value">
                   </el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="最小接入电平" prop="qRxLevMin" v-if="activeItem !== 'M'">
+              <el-form-item label="最小接入电平" prop="qRxLevMin" style="text-align: left;margin: 0">
                 <el-tooltip placement="bottom" content="最小接入电平 取值范围：-70-0">
                   <el-input v-model.number="opDeviceParameter.qRxLevMin" :maxlength=3></el-input>
                 </el-tooltip>
@@ -133,6 +133,13 @@
                   <el-input v-model.number="opDeviceParameter.tacMax" :maxlength=5></el-input>
                 </el-tooltip>
               </el-form-item>
+              <el-form-item label="测量上报间隔" prop="measRptInterval">
+                <el-tooltip placement="bottom" content="测量上报间隔 取值范围：0-10">
+                  <el-input v-model.number="opDeviceParameter.measRptInterval" :maxlength=2>
+                    <template slot="append">秒</template>
+                  </el-input>
+                </el-tooltip>
+              </el-form-item>
               <el-form-item label="BANDWIDTH" align="left" prop="bandWidth">
                 <el-select v-model="opDeviceParameter.bandWidth" placeholder="带宽BandWidth" filterable
                            style="width: 100%">
@@ -144,18 +151,13 @@
                 <el-switch v-model="opDeviceParameter.radioSwitch" active-color="#34CBFE"
                            inactive-color="#C1C1C1" :active-value="1" :inactive-value="0"></el-switch>
               </el-form-item>
-              <el-form-item label="最小接入电平" prop="qRxLevMin" v-if="activeItem == 'M'">
-                <el-tooltip placement="bottom" content="最小接入电平 取值范围：-70-0">
-                  <el-input v-model.number="opDeviceParameter.qRxLevMin" :maxlength=3></el-input>
-                </el-tooltip>
-              </el-form-item>
             </el-col>
           </el-row>
         </div>
       </el-form>
       <div class="add-appdiv" style="margin-bottom: 0">
         <div v-for="(tab,indx) in frequencyList" :key="indx">
-          <el-form :inline="true" align="left" label-width="80px">
+          <el-form :inline="true" align="left" label-width="80px" style="text-align: left">
             <el-form-item v-show="frequencyList.length > 1" style="margin: 0 0 10px 0">
               <i class="el-icon-remove" @click="minusPlmn(indx)"
                  style="color: #34CBFE;font-size: 20px;text-align: center"></i>
@@ -210,8 +212,8 @@
             </el-form-item>
           </el-form>
         </div>
-        <el-row v-show="frequencyList.length < 16">
-          <el-col :span="5" align="left" style="margin-left: 80px">
+        <el-row v-show="frequencyList.length < 16" style="text-align: left">
+          <el-col :span="5" align="left" style="margin-left: 80px;text-align: left">
             <el-button type="primary" icon="el-icon-plus" @click="plusPlmn()" size="small">增加</el-button>
           </el-col>
         </el-row>
@@ -446,6 +448,7 @@
               {validator: numVal, trigger: "change,blur"}],
             syncMode: [{required: true, message: '请选择同步模式', trigger: "blur"}],
             qRxLevMin: [{required: true, message: '请输入最小接入电平', trigger: "blur"}],
+            measRptInterval: [{required: true, message: '请输入测量上报间隔', trigger: "blur"}],
             radioSwitch: [{required: true, message: '请选择无线电开关', trigger: "blur"}]
           };
           if (this.activeItem !== 'M') {//移动4G
@@ -454,18 +457,18 @@
         }
         if (this.activeItem == 'M') {//移动4G38/40
           this.opDeviceParameter = {
-            redirected_earfcn: 37900, tac: 1, tacPeriod: 180, bandWidth: 5, qRxLevMin: -70,
-            imsiReportInterval: 0, syncMode: 1, radioSwitch: 0, tacMin: 0, tacMax: 65530
+            redirected_earfcn: 37900, tac: 1, tacPeriod: 180, bandWidth: 5, tacMin: 0, tacMax: 65530,
+            imsiReportInterval: 0, syncMode: 1, radioSwitch: 0, qRxLevMin: -70, measRptInterval: 0
           };
         } else if (this.activeItem == 'U') {//联通4G
           this.opDeviceParameter = {
             redirected_earfcn: 1650, tac: 1, tacPeriod: 180, bandWidth: 3, qRxLevMin: -70,
-            imsiReportInterval: 0, radioSwitch: 0, tacMin: 0, tacMax: 65530
+            imsiReportInterval: 0, measRptInterval: 0, radioSwitch: 0, tacMin: 0, tacMax: 65530
           };
         } else if (this.activeItem == 'T') {//电信4G
           this.opDeviceParameter = {
             redirected_earfcn: 100, tac: 1, tacPeriod: '180', bandWidth: 3, qRxLevMin: -70,
-            imsiReportInterval: 0, radioSwitch: 0, tacMin: 0, tacMax: 65530
+            imsiReportInterval: 0, radioSwitch: 0, measRptInterval: 0, tacMin: 0, tacMax: 65530
           };
         } else if (this.activeItem == 'GSMCMCC') {
           this.radioSwitch = 0;
@@ -572,6 +575,15 @@
         }
         return isVaild;
       },
+      //验证测量上报间隔 0-10
+      changeMeasRptInterval(val) {
+        let isVaild = true;
+        if (parseInt(val) < 0 || parseInt(val) > 10) {
+          this.$message.error('测量上报间隔的范围为[0-10]');
+          isVaild = false;
+        }
+        return isVaild;
+      },
       //保存前验证
       save() {
         this.$refs['opDeviceParameter'].validate((valid) => {
@@ -584,7 +596,7 @@
             } else {
               let plmnVlue = true;
               if (!this.changeTacPeriod(this.opDeviceParameter.tacPeriod) || !this.changereCapFilterPeriod(this.opDeviceParameter.imsiReportInterval)
-                || !this.changeqRxLevMin(this.opDeviceParameter.qRxLevMin)) {
+                || !this.changeqRxLevMin(this.opDeviceParameter.qRxLevMin) || !this.changeMeasRptInterval(this.opDeviceParameter.measRptInterval)) {
                 plmnVlue = false;
                 return;
               }
