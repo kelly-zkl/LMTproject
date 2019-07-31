@@ -110,15 +110,14 @@
               <el-form-item label="重定向载波频点" prop="redirected_earfcn">
                 <el-input v-model.number="opDeviceParameter.redirected_earfcn" :maxlength=5></el-input>
               </el-form-item>
-              <el-form-item label="同步方式" prop="syncMode" style="text-align: left" v-show="activeItem == 'M'">
-                <el-select v-model="opDeviceParameter.syncMode" placeholder="同步模式" filterable style="width: 100%">
-                  <el-option v-for="item in syncModes" :key="item.value" :label="item.label" :value="item.value">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="最小接入电平" prop="qRxLevMin" style="text-align: left;margin: 0">
+              <el-form-item label="最小接入电平" prop="qRxLevMin" style="text-align: left">
                 <el-tooltip placement="bottom" content="最小接入电平 取值范围：-70-0">
                   <el-input v-model.number="opDeviceParameter.qRxLevMin" :maxlength=3></el-input>
+                </el-tooltip>
+              </el-form-item>
+              <el-form-item label="异频频点" prop="interFreq" style="text-align: left;margin: 0">
+                <el-tooltip placement="bottom" content="异频频点 取值范围：大于0">
+                  <el-input v-model.number="opDeviceParameter.interFreq" :maxlength=15></el-input>
                 </el-tooltip>
               </el-form-item>
             </el-col>
@@ -144,6 +143,12 @@
                 <el-select v-model="opDeviceParameter.bandWidth" placeholder="带宽BandWidth" filterable
                            style="width: 100%">
                   <el-option v-for="item in bandwidths" :key="item.value" :label="item.label" :value="item.value">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="同步方式" prop="syncMode" style="text-align: left" v-show="activeItem == 'M'">
+                <el-select v-model="opDeviceParameter.syncMode" placeholder="同步模式" filterable style="width: 100%">
+                  <el-option v-for="item in syncModes" :key="item.value" :label="item.label" :value="item.value">
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -448,6 +453,7 @@
               {validator: numVal, trigger: "change,blur"}],
             syncMode: [{required: true, message: '请选择同步模式', trigger: "blur"}],
             qRxLevMin: [{required: true, message: '请输入最小接入电平', trigger: "blur"}],
+            interFreq: [{required: true, message: '请输入异频频点', trigger: "blur"}],
             measRptInterval: [{required: true, message: '请输入测量上报间隔', trigger: "blur"}],
             radioSwitch: [{required: true, message: '请选择无线电开关', trigger: "blur"}]
           };
@@ -458,17 +464,17 @@
         if (this.activeItem == 'M') {//移动4G38/40
           this.opDeviceParameter = {
             redirected_earfcn: 37900, tac: 1, tacPeriod: 180, bandWidth: 5, tacMin: 0, tacMax: 65530,
-            imsiReportInterval: 0, syncMode: 1, radioSwitch: 0, qRxLevMin: -70, measRptInterval: 0
+            imsiReportInterval: 0, syncMode: 1, radioSwitch: 0, qRxLevMin: -70, measRptInterval: 0, interFreq: 39325
           };
         } else if (this.activeItem == 'U') {//联通4G
           this.opDeviceParameter = {
             redirected_earfcn: 1650, tac: 1, tacPeriod: 180, bandWidth: 3, qRxLevMin: -70,
-            imsiReportInterval: 0, measRptInterval: 0, radioSwitch: 0, tacMin: 0, tacMax: 65530
+            imsiReportInterval: 0, measRptInterval: 0, radioSwitch: 0, tacMin: 0, tacMax: 65530, interFreq: 0
           };
         } else if (this.activeItem == 'T') {//电信4G
           this.opDeviceParameter = {
             redirected_earfcn: 100, tac: 1, tacPeriod: '180', bandWidth: 3, qRxLevMin: -70,
-            imsiReportInterval: 0, radioSwitch: 0, measRptInterval: 0, tacMin: 0, tacMax: 65530
+            imsiReportInterval: 0, radioSwitch: 0, measRptInterval: 0, tacMin: 0, tacMax: 65530, interFreq: 0
           };
         } else if (this.activeItem == 'GSMCMCC') {
           this.radioSwitch = 0;
@@ -575,6 +581,15 @@
         }
         return isVaild;
       },
+      //验证异频频点 大于0
+      changeInterFreq(val) {
+        let isVaild = true;
+        if (parseInt(val) < 0) {
+          this.$message.error('异频频点的范围为大于0');
+          isVaild = false;
+        }
+        return isVaild;
+      },
       //验证测量上报间隔 0-10
       changeMeasRptInterval(val) {
         let isVaild = true;
@@ -596,7 +611,8 @@
             } else {
               let plmnVlue = true;
               if (!this.changeTacPeriod(this.opDeviceParameter.tacPeriod) || !this.changereCapFilterPeriod(this.opDeviceParameter.imsiReportInterval)
-                || !this.changeqRxLevMin(this.opDeviceParameter.qRxLevMin) || !this.changeMeasRptInterval(this.opDeviceParameter.measRptInterval)) {
+                || !this.changeqRxLevMin(this.opDeviceParameter.qRxLevMin) || !this.changeMeasRptInterval(this.opDeviceParameter.measRptInterval)
+                || !this.changeInterFreq(this.opDeviceParameter.interFreq)) {
                 plmnVlue = false;
                 return;
               }

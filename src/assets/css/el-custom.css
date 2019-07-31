@@ -1,3 +1,37 @@
+/*滚动条的样式*/
+::-webkit-scrollbar {
+  z-index: 11;
+  width: 6px;
+}
+
+::-webkit-scrollbar:horizontal {
+  height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  width: 6px;
+  background: #D8D8D8
+}
+
+::-webkit-scrollbar-corner {
+  background: rgba(0, 0, 0, 0);
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0);
+}
+
+::-webkit-scrollbar-track-piece {
+  background: rgba(0, 0, 0, 0);
+  width: 6px
+}
+
+/* 滚动条两端按钮不显示 */
+.scrollbar .scrollbarbutton {
+  display: none ! important;
+}
+
 .el-input.is-disabled .el-input__inner {
   background-color: #f5f7fa;
   border-color: #e4e7ed;
