@@ -121,48 +121,52 @@
     methods: {
       //保存前验证
       save() {
-        this.$refs['gsmSniffer'].validate((valid) => {
-          if (valid) {
-            this.runStartDevice = true;
-          }
-        });
+        this.$nextTick(() => {
+          this.$refs.gsmSniffer.validate((valid) => {
+            if (valid) {
+              this.runStartDevice = true;
+            }
+          });
+        })
       },
       //设置时间
       setScanTime() {
         this.runStartDevice = false;
-        this.$refs['gsmSniffer'].validate((valid) => {
-          if (valid) {
-            let data = Object.assign({}, this.gsmSniffer);
-            if (data.snifferMode == 0) {
-              delete data['runTime'];
-              delete data['snifferCycle'];
-            } else {
-              let content = {};
-              let value2 = data.runTime.split(":");
+        this.$nextTick(() => {
+          this.$refs.gsmSniffer.validate((valid) => {
+            if (valid) {
+              let data = Object.assign({}, this.gsmSniffer);
+              if (data.snifferMode == 0) {
+                delete data['runTime'];
+                delete data['snifferCycle'];
+              } else {
+                let content = {};
+                let value2 = data.runTime.split(":");
 
-              let runTime = {};
-              runTime.hour = parseInt(value2[0]);
-              runTime.minute = parseInt(value2[1]);
-              runTime.second = parseInt(value2[2]);
-              content.runTime = runTime;
+                let runTime = {};
+                runTime.hour = parseInt(value2[0]);
+                runTime.minute = parseInt(value2[1]);
+                runTime.second = parseInt(value2[2]);
+                content.runTime = runTime;
 
-              content.snifferCycle = data.snifferCycle;
-              data.autoSnifferParam = content;
-              delete data['runTime'];
-              delete data['snifferCycle'];
+                content.snifferCycle = data.snifferCycle;
+                data.autoSnifferParam = content;
+                delete data['runTime'];
+                delete data['snifferCycle'];
+              }
+              let param = {
+                msgId: "b7518c70", type: 4193, cmd: 4541, moduleID: 0, timestamp: new Date().getTime(),
+                content: data, activeNow: this.activeNow
+              };
+              this.$emit('openLoading');
+              this.$post(param, "命令下发成功").then((data) => {
+                this.$emit('closeLoading');
+              }).catch((error) => {
+                this.$emit('closeLoading');
+              });
             }
-            let param = {
-              msgId: "b7518c70", type: 4193, cmd: 4541, moduleID: 0, timestamp: new Date().getTime(),
-              content: data, activeNow: this.activeNow
-            };
-            this.$emit('openLoading');
-            this.$post(param, "命令下发成功").then((data) => {
-              this.$emit('closeLoading');
-            }).catch((error) => {
-              this.$emit('closeLoading');
-            });
-          }
-        })
+          })
+        });
       },
       handleClick(tab, event) {
         this.networkData = [];

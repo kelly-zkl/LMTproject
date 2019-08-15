@@ -80,15 +80,13 @@
             this.$refs.band.getBandParam();
           })
         } else if (this.activeItem == 'band4') {
-          if (this.hasGsmModule == 1) {//有GSM
-            this.$nextTick(() => {
+          this.$nextTick(() => {
+            if (this.hasGsmModule == 1) {//有GSM
               this.$refs.band4.getGsmParam()
-            })
-          } else {
-            this.$nextTick(() => {
+            } else {
               this.$refs.band4.getParam()
-            })
-          }
+            }
+          })
         } else if (this.activeItem == 'paset') {
           this.$nextTick(() => {
             this.$refs.paset.getPaParam();

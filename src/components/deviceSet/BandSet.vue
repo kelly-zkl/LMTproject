@@ -83,8 +83,9 @@
                        :inactive-value="0" active-color="#34CBFE" inactive-color="#bbb"></el-switch>
           </el-col>
           <el-col :span="8" align="left" :offset="1" v-show="opDeviceParameter.freqHopSwitch == 1">
-            <span style="font-size: 14px;color: #333;margin-right: 20px">跳频周期</span>
-            <el-input v-model.number="freqHopData.switchtime" :maxlength=10 style="width: 200px"></el-input>
+            <span style="font-size: 14px;color: #333;margin-right: 10px">跳频周期</span>
+            <el-input v-model.number="freqHopData.switchtime" :maxlength=10 style="width: 200px"
+                      size="small"></el-input>
           </el-col>
         </el-row>
         <div v-for="(tab,indx) in freqHopData.freqHopParamArray" :key="indx"
@@ -100,14 +101,14 @@
             <!--</el-form-item>-->
             <el-form-item label="下行频点" style="margin: 0">
               <el-input v-model.number="tab.downFrequency" :maxlength=10 @change="changeTDown($event,indx)"
-                        @blur="changeTDown($event,indx)" style="width: 100px"></el-input>
+                        @blur="changeTDown($event,indx)" style="width: 100px" size="small"></el-input>
             </el-form-item>
             <el-form-item label="PLMN" style="margin: 0">
-              <el-select v-model="tab.plmn" style="width: 100px">
+              <el-select v-model="tab.plmn" style="width: 100px" size="small">
                 <el-option v-for="item in plmns" :key="item.type" :value="item.type" :label="item.name"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="帧偏移" style="margin: 0" v-show="activeItem == 'M'">
+            <el-form-item label="帧偏移" style="margin: 0" size="small" v-show="activeItem == 'M'">
               <el-input v-model.number="tab.frameOffset" :maxlength=10 @change="changeOffset"
                         style="width: 100px"></el-input>
             </el-form-item>
@@ -376,10 +377,12 @@
       },
       //保存前验证
       save() {
-        this.$refs['opDeviceParameter'].validate((valid) => {
-          if (valid) {
-            this.runStartDevice = true;
-          }
+        this.$nextTick(() => {
+          this.$refs.opDeviceParameter.validate((valid) => {
+            if (valid) {
+              this.runStartDevice = true;
+            }
+          });
         });
       },
       //保存设置

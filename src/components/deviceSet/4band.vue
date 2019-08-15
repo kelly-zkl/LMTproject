@@ -284,31 +284,19 @@
   export default {
     data() {
       return {
-        hasGsmModule: 0,
-        runStartDevice: false,
+        hasGsmModule: 0, runStartDevice: false,
         dialogWidth: this.$Is_Pc() ? '380px' : '300px',
-        activeNow: 1, has34: true,
-        opDeviceParameter: {},
+        activeNow: 1, has34: true, activeItem: 'GSMCMCC',
+        opDeviceParameter: {}, frequencyList: [], rules: {},
         activeName: [{moduleID: -1, name: '移动（GSM）', type: 'GSMCMCC'},
           {moduleID: -1, name: '联通（GSM）', type: 'GSMCMUC'}, {moduleID: 0, name: '移动', type: 'M'},
           {moduleID: 1, name: '联通', type: 'U'}, {moduleID: 2, name: '电信', type: 'T'}],
-        activeItem: 'GSMCMCC',
         bands: [{value: 900, label: 900}, {value: 1800, label: 1800}],
         bandwidths: [{value: 1, label: '3MHz'}, {value: 2, label: '5MHz'}, {value: 3, label: '10MHz'},
           {value: 4, label: '15MHz'}, {value: 5, label: '20MHz'}],
-        rules: {},
         plmns: [{type: '460.00', name: '460.00'}, {type: '460.01', name: '460.01'}, {type: '460.11', name: '460.11'}],
-        frequencyList: [{
-          upFrequency: 37900, downFrequency: 37900, plmn: ['460.00'], rsrp: 0,
-          priority: 0, pci: 5, powerLevel: 0, frameOffset: 0
-        }],
         syncModes: [{value: 1, label: 'gps同步'}, {value: 2, label: '空口同步'}, {value: 3, label: '异频空口同步'}],
-        plmn: ['460.00'],
-        down: 37900,
-        up: 37900,
-        pci: 5,
-        deviceType: '',
-        radioSwitch: 0
+        plmn: ['460.00'], down: 37900, up: 37900, pci: 5, deviceType: '', radioSwitch: 0
       }
     },
     methods: {
@@ -434,12 +422,10 @@
               {validator: numVal, trigger: "change,blur"}],
             plmn: [{required: true, message: '请选择plmn', trigger: "blur"}],
             powerLevel: [{required: true, message: '请输入功率衰减', trigger: "blur"}],
-            qRxLevMin: [{required: true, message: '请输入最小接入电平', trigger: "blur"}],
-            radioSwitch: [{required: true, message: '请选择无线电开关', trigger: "blur"}]
+            qRxLevMin: [{required: true, message: '请输入最小接入电平', trigger: "blur"}]
           }
         } else {//4G
           this.rules = {
-            tac: [{required: true, message: '请输入tac', trigger: "blur"}],
             tacPeriod: [{required: true, message: '请输入重复抓取时间', trigger: "blur"},
               {validator: numVal, trigger: "change,blur"}],
             tacMin: [{required: true, message: '请输入tac下限', trigger: "blur"},
@@ -461,34 +447,7 @@
             delete this.rules['syncMode'];
           }
         }
-        if (this.activeItem == 'M') {//移动4G38/40
-          this.opDeviceParameter = {
-            redirected_earfcn: 37900, tac: 1, tacPeriod: 180, bandWidth: 5, tacMin: 0, tacMax: 65530,
-            imsiReportInterval: 0, syncMode: 1, radioSwitch: 0, qRxLevMin: -70, measRptInterval: 0, interFreq: 39325
-          };
-        } else if (this.activeItem == 'U') {//联通4G
-          this.opDeviceParameter = {
-            redirected_earfcn: 1650, tac: 1, tacPeriod: 180, bandWidth: 3, qRxLevMin: -70,
-            imsiReportInterval: 0, measRptInterval: 0, radioSwitch: 0, tacMin: 0, tacMax: 65530, interFreq: 0
-          };
-        } else if (this.activeItem == 'T') {//电信4G
-          this.opDeviceParameter = {
-            redirected_earfcn: 100, tac: 1, tacPeriod: '180', bandWidth: 3, qRxLevMin: -70,
-            imsiReportInterval: 0, radioSwitch: 0, measRptInterval: 0, tacMin: 0, tacMax: 65530, interFreq: 0
-          };
-        } else if (this.activeItem == 'GSMCMCC') {
-          this.radioSwitch = 0;
-          this.opDeviceParameter = {
-            band: 900, bcc: 1, lac: 9, tacPeriod: 180, plmn: "460.11", reCapFilterPeriod: 300,
-            powerLevel: 0, cellId: 3, qRxLevMin: -70
-          };
-        } else if (this.activeItem == 'GSMCMUC') {
-          this.radioSwitch = 0;
-          this.opDeviceParameter = {
-            band: 900, bcc: 96, lac: 9, tacPeriod: 180, plmn: "460.11", reCapFilterPeriod: 300,
-            powerLevel: 0, cellId: 3, qRxLevMin: -70
-          };
-        }
+        this.opDeviceParameter = {};
         this.defaultFrequencyList();
       },
       //跳频默认参数
@@ -523,7 +482,7 @@
         } else {
           this.frequencyList = [{
             upFrequency: 0, downFrequency: 0, plmn: ['460.00'], rsrp: 0,
-            priority: 0, pci: 5, powerLevel: 0, frameOffset: 0
+            priority: 0, pci: 504, powerLevel: 0, frameOffset: 0
           }];
         }
       },
@@ -538,6 +497,10 @@
       },
       //验证tac周期 1-86400
       changeTacPeriod(val) {
+        if (val == undefined) {
+          this.$message.error('请输入TAC周期');
+          return false;
+        }
         let isVaild = true;
         if (parseInt(val) < 1 || parseInt(val) > 86400) {
           this.$message.error('TAC周期的范围为[1-86400]');
@@ -547,6 +510,10 @@
       },
       //验证重复上报间隔 0-3600
       changereCapFilterPeriod(val) {
+        if (val == undefined) {
+          this.$message.error('请输入重复上报间隔');
+          return false;
+        }
         let isVaild = true;
         if (parseInt(val) < 0 || parseInt(val) > 3600) {
           this.$message.error('重复上报间隔的范围为[0-3600]');
@@ -556,6 +523,10 @@
       },
       //验证PCI 0-503
       changePCI(val) {
+        if (val == undefined) {
+          this.$message.error('请输入PCI');
+          return false;
+        }
         let isVaild = true;
         if (parseInt(val) < 0 || parseInt(val) > 503) {
           this.$message.error('PCI的范围为[0-503]');
@@ -565,6 +536,10 @@
       },
       //验证功率衰减 0-50
       changePowerLevel(val) {
+        if (val == undefined) {
+          this.$message.error('请输入功率衰减');
+          return false;
+        }
         let isVaild = true;
         if (parseInt(val) < 0 || parseInt(val) > 50) {
           this.$message.error('功率衰减的范围为[0-50]');
@@ -574,6 +549,10 @@
       },
       //验证最小接入电平 -70-0
       changeqRxLevMin(val) {
+        if (val == undefined) {
+          this.$message.error('请输入最小接入电平');
+          return false;
+        }
         let isVaild = true;
         if (parseInt(val) < -70 || parseInt(val) > 0) {
           this.$message.error('最小接入电平的范围为[-70-0]');
@@ -583,6 +562,10 @@
       },
       //验证异频频点 大于0
       changeInterFreq(val) {
+        if (val == undefined) {
+          this.$message.error('请输入异频频点');
+          return false;
+        }
         let isVaild = true;
         if (parseInt(val) < 0) {
           this.$message.error('异频频点的范围为大于0');
@@ -592,6 +575,10 @@
       },
       //验证测量上报间隔 0-10
       changeMeasRptInterval(val) {
+        if (val == undefined) {
+          this.$message.error('请输入测量上报间隔');
+          return false;
+        }
         let isVaild = true;
         if (parseInt(val) < 0 || parseInt(val) > 10) {
           this.$message.error('测量上报间隔的范围为[0-10]');
@@ -601,54 +588,70 @@
       },
       //保存前验证
       save() {
-        this.$refs['opDeviceParameter'].validate((valid) => {
-          if (valid) {
-            if (this.getModuleID() < 0) {
-              if (this.changeTacPeriod(this.opDeviceParameter.tacPeriod) && this.changeBcc(this.opDeviceParameter.bcc) && this.changeqRxLevMin(this.opDeviceParameter.qRxLevMin)
-                && this.changereCapFilterPeriod(this.opDeviceParameter.reCapFilterPeriod) && this.changePowerLevel(this.opDeviceParameter.powerLevel)) {
-                this.runStartDevice = true;
-              }
-            } else {
-              let plmnVlue = true;
-              if (!this.changeTacPeriod(this.opDeviceParameter.tacPeriod) || !this.changereCapFilterPeriod(this.opDeviceParameter.imsiReportInterval)
-                || !this.changeqRxLevMin(this.opDeviceParameter.qRxLevMin) || !this.changeMeasRptInterval(this.opDeviceParameter.measRptInterval)
-                || !this.changeInterFreq(this.opDeviceParameter.interFreq)) {
-                plmnVlue = false;
-                return;
-              }
-              if (this.opDeviceParameter.tacMin < 0 || this.opDeviceParameter.tacMin > 65530 || this.opDeviceParameter.tacMax < 0 || this.opDeviceParameter.tacMax > 65530) {
-                plmnVlue = false;
-                this.$message.error('tac上/下限的取值范围是0-65530');
-                return;
-              }
-              if (this.opDeviceParameter.tacMax - this.opDeviceParameter.tacMin < 10) {
-                plmnVlue = false;
-                this.$message.error('tac上/下限相差应大于10');
-                return;
-              }
-              this.frequencyList.forEach((item) => {
-                if (!(item.plmn instanceof Array)) {
-                  item.plmn = [];
-                }
-              });
-              for (let i = 0; i < this.frequencyList.length; i++) {
-                let item = this.frequencyList[i];
-                if (!this.changeBcc(item.downFrequency) || !this.changePCI(item.pci) || !this.changePowerLevel(item.powerLevel)) {
-                  plmnVlue = false;
-                  return;
-                }
-                if (item.plmn.length == 0) {
-                  plmnVlue = false;
-                  this.$message.error('请选择plmn');
-                  return;
-                }
-              }
-              if (plmnVlue) {
-                this.runStartDevice = true;
-              }
+        this.$nextTick(() => {
+          this.$refs.opDeviceParameter.validate((valid) => {
+            if (valid) {
+              this.setParamValidate();
+            }
+          });
+        });
+      },
+      setParamValidate() {
+        if (this.getModuleID() < 0) {
+          if (!this.radioSwitch) {
+            this.$message.error('请选择无线电开关状态');
+            return;
+          }
+          if (this.changeTacPeriod(this.opDeviceParameter.tacPeriod) && this.changeBcc(this.opDeviceParameter.bcc) && this.changeqRxLevMin(this.opDeviceParameter.qRxLevMin)
+            && this.changereCapFilterPeriod(this.opDeviceParameter.reCapFilterPeriod) && this.changePowerLevel(this.opDeviceParameter.powerLevel)) {
+            this.runStartDevice = true;
+          }
+        } else {
+          let plmnVlue = true;
+          if (!this.changeTacPeriod(this.opDeviceParameter.tacPeriod) || !this.changereCapFilterPeriod(this.opDeviceParameter.imsiReportInterval)
+            || !this.changeqRxLevMin(this.opDeviceParameter.qRxLevMin) || !this.changeMeasRptInterval(this.opDeviceParameter.measRptInterval)
+            || !this.changeInterFreq(this.opDeviceParameter.interFreq)) {
+            plmnVlue = false;
+            return;
+          }
+          if (this.activeItem == 'M') {
+            if (!this.opDeviceParameter.syncMode) {
+              plmnVlue = false;
+              this.$message.error('请选择同步模式');
+              return;
             }
           }
-        });
+          if (this.opDeviceParameter.tacMin < 0 || this.opDeviceParameter.tacMin > 65530 || this.opDeviceParameter.tacMax < 0 || this.opDeviceParameter.tacMax > 65530) {
+            plmnVlue = false;
+            this.$message.error('tac上/下限的取值范围是0-65530');
+            return;
+          }
+          if (this.opDeviceParameter.tacMax - this.opDeviceParameter.tacMin < 10) {
+            plmnVlue = false;
+            this.$message.error('tac上/下限相差应大于10');
+            return;
+          }
+          this.frequencyList.forEach((item) => {
+            if (!(item.plmn instanceof Array)) {
+              item.plmn = [];
+            }
+          });
+          for (let i = 0; i < this.frequencyList.length; i++) {
+            let item = this.frequencyList[i];
+            if (!this.changeBcc(item.downFrequency) || !this.changePCI(item.pci) || !this.changePowerLevel(item.powerLevel)) {
+              plmnVlue = false;
+              return;
+            }
+            if (item.plmn.length == 0) {
+              plmnVlue = false;
+              this.$message.error('请选择plmn');
+              return;
+            }
+          }
+          if (plmnVlue) {
+            this.runStartDevice = true;
+          }
+        }
       },
       //获取载波参数
       getParam() {
@@ -665,9 +668,9 @@
             data.opDeviceParameter.forEach((item) => {
               if (this.activeItem == item.operationType) {
                 this.opDeviceParameter = item.commonParameter;
-                for (var i = 0; i < item.Frequency.length; i++) {
-                  var item1 = item.Frequency[i];
-                  var pararr = [];
+                for (let i = 0; i < item.Frequency.length; i++) {
+                  let item1 = item.Frequency[i];
+                  let pararr = [];
                   if (item1.plmn) {
                     pararr.push(item1.plmn);
                   }
@@ -689,8 +692,20 @@
                 this.frequencyList = item.Frequency;
               }
             });
+            this.$nextTick(() => {
+              this.$refs.opDeviceParameter.clearValidate();
+            })
+          } else {
+            this.clear();
+            this.$nextTick(() => {
+              this.$refs.opDeviceParameter.clearValidate();
+            })
           }
         }).catch((err) => {
+          this.clear();
+          this.$nextTick(() => {
+            this.$refs.opDeviceParameter.clearValidate();
+          });
           this.$message.error(err);
           this.$emit('closeLoading');
         });
@@ -710,8 +725,20 @@
             });
             this.opDeviceParameter.tacPeriod = data.content.tacPeriod;
             this.opDeviceParameter.reCapFilterPeriod = data.content.reCapFilterPeriod;
+            this.$nextTick(() => {
+              this.$refs.opDeviceParameter.clearValidate();
+            })
+          } else {
+            this.clear();
+            this.$nextTick(() => {
+              this.$refs.opDeviceParameter.clearValidate();
+            })
           }
         }).catch((err) => {
+          this.clear();
+          this.$nextTick(() => {
+            this.$refs.opDeviceParameter.clearValidate();
+          });
           this.$message.error(err);
           this.$emit('closeLoading');
         });
@@ -796,7 +823,6 @@
       }
     },
     mounted() {
-      this.clear();
       this.hasGsmModule = sessionStorage.getItem("hasGsmModule");
       if (this.hasGsmModule == 0) {//只有2个标签
         this.activeName = [{moduleID: 0, name: '移动', type: 'M'}, {moduleID: 1, name: '联通', type: 'U'}];

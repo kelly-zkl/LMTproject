@@ -306,26 +306,28 @@
             return;
           }
         }
-        this.$refs['deviceMonitor'].validate((valid) => {
-          if (valid) {
-            this.$confirm('确定保存设置?', '提示', {type: 'info'}).then(() => {
-              this.deviceMonitor.serverport = parseInt(this.deviceMonitor.serverport + "");
-              let param = {
-                msgId: "b7518c70", type: 4193, cmd: 4256, moduleID: 255, timestamp: new Date().getTime(),
-                data: this.deviceMonitor
-              };
-              this.$emit('openLoading');
-              this.$post(param, "命令下发成功").then((data) => {
-                this.$emit('closeLoading');
-                if ("000000" == data.code) {
-                  this.$emit('showDialog', false, true);
-                }
-              }).catch((err) => {
-                this.$emit('closeLoading');
+        this.$nextTick(() => {
+          this.$refs.deviceMonitor.validate((valid) => {
+            if (valid) {
+              this.$confirm('确定保存设置?', '提示', {type: 'info'}).then(() => {
+                this.deviceMonitor.serverport = parseInt(this.deviceMonitor.serverport + "");
+                let param = {
+                  msgId: "b7518c70", type: 4193, cmd: 4256, moduleID: 255, timestamp: new Date().getTime(),
+                  data: this.deviceMonitor
+                };
+                this.$emit('openLoading');
+                this.$post(param, "命令下发成功").then((data) => {
+                  this.$emit('closeLoading');
+                  if ("000000" == data.code) {
+                    this.$emit('showDialog', false, true);
+                  }
+                }).catch((err) => {
+                  this.$emit('closeLoading');
+                });
+              }).catch(() => {
               });
-            }).catch(() => {
-            });
-          }
+            }
+          });
         });
       },
       //修改MAC地址

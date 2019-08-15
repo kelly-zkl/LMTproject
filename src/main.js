@@ -19,8 +19,8 @@ import 'babel-polyfill';
 axios.defaults.withCredentials = true;
 Vue.config.productionTip = true;
 
-// axios.defaults.baseURL = "http://192.168.66.87:8086/ubus";
-axios.defaults.baseURL = "/ubus";
+axios.defaults.baseURL = "http://192.168.66.87:8086/ubus";
+// axios.defaults.baseURL = "/ubus";
 axios.defaults.timeout = 10 * 1000;
 
 Vue.prototype.$post = function (param, successMsg, failMsg) {
@@ -30,6 +30,7 @@ Vue.prototype.$post = function (param, successMsg, failMsg) {
   };
   console.log(param);
   return axios.post('', pa).then((res) => {
+    console.log(res);
     if (res.data.result[1].message !== undefined) {
       let data = JSON.parse(res.data.result[1].message);
       if ("000000" === data.code) {
@@ -50,7 +51,11 @@ Vue.prototype.$post = function (param, successMsg, failMsg) {
       return Promise.reject(res.data.error.message);
     }
   }).catch((err) => {
-    this.$message.error(err ? err : err.data.error.message);
+    if (err.message) {
+      this.$message.error(err.name + ": " + err.message);
+    } else {
+      this.$message.error(err);
+    }
   });
 };
 
