@@ -110,20 +110,20 @@
               <el-form-item label="重定向载波频点" prop="redirected_earfcn">
                 <el-input v-model.number="opDeviceParameter.redirected_earfcn" :maxlength=5></el-input>
               </el-form-item>
+              <el-form-item label="重定向频点帧偏移 " prop="redirectedEarfcnFrameOffset" v-if="activeItem == 'M'"
+                            style="text-align: left">
+                <el-tooltip placement="bottom" content="重定向频点帧偏移 取值范围：-1000-1000">
+                  <el-input v-model.number="opDeviceParameter.redirectedEarfcnFrameOffset" :maxlength=5></el-input>
+                </el-tooltip>
+              </el-form-item>
               <el-form-item label="最小接入电平" prop="qRxLevMin" style="text-align: left">
                 <el-tooltip placement="bottom" content="最小接入电平 取值范围：-70-0">
                   <el-input v-model.number="opDeviceParameter.qRxLevMin" :maxlength=3></el-input>
                 </el-tooltip>
               </el-form-item>
-              <el-form-item label="异频频点" prop="interFreq" style="text-align: left">
+              <el-form-item label="异频频点" prop="interFreq" style="text-align: left;margin: 0">
                 <el-tooltip placement="bottom" content="异频频点 取值范围：大于0">
                   <el-input v-model.number="opDeviceParameter.interFreq" :maxlength=15></el-input>
-                </el-tooltip>
-              </el-form-item>
-              <el-form-item label="重定向频点帧偏移 " prop="redirectedEarfcnFrameOffset" v-if="activeItem == 'M'"
-                            style="text-align: left;margin: 0">
-                <el-tooltip placement="bottom" content="重定向频点帧偏移 取值范围：-1000-1000">
-                  <el-input v-model.number="opDeviceParameter.redirectedEarfcnFrameOffset" :maxlength=5></el-input>
                 </el-tooltip>
               </el-form-item>
             </el-col>
