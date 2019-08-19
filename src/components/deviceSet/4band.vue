@@ -84,7 +84,7 @@
       </el-form>
     </div>
     <div v-else>
-      <el-form ref="opDeviceParameter" label-width="120px" label-position="left" :rules="rules"
+      <el-form ref="opDeviceParameter" label-width="140px" label-position="left" :rules="rules"
                :model="opDeviceParameter">
         <div class="center-block add-appdiv" style="margin-top: 10px">
           <el-row>
@@ -115,9 +115,15 @@
                   <el-input v-model.number="opDeviceParameter.qRxLevMin" :maxlength=3></el-input>
                 </el-tooltip>
               </el-form-item>
-              <el-form-item label="异频频点" prop="interFreq" style="text-align: left;margin: 0">
+              <el-form-item label="异频频点" prop="interFreq" style="text-align: left">
                 <el-tooltip placement="bottom" content="异频频点 取值范围：大于0">
                   <el-input v-model.number="opDeviceParameter.interFreq" :maxlength=15></el-input>
+                </el-tooltip>
+              </el-form-item>
+              <el-form-item label="重定向频点帧偏移 " prop="redirectedEarfcnFrameOffset" v-if="activeItem == 'M'"
+                            style="text-align: left;margin: 0">
+                <el-tooltip placement="bottom" content="重定向频点帧偏移 取值范围：-1000-1000">
+                  <el-input v-model.number="opDeviceParameter.redirectedEarfcnFrameOffset" :maxlength=5></el-input>
                 </el-tooltip>
               </el-form-item>
             </el-col>
@@ -426,6 +432,7 @@
           }
         } else {//4G
           this.rules = {
+            tac: [{required: true, message: '请输入tac', trigger: "blur"}],
             tacPeriod: [{required: true, message: '请输入重复抓取时间', trigger: "blur"},
               {validator: numVal, trigger: "change,blur"}],
             tacMin: [{required: true, message: '请输入tac下限', trigger: "blur"},
@@ -441,10 +448,12 @@
             qRxLevMin: [{required: true, message: '请输入最小接入电平', trigger: "blur"}],
             interFreq: [{required: true, message: '请输入异频频点', trigger: "blur"}],
             measRptInterval: [{required: true, message: '请输入测量上报间隔', trigger: "blur"}],
-            radioSwitch: [{required: true, message: '请选择无线电开关', trigger: "blur"}]
+            radioSwitch: [{required: true, message: '请选择无线电开关', trigger: "blur"}],
+            redirectedEarfcnFrameOffset: [{required: true, message: '请输入重定向频点帧偏移', trigger: "blur"}],
           };
           if (this.activeItem !== 'M') {//移动4G
             delete this.rules['syncMode'];
+            delete this.rules['redirectedEarfcnFrameOffset'];
           }
         }
         this.opDeviceParameter = {};
@@ -586,6 +595,15 @@
         }
         return isVaild;
       },
+      //验证重定向频点帧偏移  -1000-1000
+      changeRefo(val) {
+        let isVaild = true;
+        if (parseInt(val) < -1000 || parseInt(val) > 1000) {
+          this.$message.error('重定向频点帧偏移的范围为[-1000-1000]');
+          isVaild = false;
+        }
+        return isVaild;
+      },
       //保存前验证
       save() {
         this.$nextTick(() => {
@@ -618,6 +636,10 @@
             if (!this.opDeviceParameter.syncMode) {
               plmnVlue = false;
               this.$message.error('请选择同步模式');
+              return;
+            }
+            if (!this.changeRefo(this.opDeviceParameter.redirectedEarfcnFrameOffset)) {
+              plmnVlue = false;
               return;
             }
           }
