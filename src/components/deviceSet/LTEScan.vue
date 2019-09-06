@@ -46,6 +46,7 @@
         <el-table-column align="left" label="频点" prop="earfcn" :formatter="formatterAddress"></el-table-column>
         <el-table-column align="left" label="band" prop="band" :formatter="formatterAddress"></el-table-column>
         <el-table-column align="left" label="pci" prop="pci" :formatter="formatterAddress"></el-table-column>
+        <el-table-column align="left" label="频偏" prop="freq_offset" :formatter="formatterAddress"></el-table-column>
         <el-table-column align="left" label="帧偏移" prop="frame_offset" :formatter="formatterAddress"
                          v-if="activeItem=='CMCC'"></el-table-column>
         <el-table-column align="left" label="rsrp" prop="rsrp" :formatter="formatterAddress"></el-table-column>

@@ -93,6 +93,7 @@
 
 /** 表格样式开始*/
 .el-table {
+  width: 99.9% !important;
   font-size: 14px;
   color: #666
 }

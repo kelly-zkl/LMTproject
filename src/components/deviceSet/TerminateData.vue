@@ -13,31 +13,31 @@
           </el-button>
         </el-col>
       </el-row>
-      <div class="block" style="height: 60%;background-color: #33CCFF">
+      <div class="block" style="height: 60%">
         <el-table :data="list" class="center-block" stripe id="out-table"
                   :default-sort="{prop: 'uptime', order: 'descending'}">
           <el-table-column align="center" type="index" label="序号" width="65"></el-table-column>
-          <el-table-column align="left" prop="deviceId" label="设备ID" width="200"
+          <el-table-column align="left" prop="deviceId" label="设备ID" min-width="150" max-width="200"
                            :formatter="formatterAddress"></el-table-column>
-          <el-table-column align="left" prop="imei" label="IMEI" width="150"
+          <el-table-column align="left" prop="imei" label="IMEI" min-width="150" max-width="200"
                            :formatter="formatterAddress"></el-table-column>
-          <el-table-column align="left" prop="imsi" label="IMSI" width="200"
+          <el-table-column align="left" prop="imsi" label="IMSI" min-width="150" max-width="200"
                            :formatter="formatterAddress"></el-table-column>
-          <el-table-column align="left" prop="isp" label="运营商" width="120"
+          <el-table-column align="left" prop="isp" label="运营商" min-width="100" max-width="150"
                            :formatter="formatterAddress"></el-table-column>
-          <el-table-column align="left" prop="netType" label="网络类型" width="120"
+          <el-table-column align="left" prop="netType" label="网络类型" min-width="100" max-width="150"
                            :formatter="formatterAddress"></el-table-column>
-          <el-table-column align="left" prop="rsrp" label="RSRP" width="120"
+          <el-table-column align="left" prop="rsrp" label="RSRP" min-width="100" max-width="150"
                            :formatter="formatterAddress"></el-table-column>
-          <el-table-column align="left" prop="rssi" label="RSSI" width="120"
+          <el-table-column align="left" prop="rssi" label="RSSI" min-width="100" max-width="150"
                            :formatter="formatterAddress"></el-table-column>
-          <el-table-column align="left" prop="ta" label="TA" width="120"
+          <el-table-column align="left" prop="ta" label="TA" min-width="100" max-width="150"
                            :formatter="formatterAddress"></el-table-column>
-          <el-table-column align="left" prop="msg1ta" label="MSG1TA" width="120"
+          <el-table-column align="left" prop="msg1ta" label="MSG1TA" min-width="100" max-width="150"
                            :formatter="formatterAddress"></el-table-column>
-          <el-table-column align="left" prop="measNum" label="测量个数" width="120"
+          <el-table-column align="left" prop="measNum" label="测量个数" min-width="100" max-width="150"
                            :formatter="formatterAddress"></el-table-column>
-          <el-table-column align="left" prop="uptime" label="获取时间" width="180"
+          <el-table-column align="left" prop="uptime" label="获取时间" min-width="170" max-width="250"
                            :formatter="formatterAddress" sortable></el-table-column>
         </el-table>
       </div>
