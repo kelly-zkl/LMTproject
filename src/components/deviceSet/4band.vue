@@ -318,7 +318,7 @@
       plusPlmn() {
         this.frequencyList.push({
           upFrequency: this.up, downFrequency: this.down, plmn: this.plmn, rsrp: 0,
-          priority: 0, pci: this.pci, powerLevel: 0, frameOffset: 0
+          priority: 0, pci: this.pci, powerLevel: 3, frameOffset: 0
         });
       },
       //删除跳频
@@ -468,7 +468,7 @@
           this.pci = 5;
           this.frequencyList = [{
             upFrequency: this.up, downFrequency: this.down, plmn: this.plmn, rsrp: 0,
-            priority: 0, pci: this.pci, powerLevel: 0, frameOffset: 0
+            priority: 0, pci: this.pci, powerLevel: 3, frameOffset: 0
           }];
         } else if (this.activeItem == 'U') {//联通4G
           this.plmn = ['460.01'];
@@ -477,7 +477,7 @@
           this.pci = 6;
           this.frequencyList = [{
             upFrequency: this.up, downFrequency: this.down, plmn: this.plmn, rsrp: 0,
-            priority: 0, pci: this.pci, powerLevel: 0, frameOffset: 0
+            priority: 0, pci: this.pci, powerLevel: 3, frameOffset: 0
           }];
         } else if (this.activeItem == 'T') {//电信4G
           this.plmn = ['460.11'];
@@ -486,12 +486,12 @@
           this.pci = 7;
           this.frequencyList = [{
             upFrequency: this.up, downFrequency: this.down, plmn: this.plmn, rsrp: 0,
-            priority: 0, pci: this.pci, powerLevel: 0, frameOffset: 0
+            priority: 0, pci: this.pci, powerLevel: 3, frameOffset: 0
           }];
         } else {
           this.frequencyList = [{
             upFrequency: 0, downFrequency: 0, plmn: ['460.00'], rsrp: 0,
-            priority: 0, pci: 504, powerLevel: 0, frameOffset: 0
+            priority: 0, pci: 504, powerLevel: 3, frameOffset: 0
           }];
         }
       },
