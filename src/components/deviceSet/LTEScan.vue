@@ -25,11 +25,11 @@
           <el-form-item label="自动扫频间隔" style="margin: 20px 0 0 15px" align="left" prop="snifferCycle"
                         v-show="lteSniffer.snifferMode==3">
             <el-row>
-              <el-col :span="8">
+              <el-col :span="24">
                 <el-input-number v-model="lteSniffer.snifferCycle" :min="1" :maxlength=3
-                                 style="width: 95%"></el-input-number>
+                                 style="width: 220px"></el-input-number>
+                <span>天</span>
               </el-col>
-              <el-col :span="2">天</el-col>
             </el-row>
           </el-form-item>
           <el-form-item align="left" style="margin: 20px 0 0 15px">
@@ -112,7 +112,8 @@
         activeName: [{name: '移动', type: 'CMCC'}, {name: '联通', type: 'CMUC'}, {name: '电信', type: 'CMTC'}],
         selectFreqModes: [{value: 10, label: '手动'}, {value: 2, label: '自动算法一'},
           {value: 3, label: '自动算法二'}, {value: 4, label: '自动算法三'}, {value: 5, label: '自动算法四'}],
-        snifferModes: [{value: 0, label: '关闭'}, {value: 1, label: '手动'}, {value: 3, label: '定时扫'}],// {value: 2, label: '上电扫'},
+        snifferModes: [{value: 0, label: '关闭'}, {value: 1, label: '手动'}, {value: 3, label: '定时扫'},
+          {value: 4, label: '增强型扫频'}],// {value: 2, label: '上电扫'},
         rules: {
           snifferMode: [{required: true, message: '请输入选择扫频模式', trigger: "blur"}],
           selectFreqMode: [{required: true, message: '请输入选择选频模式', trigger: "blur"}],
