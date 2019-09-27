@@ -44,7 +44,7 @@
                 </el-tooltip>
               </el-form-item>
               <el-form-item label="最小接入电平" prop="qRxLevMin">
-                <el-tooltip placement="bottom" content="最小接入电平 取值范围：-70-0">
+                <el-tooltip placement="bottom" content="最小接入电平 取值范围：[-70，-22]">
                   <el-input v-model.number="opDeviceParameter.qRxLevMin" :maxlength=3></el-input>
                 </el-tooltip>
               </el-form-item>
@@ -117,7 +117,7 @@
                 </el-tooltip>
               </el-form-item>
               <el-form-item label="最小接入电平" prop="qRxLevMin" style="text-align: left">
-                <el-tooltip placement="bottom" content="最小接入电平 取值范围：-70-0">
+                <el-tooltip placement="bottom" content="最小接入电平 取值范围：[-70，-22]">
                   <el-input v-model.number="opDeviceParameter.qRxLevMin" :maxlength=3></el-input>
                 </el-tooltip>
               </el-form-item>
@@ -556,15 +556,15 @@
         }
         return isVaild;
       },
-      //验证最小接入电平 -70-0
+      //验证最小接入电平 -70 - -22
       changeqRxLevMin(val) {
         if (val == undefined) {
           this.$message.error('请输入最小接入电平');
           return false;
         }
         let isVaild = true;
-        if (parseInt(val) < -70 || parseInt(val) > 0) {
-          this.$message.error('最小接入电平的范围为[-70-0]');
+        if (parseInt(val) < -70 || parseInt(val) > -22) {
+          this.$message.error('最小接入电平的范围为[-70，-22]');
           isVaild = false;
         }
         return isVaild;
