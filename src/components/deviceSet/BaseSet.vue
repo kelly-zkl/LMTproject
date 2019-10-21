@@ -115,8 +115,7 @@
 <script>
   import json from '../../assets/city.json';
   import {
-    ipValid, numValid, mobileValidator, isMac, isApp, doubleValid,
-    longitudeValid, latitudeValid, noSValidator, noValidator
+    ipValid, numValid, isMac, isApp, doubleValid, noSValidator, noValidator
   } from '../../assets/js/api.js'
 
   export default {
@@ -162,7 +161,7 @@
         band4: 0,
         wanItem: '3Gnet',
         wanNames: [{name: '启用3G', type: '3Gnet'}, {name: '启用有线', type: 'wired'}],
-        deviceMonitor: {devpos: {height: '', longitude: '', latitude: ''}},
+        deviceMonitor: {devpos: {height: ''}},
         props: {value: 'o', label: 'n', children: 'c'},
         selectedOptions2: [],
         macAddress: "",
@@ -256,28 +255,6 @@
         if (value.length > 0) {
           if (!doubleValid(value)) {
             this.$message.error('请输入正确的高度,小数点后2位');
-            isVaild = false;
-          }
-        }
-        return isVaild;
-      },
-      /** 经度验证*/
-      changeLon(value) {
-        let isVaild = true;
-        if (value.length > 0) {
-          if (!longitudeValid(value)) {
-            this.$message.error('请输入正确的经度');
-            isVaild = false;
-          }
-        }
-        return isVaild;
-      },
-      /** 纬度验证*/
-      changeLat(value) {
-        let isVaild = true;
-        if (value.length > 0) {
-          if (!latitudeValid(value)) {
-            this.$message.error('请输入正确的纬度');
             isVaild = false;
           }
         }
@@ -402,10 +379,8 @@
             } else {
               this.selectedOptions2 = [];
             }
-            this.deviceMonitor.devpos.height = data.data.devpos.height.toFixed(2) + '';
-            this.deviceMonitor.devpos.longitude = data.data.devpos.longitude + '';
-            this.deviceMonitor.devpos.latitude = data.data.devpos.latitude + '';
-            let gsm = data.data.devId.indexOf('ZDKD') == 0 ? 0 : (data.data.devId.indexOf('ZDKB') == 0 || data.data.devId.indexOf('ZDK2') == 0 || data.data.devId.indexOf('ZDKG2')) ? 1 : 2;
+            this.deviceMonitor.devpos.height = parseInt(data.data.devpos.height + '').toFixed(2) + '';
+            let gsm = data.data.devId.indexOf('ZDKD') == 0 ? 0 : (data.data.devId.indexOf('ZDKB') == 0 || data.data.devId.indexOf('ZDG2') == 0) ? 1 : 2;
             sessionStorage.setItem("band4", data.data.band4 ? data.data.band4 : 0);
             sessionStorage.setItem("deviceId", data.data.devId);
             sessionStorage.setItem("hasGsmModule", gsm);
@@ -414,6 +389,7 @@
             this.getBand4();
           }
         }).catch((err) => {
+          console.log(err);
           this.$message.error(err);
           this.$emit('closeLoading');
         });
