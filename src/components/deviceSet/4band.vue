@@ -162,6 +162,10 @@
                 <el-switch v-model="opDeviceParameter.radioSwitch" active-color="#34CBFE"
                            inactive-color="#C1C1C1" :active-value="1" :inactive-value="0"></el-switch>
               </el-form-item>
+              <el-form-item label="增强型侦码" align="left" prop="pciChangeFlag">
+                <el-switch v-model="opDeviceParameter.pciChangeFlag" active-color="#34CBFE"
+                           inactive-color="#C1C1C1" :active-value="1" :inactive-value="0"></el-switch>
+              </el-form-item>
             </el-col>
           </el-row>
         </div>
@@ -449,6 +453,7 @@
             interFreq: [{required: true, message: '请输入异频频点', trigger: "blur"}],
             measRptInterval: [{required: true, message: '请输入测量上报间隔', trigger: "blur"}],
             radioSwitch: [{required: true, message: '请选择无线电开关', trigger: "blur"}],
+            pciChangeFlag: [{required: true, message: '请选择增强型侦码', trigger: "blur"}],
             redirectedEarfcnFrameOffset: [{required: true, message: '请输入重定向频点帧偏移', trigger: "blur"}],
           };
           if (this.activeItem !== 'M') {//移动4G

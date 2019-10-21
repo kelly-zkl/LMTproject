@@ -405,7 +405,7 @@
             this.deviceMonitor.devpos.height = data.data.devpos.height.toFixed(2) + '';
             this.deviceMonitor.devpos.longitude = data.data.devpos.longitude + '';
             this.deviceMonitor.devpos.latitude = data.data.devpos.latitude + '';
-            let gsm = data.data.devId.indexOf('ZDKD') == 0 ? 0 : data.data.devId.indexOf('ZDKB') == 0 ? 1 : 2;
+            let gsm = data.data.devId.indexOf('ZDKD') == 0 ? 0 : (data.data.devId.indexOf('ZDKB') == 0 || data.data.devId.indexOf('ZDK2') == 0 || data.data.devId.indexOf('ZDKG2')) ? 1 : 2;
             sessionStorage.setItem("band4", data.data.band4 ? data.data.band4 : 0);
             sessionStorage.setItem("deviceId", data.data.devId);
             sessionStorage.setItem("hasGsmModule", gsm);

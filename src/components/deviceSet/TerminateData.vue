@@ -19,21 +19,23 @@
           <el-table-column align="center" type="index" label="序号" width="65"></el-table-column>
           <el-table-column align="left" prop="deviceId" label="设备ID" min-width="150" max-width="200"
                            :formatter="formatterAddress"></el-table-column>
-          <el-table-column align="left" prop="imei" label="IMEI" min-width="150" max-width="200"
+          <el-table-column align="left" prop="imei" label="IMEI" min-width="100" max-width="150"
                            :formatter="formatterAddress"></el-table-column>
           <el-table-column align="left" prop="imsi" label="IMSI" min-width="150" max-width="200"
                            :formatter="formatterAddress"></el-table-column>
-          <el-table-column align="left" prop="isp" label="运营商" min-width="100" max-width="150"
+          <el-table-column align="left" prop="isp" label="运营商" min-width="80" max-width="120"
                            :formatter="formatterAddress"></el-table-column>
-          <el-table-column align="left" prop="netType" label="网络类型" min-width="100" max-width="150"
+          <el-table-column align="left" prop="netType" label="网络类型" min-width="80" max-width="120"
                            :formatter="formatterAddress"></el-table-column>
-          <el-table-column align="left" prop="rsrp" label="RSRP" min-width="100" max-width="150"
+          <el-table-column align="left" prop="rsrp" label="RSRP" min-width="80" max-width="120"
                            :formatter="formatterAddress"></el-table-column>
-          <el-table-column align="left" prop="rssi" label="RSSI" min-width="100" max-width="150"
+          <el-table-column align="left" prop="rssi" label="RSSI" min-width="80" max-width="120"
                            :formatter="formatterAddress"></el-table-column>
-          <el-table-column align="left" prop="ta" label="TA" min-width="100" max-width="150"
+          <el-table-column align="left" prop="ta" label="TA" min-width="80" max-width="120"
                            :formatter="formatterAddress"></el-table-column>
-          <el-table-column align="left" prop="msg1ta" label="MSG1TA" min-width="100" max-width="150"
+          <el-table-column align="left" prop="msg1ta" label="MSG1TA" min-width="80" max-width="120"
+                           :formatter="formatterAddress"></el-table-column>
+          <el-table-column align="left" prop="distance" label="DISTANCE" min-width="100" max-width="120"
                            :formatter="formatterAddress"></el-table-column>
           <el-table-column align="left" prop="measNum" label="测量个数" min-width="100" max-width="150"
                            :formatter="formatterAddress"></el-table-column>
@@ -268,7 +270,7 @@
         } else if (column.property == 'isp') {//运营商
           let isp = this.getOperator(row.imsi);
           return isp == 0 ? '移动' : isp == 1 ? '联通' : isp == 2 ? '电信' : '--';
-        } else if (column.property == 'msg1ta' || column.property == 'measNum') {
+        } else if (column.property == 'msg1ta' || column.property == 'measNum' || column.property == 'distance') {
           return row[column.property] == undefined ? '--' : row[column.property];
         } else if (column.property == 'rsrp' || column.property == 'ta' || column.property == 'rssi') {//rsrp、ta、rssi
           return row[column.property] == undefined ? '--' : row[column.property][0];
