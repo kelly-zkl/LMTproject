@@ -6,6 +6,9 @@
           <el-form-item label="操作说明" style="text-align: left;margin-bottom:20px" class="upgrade-tip">
             <div>1、tftpd32.exe和升级包要放在同级目录下；在升级前双击tftpd32.exe打开程序即可，无需其他操作</div>
             <div>2、本地IP需在cmd中，ipconfig查询后手动输入，默认为192.168.99.110</div>
+            <div class="upgrade_result">
+              <pre>{{upgrade_result}}</pre>
+            </div>
           </el-form-item>
           <el-form-item label="升级文件" prop="fileName" style="text-align: left;margin-bottom: 0">
             <el-input v-model="upgrage.fileName" placeholder="请选择升级文件" readonly style="width: 400px">
@@ -24,28 +27,9 @@
             <el-input v-model="upgrage.hostIp" style="width: 400px" placeholder="本地IP" :maxlength="15"></el-input>
           </el-form-item>
           <el-form-item style="text-align: left">
-            <el-button type="primary" size="medium" @click="save()" :disabled="btnDisabled">确认升级</el-button>
+            <el-button type="primary" size="medium" @click="upgrade()" :loading="btnDisabled">确认升级</el-button>
           </el-form-item>
         </el-form>
-      </div>
-      <!--参数是否立即生效-->
-      <div class="popu">
-        <el-dialog title="" :visible.sync="runStartDevice" :width="dialogWidth">
-          <section>
-            <p style="font-size: 16px;padding-bottom: 20px">新的设置需要重启设备才能生效</p>
-            <el-row>
-              <el-col :span="8">
-                <el-button @click="activeNow = 1;upgrade()" type="text" class="left">立即生效</el-button>
-              </el-col>
-              <el-col :span="8">
-                <el-button @click="activeNow = 0;upgrade()" type="text" class="left">稍后生效</el-button>
-              </el-col>
-              <el-col :span="8">
-                <el-button @click="runStartDevice = false" type="text" class="right">取消</el-button>
-              </el-col>
-            </el-row>
-          </section>
-        </el-dialog>
       </div>
     </section>
   </div>
@@ -58,33 +42,20 @@
   export default {
     data() {
       return {
-        runStartDevice: false,//设置完成重启设备
-        dialogWidth: this.$Is_Pc() ? '380px' : '300px', activeNow: 1,
         upgrage: {fileName: '', version: '', hostIp: '192.168.99.110', md5: ''},
-        intervalid: null, btnDisabled: false
+        btnDisabled: false, upgrade_result: null
       }
     },
-    //页面关闭时停止刷新
-    beforeDestroy() {
-      clearInterval(this.intervalid);
-    },
     methods: {
-      //定时刷新升级状态
-      dataTask() {
-        if (!this.intervalid) {
-          this.intervalid = setInterval(() => {
-            this.getUpgradeStatus();
-          }, 10 * 1000);
-        }
-      },
       getUpgradeStatus() {
         let param = {msgId: "b7518c70", type: 4194, cmd: 4701, moduleID: 255, timestamp: new Date().getTime()};
         this.$post(param).then((data) => {
           if ("000000" == data.code) {
+            this.upgrade_result = JSON.stringify(data.data, null, 4);
+            sessionStorage.setItem("upgrade_result", JSON.stringify(data.data));
             //0x1050-成功 0x1052-失败 0x1051-升级中 0-未升级
             if (data.data.result !== 0x1051) {
               this.btnDisabled = false;
-              clearInterval(this.intervalid);
               if (data.data.result == 0x1050) {
                 this.$message({message: '升级成功', type: 'success'});
               } else if (data.data.result == 0x1052) {
@@ -94,14 +65,16 @@
               if (data.data.msgStr.length > 0) {
                 this.$message({message: data.data.msgStr, type: 'success'});
               }
-              this.dataTask();
+              setTimeout(() => {
+                this.getUpgradeStatus();
+              }, 10 * 1000);
             }
           }
         }).catch((error) => {
         });
       },
-      //升级前验证
-      save() {
+      //升级
+      upgrade() {
         if (this.upgrage.fileName.length == 0 || this.upgrage.version.length == 0) {
           this.$message.error('请选择升级包文件');
           return;
@@ -114,14 +87,9 @@
           this.$message.error('请输入正确的IP地址');
           return;
         }
-        this.runStartDevice = true;
-      },
-      //升级
-      upgrade() {
-        this.runStartDevice = false;
         let param = {
-          msgId: "b7518c70", type: 4192, cmd: 4401, moduleID: 0, timestamp: new Date().getTime(),
-          content: this.upgrage, activeNow: this.activeNow
+          msgId: "b7518c70", type: 4192, cmd: 4401, moduleID: 0,
+          timestamp: new Date().getTime(), content: this.upgrage
         };
         this.$emit('openLoading');
         this.$post(param, "命令下发成功").then((data) => {
@@ -205,13 +173,26 @@
       }
     },
     mounted() {
+      let msg = JSON.parse(sessionStorage.getItem("upgrade_result"));
+      this.upgrade_result = JSON.stringify(msg, null, 4);
     }
   }
 </script>
 <style scoped>
   .upgrade-tip div {
     color: #999;
-    font-style: italic;
     font-weight: bold;
+  }
+
+  .upgrade_result {
+    position: absolute;
+    color: #88158F;
+    font-weight: bold;
+    left: 460px;
+    top: 80px;
+  }
+
+  .upgrade_result pre {
+    color: #88158F;
   }
 </style>

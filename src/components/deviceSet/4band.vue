@@ -43,10 +43,9 @@
                   <el-input v-model.number="opDeviceParameter.powerLevel" :maxlength=2></el-input>
                 </el-tooltip>
               </el-form-item>
-              <el-form-item label="最小接入电平" prop="qRxLevMin">
-                <el-tooltip placement="bottom" content="最小接入电平 取值范围：[-70，-22]">
-                  <el-input v-model.number="opDeviceParameter.qRxLevMin" :maxlength=3></el-input>
-                </el-tooltip>
+              <el-form-item label="无线电" align="left">
+                <el-switch v-model="radioSwitch" active-color="#34CBFE"
+                           inactive-color="#C1C1C1" :active-value="1" :inactive-value="0"></el-switch>
               </el-form-item>
             </el-col>
             <el-col :span="11" :offset="2">
@@ -73,10 +72,6 @@
                   <el-radio-button :label="tab.type" v-for="tab in plmns" :key="tab.type">{{tab.name}}
                   </el-radio-button>
                 </el-radio-group>
-              </el-form-item>
-              <el-form-item label="无线电" align="left">
-                <el-switch v-model="radioSwitch" active-color="#34CBFE"
-                           inactive-color="#C1C1C1" :active-value="1" :inactive-value="0"></el-switch>
               </el-form-item>
             </el-col>
           </el-row>
@@ -431,8 +426,7 @@
             reCapFilterPeriod: [{required: true, message: '请输入重复上报间隔', trigger: "blur"},
               {validator: numVal, trigger: "change,blur"}],
             plmn: [{required: true, message: '请选择plmn', trigger: "blur"}],
-            powerLevel: [{required: true, message: '请输入功率衰减', trigger: "blur"}],
-            qRxLevMin: [{required: true, message: '请输入最小接入电平', trigger: "blur"}]
+            powerLevel: [{required: true, message: '请输入功率衰减', trigger: "blur"}]
           }
         } else {//4G
           this.rules = {
@@ -621,11 +615,11 @@
       },
       setParamValidate() {
         if (this.getModuleID() < 0) {
-          if (this.radioSwitch == null || undefined || 'null' || 'undefined' || '') {
+          if (this.radioSwitch == (null || undefined || 'null' || 'undefined' || '')) {
             this.$message.error('请选择无线电开关状态');
             return;
           }
-          if (this.changeTacPeriod(this.opDeviceParameter.tacPeriod) && this.changeBcc(this.opDeviceParameter.bcc) && this.changeqRxLevMin(this.opDeviceParameter.qRxLevMin)
+          if (this.changeTacPeriod(this.opDeviceParameter.tacPeriod) && this.changeBcc(this.opDeviceParameter.bcc)
             && this.changereCapFilterPeriod(this.opDeviceParameter.reCapFilterPeriod) && this.changePowerLevel(this.opDeviceParameter.powerLevel)) {
             this.runStartDevice = true;
           }
