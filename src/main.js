@@ -19,8 +19,8 @@ import 'babel-polyfill';
 axios.defaults.withCredentials = true;
 Vue.config.productionTip = true;
 
-axios.defaults.baseURL = "http://192.168.66.98:8086/ubus";
-// axios.defaults.baseURL = "/ubus";
+// axios.defaults.baseURL = "http://192.168.66.100:8086/ubus";
+axios.defaults.baseURL = "/ubus";
 axios.defaults.timeout = 10 * 1000;
 
 Vue.prototype.$post = function (param, successMsg, failMsg) {

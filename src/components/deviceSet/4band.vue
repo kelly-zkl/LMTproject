@@ -621,7 +621,7 @@
       },
       setParamValidate() {
         if (this.getModuleID() < 0) {
-          if (!this.radioSwitch) {
+          if (this.radioSwitch == null || undefined || 'null' || 'undefined' || '') {
             this.$message.error('请选择无线电开关状态');
             return;
           }

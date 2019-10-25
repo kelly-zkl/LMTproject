@@ -46,7 +46,7 @@
     },
     methods: {
       login() {
-        // let user = {save: this.savePsw, acc: '', psw: ''};
+        // let user = {save: this.savePsw, acc: 'admin', psw: '123456'};
         // localStorage.setItem("user", JSON.stringify(user));
         // sessionStorage.setItem("user", JSON.stringify(user));
         // this.$router.push('/deviceOverview');

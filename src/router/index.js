@@ -7,8 +7,7 @@ import DeviceSet from '../components/deviceSet/DeviceSet.vue';
 import BaseSet from '../components/deviceSet/BaseSet.vue';
 import DeviceOverview from '../components/deviceSet/DeviceOverview.vue';
 import TerminateData from '../components/deviceSet/TerminateData.vue';
-import NetworkSet from '../components/deviceSet/NetworkSet.vue';
-import DiagnosticTool from '../components/deviceSet/DiagnosticTool.vue';
+import DeviceMaintenance from '../components/deviceSet/DeviceMaintenance.vue';
 
 import Login from '../components/Login.vue';
 import PageError from '../components/404.vue';
@@ -54,11 +53,11 @@ export default new Router({
       path: '/',
       name: '',
       component: Home,
-      icon: 'fa fa-dribbble',
+      icon: 'fa fa-medkit',
       index: '4',
       leaf: true,//只有一个节点
       children: [
-        {path: '/networkSet', component: NetworkSet, name: '网络配置', hidden: true},
+        {path: '/dm', component: DeviceMaintenance, name: '设备维护', hidden: true},
       ]
     },
     {
@@ -66,21 +65,10 @@ export default new Router({
       name: '',
       component: Home,
       icon: 'fa fa-cloud',
-      index: '6',
+      index: '5',
       leaf: true,//只有一个节点
       children: [
         {path: '/terminateData', component: TerminateData, name: '侦码数据', hidden: true},
-      ]
-    },
-    {
-      path: '/',
-      name: '',
-      component: Home,
-      icon: 'fa fa-medkit',
-      index: '6',
-      leaf: true,//只有一个节点
-      children: [
-        {path: '/diagnosticTool', component: DiagnosticTool, name: '诊断工具', hidden: true},
       ]
     },
     {

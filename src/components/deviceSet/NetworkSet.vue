@@ -114,7 +114,7 @@
       },
       //WAN标签页的变化
       handleWanClick(val) {
-        if (val == 'static') {
+        if (val == 'dhcp') {
           if (this.isOld) {
             this.setOldIp();
             window.open("http://192.168.99.20");
@@ -122,7 +122,7 @@
         }
         this.networkData.ipMode = val;
         this.clearData();
-        if (this.networkData.ipMode != 'static') {
+        if ((this.networkData.ipMode != 'dhcp' && this.isOld) || !this.isOld) {
           this.save();
         }
       },
@@ -130,7 +130,7 @@
       setOldIp() {
         let param = {
           msgId: "b7518c70", type: 4193, cmd: 4525, moduleID: 255, timestamp: new Date().getTime(),
-          data: {ipMode: 'static', gateway: '192.168.238.2', subMask: '255.255.255.0', deviceIp: '192.168.238.100'},
+          data: {ipMode: 'dhcp', gateway: '192.168.238.2', subMask: '255.255.255.0', deviceIp: '192.168.238.100'},
           activeNow: 0
         };
         this.$emit('openLoading');
@@ -174,13 +174,6 @@
       },
       //保存前验证
       save() {
-        if (this.isOld) {
-          if (this.networkData.ipMode == 'static') {
-            this.setOldIp();
-            window.open("http://192.168.99.20");
-            return;
-          }
-        }
         if (this.networkData.ipMode == 'static') {
           if (!this.changeIpVal(this.networkData.deviceIp) || !this.changeIpVal(this.networkData.subMask) ||
             !this.changeIpVal(this.networkData.gateway)) {
@@ -232,13 +225,11 @@
     mounted() {
       this.isOld = (sessionStorage.getItem("isOld") == 0 ? false : true);
       if (this.isOld == 1) {
-        this.wanNames = [{name: '启用3G', type: 'none'}, {name: '启用有线', type: 'static'}]
+        this.wanNames = [{name: '启用3G', type: 'none'}, {name: '启用有线', type: 'dhcp'}]
       } else {
         this.wanNames = [{name: '启用3G', type: 'none'}, {name: '启用有线自动', type: 'dhcp'},
           {name: '启用有线手动', type: 'static'}]
       }
-      this.clearData();
-      this.getIP();
     }
   }
 </script>
