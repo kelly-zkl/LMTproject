@@ -36,6 +36,10 @@
         this.clickTab();
       },
       clickTab() {
+        this.$nextTick(() => {
+          this.$refs.upgrade.clearTimeOut();
+          this.$refs.upgrade.clearInter();
+        });
         if (this.activeItem == 'net') {
           this.$nextTick(() => {
             this.$refs.net.clearData();

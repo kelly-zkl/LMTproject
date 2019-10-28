@@ -43,18 +43,65 @@
     data() {
       return {
         upgrage: {fileName: '', version: '', hostIp: '192.168.99.110', md5: ''},
-        btnDisabled: false, upgrade_result: null
+        btnDisabled: false, upgrade_result: null, timeOut: null, intervalid: null, checkNum: 0,
+        msgArr: ['结束升级', '开始升级', '下载中', '升级包校验', '生效激活', '版本号校验', '复位生效', '版本替换']
       }
     },
+    destroyed() {
+      this.clearTimeOut();
+      this.clearInter();
+    },
     methods: {
+      //定时刷新设备状态
+      dataTask() {
+        if (!this.intervalid) {
+          this.intervalid = setInterval(() => {
+            this.getUpgradeStatus();
+          }, 10 * 1000);
+        }
+      },
+      clearTimeOut() {
+        clearTimeout(this.timeOut);
+      },
+      clearInter() {
+        clearInterval(this.intervalid);
+      },
+      //保存最新的消息
+      saveMsg(data) {
+        if (data.result === 0x1050) {
+          data.result = '升级成功';
+        } else if (data.result === 0x1051) {
+          data.result = '升级中';
+        } else if (data.result === 0x1052) {
+          data.result = '升级失败';
+        } else if (data.result === 0) {
+          data.result = '未升级';
+        }
+        data.state = this.msgArr[data.state];
+        this.upgrade_result = JSON.stringify(data, null, 4);
+        sessionStorage.setItem("upgrade_result", JSON.stringify(data));
+      },
       getUpgradeStatus() {
         let param = {msgId: "b7518c70", type: 4194, cmd: 4701, moduleID: 255, timestamp: new Date().getTime()};
         this.$post(param).then((data) => {
           if ("000000" == data.code) {
-            this.upgrade_result = JSON.stringify(data.data, null, 4);
-            sessionStorage.setItem("upgrade_result", JSON.stringify(data.data));
+            //保存最新的消息
+            this.saveMsg(Object.assign({}, data.data));
+            //result：0（未升级）查询3次后结束
+            if (data.data.result === 0) {
+              this.checkNum = this.checkNum + 1;
+              if (this.checkNum < 3) {
+                this.clearTimeOut();
+                this.timeOut = setTimeout(() => {
+                  this.getUpgradeStatus();
+                }, 10 * 1000);
+              }
+            } else {
+              this.checkNum = 0;
+            }
             //0x1050-成功 0x1052-失败 0x1051-升级中 0-未升级
             if (data.data.result !== 0x1051) {
+              clearInterval(this.intervalid);
               this.btnDisabled = false;
               if (data.data.result == 0x1050) {
                 this.$message({message: '升级成功', type: 'success'});
@@ -65,9 +112,7 @@
               if (data.data.msgStr.length > 0) {
                 this.$message({message: data.data.msgStr, type: 'success'});
               }
-              setTimeout(() => {
-                this.getUpgradeStatus();
-              }, 10 * 1000);
+              this.dataTask();
             }
           }
         }).catch((error) => {
