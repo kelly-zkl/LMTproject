@@ -165,7 +165,10 @@
           </el-row>
         </div>
       </el-form>
-      <div class="add-appdiv" style="margin-bottom: 0">
+      <div class="add-appdiv" style="margin-bottom:0;padding:15px 30px">
+        <div style="color: red;font-size:13px;text-align: left;margin-bottom: 10px"
+             v-show="frequencyList.length > 1&&activeItem == 'M'">B38/40/41帧偏必须保持一致，否则有频点不上号和干扰公网
+        </div>
         <div v-for="(tab,indx) in frequencyList" :key="indx">
           <el-form :inline="true" align="left" label-width="80px" style="text-align: left">
             <el-form-item v-show="frequencyList.length > 1" style="margin: 0 0 10px 0">
