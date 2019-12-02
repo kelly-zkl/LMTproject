@@ -214,7 +214,7 @@
             if (data.data.devForm.length > 0) {
               this.devForm = this.getDevForm(data.data.devForm);
             }
-            let gsm = data.data.devId.indexOf('ZDKD') == 0 ? 0 : (data.data.devId.indexOf('ZDKB') == 0 || data.data.devId.indexOf('ZDG2') == 0) ? 1 : 2;
+            let gsm = data.data.devId.indexOf('ZDKD') == 0 ? 0 : (data.data.devId.indexOf('ZDKB') == 0 || data.data.devId.indexOf('ZDM2') == 0) ? 1 : 2;
             sessionStorage.setItem("band4", data.data.band4 ? data.data.band4 : 0);
             sessionStorage.setItem("deviceId", data.data.devId);
             sessionStorage.setItem("hasGsmModule", gsm);
