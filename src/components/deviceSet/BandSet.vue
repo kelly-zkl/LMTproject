@@ -25,9 +25,6 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <!--<el-form-item label="上行频点" required>-->
-            <!--<el-input v-model.number="opDeviceParameter.upFrequency" readonly></el-input>-->
-            <!--</el-form-item>-->
             <el-form-item label="下行频点" prop="downFrequency">
               <el-input v-model.number="opDeviceParameter.downFrequency" @change="changeDown"
                         @blur="changeDown"></el-input>
@@ -96,9 +93,6 @@
               <i class="el-icon-remove" @click="minusPlmn(indx)"
                  style="color: #34CBFE;font-size: 20px;text-align: center"></i>
             </el-form-item>
-            <!--<el-form-item label="上行频点" style="margin: 0">-->
-            <!--<el-input v-model.number="tab.upFrequency" :maxlength=10 readonly></el-input>-->
-            <!--</el-form-item>-->
             <el-form-item label="下行频点" style="margin: 0">
               <el-input v-model.number="tab.downFrequency" :maxlength=10 @change="changeTDown($event,indx)"
                         @blur="changeTDown($event,indx)" style="width: 100px" size="small"></el-input>
@@ -148,7 +142,7 @@
 </template>
 
 <script>
-  import {numValid, intValid, hexValidator, mccValidator, pciValidator} from '../../assets/js/api.js'
+  import {numValid, intValid, pciValidator} from '../../assets/js/api.js'
 
   let numVal = (rule, value, callback) => {
     if (!numValid(value)) {
@@ -160,13 +154,6 @@
   let intVal = (rule, value, callback) => {
     if (!intValid(value)) {
       callback(new Error("只能输入整数"));
-    } else {
-      callback();
-    }
-  };
-  let hexValid = (rule, value, callback) => {
-    if (!hexValidator(value)) {
-      callback(new Error("只能输入0001－FFFE"));
     } else {
       callback();
     }
@@ -194,8 +181,6 @@
           bandWidth: [{required: true, message: '请选择带宽', trigger: "change,blur"}],
           downFrequency: [{required: true, message: '请输入下行频点', trigger: "change,blur"},
             {validator: numVal, trigger: "change,blur"}],
-          // tac: [{required: true, message: '请输入tac', trigger: "change,blur"},
-          //   {validator: hexValid, trigger: "change,blur"}],
           pci: [{required: true, message: '请输入pci', trigger: "change,blur"},
             {validator: pciValid, trigger: "change,blur"}],
           tacPeroid: [{required: true, message: '请输入TAC周期', trigger: "change,blur"},
@@ -277,30 +262,12 @@
       },
       //默认数据
       clearData() {
-//        if (this.activeItem == 'M') {//移动4G38/40
-//          this.opDeviceParameter = {
-//            band: 38, pci: 5, tac: 1, isp: 'M', paAtt: 15, frameOffset: 0,
-//            tacPeriod: 180, bandWidth: 5, upFrequency: 37900, downFrequency: 37900
-//          };
-//        } else if (this.activeItem == 'U') {//联通4G
-//          this.opDeviceParameter = {
-//            band: 3, pci: 6, tac: 1, isp: 'U', paAtt: 15,
-//            tacPeriod: 180, bandWidth: 3, upFrequency: 19650, downFrequency: 1650
-//          };
-//        } else {//电信4G
-//          this.opDeviceParameter = {
-//            band: 1, pci: 7, tac: 1, isp: 'T', paAtt: 15,
-//            tacPeriod: 180, bandWidth: 3, upFrequency: 18100, downFrequency: 100
-//          };
-//        }
         if (this.activeItem == 'M') {//移动4G38/40
           this.rules = {
             band: [{required: true, message: '请选择band值', trigger: "change,blur"}],
             bandWidth: [{required: true, message: '请选择带宽', trigger: "change,blur"}],
             downFrequency: [{required: true, message: '请输入下行频点', trigger: "change,blur"},
               {validator: numVal, trigger: "change,blur"}],
-            // tac: [{required: true, message: '请输入tac', trigger: "change,blur"},
-            //   {validator: hexValid, trigger: "change,blur"}],
             pci: [{required: true, message: '请输入pci', trigger: "change,blur"},
               {validator: pciValid, trigger: "change,blur"}],
             tacPeroid: [{required: true, message: '请输入TAC周期', trigger: "change,blur"},
@@ -319,8 +286,6 @@
             bandWidth: [{required: true, message: '请选择带宽', trigger: "change,blur"}],
             downFrequency: [{required: true, message: '请输入下行频点', trigger: "change,blur"},
               {validator: numVal, trigger: "change,blur"}],
-            // tac: [{required: true, message: '请输入tac', trigger: "change,blur"},
-            //   {validator: hexValid, trigger: "change,blur"}],
             pci: [{required: true, message: '请输入pci', trigger: "change,blur"},
               {validator: pciValid, trigger: "change,blur"}],
             tacPeroid: [{required: true, message: '请输入TAC周期', trigger: "change,blur"},

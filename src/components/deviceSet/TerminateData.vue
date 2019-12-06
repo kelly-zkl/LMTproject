@@ -100,19 +100,14 @@
         }
       };
       return {
-        listLoading1: false,
-        runningSetBlack: false,
-        dialogWidth: this.$Is_Pc() ? '50%' : '90%',
-        list: [],
-        blackList: [],
-        sels: [],
+        listLoading1: false, runningSetBlack: false,
+        dialogWidth: this.$Is_Pc() ? '50%' : '90%', intervalid: null,
+        list: [], blackList: [], sels: [], device: {imsi: ''},
         rules: {
           imsi: [
             {required: true, message: '请输入黑名单', trigger: 'blur'}, {validator: imsiValidator, trigger: "change,blur"}
           ]
-        },
-        device: {imsi: ''},
-        intervalid: null
+        }
       }
     },
     //页面关闭时停止刷新

@@ -35,7 +35,7 @@
             <el-col :span="12">
               <h4 style="text-align: left;margin-top: 0">设备控制</h4>
               <el-form-item label="重启" align="left" style="margin: 0">
-                <el-button type="primary" size="medium" @click="runStartDevice = true">重启</el-button>
+                <el-button type="primary" size="medium" @click="restartDevice()">重启</el-button>
               </el-form-item>
             </el-col>
           </el-row>
@@ -129,23 +129,6 @@
           </el-row>
         </div>
       </el-form>
-      <!--重启设备-->
-      <div class="popu">
-        <el-dialog title="" :visible.sync="runStartDevice" :width="dialogWidth">
-          <section>
-            <p style="font-size: 16px;padding-bottom: 20px">确认重启设备？</p>
-            <el-row>
-              <el-col :span="12">
-                <el-button @click="restartDevice" type="text" class="left" size="medium" :loading="loading">重启
-                </el-button>
-              </el-col>
-              <el-col :span="12">
-                <el-button @click="runStartDevice = false" type="text" class="right">取消</el-button>
-              </el-col>
-            </el-row>
-          </section>
-        </el-dialog>
-      </div>
     </section>
   </div>
 </template>
@@ -154,20 +137,11 @@
   export default {
     data() {
       return {
-        deviceParam: {},
-        boardParam: {},
-        subParam: {},
-        deviceMonitor: {},
-        devForm: '--',
-        devType: '--',
-        loading: false,
-        runStartDevice: false,//重启设备
-        activeItem: 'T',
+        deviceParam: {}, boardParam: {}, subParam: {}, deviceMonitor: {}, devForm: '--',
+        loading: false, activeItem: 'T', intervalid: null, dialogWidth: this.$Is_Pc() ? '380px' : '300px',
         activeName: [{name: '电信', type: 'T'}, {name: '移动', type: 'M'}, {name: '联通', type: 'U'}],
-        dialogWidth: this.$Is_Pc() ? '380px' : '300px',
         devForms: [{code: "ENHANCED_OUTDOOR_POLE", name: "增强室外抱杆型"}, {code: "CON_OUTDOOR_MOCRO", name: "室外微热点"},
-          {code: "MID_OUTDOOR_POLE", name: "中功率卡口"}, {code: 'CON_OUTDOOR_POLE', name: '通用室外抱杆型'}],
-        intervalid: null
+          {code: "MID_OUTDOOR_POLE", name: "中功率卡口"}, {code: 'CON_OUTDOOR_POLE', name: '通用室外抱杆型'}]
       }
     },
     //页面关闭时停止刷新
@@ -190,18 +164,7 @@
       },
       //重启设备
       restartDevice() {
-        this.runStartDevice = false;
-        let param = {msgId: "b7518c70", type: 4192, cmd: 4526, moduleID: 255, timestamp: new Date().getTime()};
-        this.$emit('openLoading');
-        this.$post(param).then((data) => {
-          this.$emit('closeLoading');
-          if ("000000" == data.code) {
-            this.$message({message: '设备正在重启，请稍后...', type: 'success'});
-          }
-        }).catch((err) => {
-          this.$message.error(err);
-          this.$emit('closeLoading');
-        });
+        this.$emit('showDialog', false, true, '确认重启设备？');
       },
       //获取设备基本信息
       getDeviceParam() {
@@ -215,21 +178,41 @@
               this.devForm = this.getDevForm(data.data.devForm);
             }
             let gsm = data.data.devId.indexOf('ZDKD') == 0 ? 0 : (data.data.devId.indexOf('ZDKB') == 0 || data.data.devId.indexOf('ZDM2') == 0) ? 1 : 2;
-            sessionStorage.setItem("band4", data.data.band4 ? data.data.band4 : 0);
+            sessionStorage.setItem("band4", data.data.band4 ? data.data.band4 : 1);
             sessionStorage.setItem("deviceId", data.data.devId);
             sessionStorage.setItem("hasGsmModule", gsm);
             sessionStorage.setItem("hasPaModule", data.data.hasPaModule ? data.data.hasPaModule : 0);
             sessionStorage.setItem("isOld", data.data.setWifiStaticIp);
-            if (data.data.hasGsmModule == 1) {
-              this.activeName = [{name: '电信', type: 'T'}, {name: '移动', type: 'M'},
-                {name: '联通', type: 'U'}, {name: 'GSM', type: 'G'}];
-            }
-            this.$emit('showDialog', false, false);
+            sessionStorage.setItem("devCfg", data.data.devCfg ? data.data.devCfg : 0);
+            this.getTableItem(data.data.devCfg, gsm);
           }
         }).catch((err) => {
           this.$message.error(err);
           this.$emit('closeLoading');
         });
+      },
+      //获取设备的子卡   有devCfg参数时，根据devCfg判断；没有按照原来的就判断
+      getTableItem(devCfg, hasGsmModule) {
+        if (devCfg) {
+          this.activeName = [];
+          if (devCfg.indexOf('T') >= 0) {
+            this.activeName.push({name: '电信', type: 'T'});
+          }
+          if (devCfg.indexOf('M') >= 0) {
+            this.activeName.push({name: '移动', type: 'M'});
+          }
+          if (devCfg.indexOf('U') >= 0) {
+            this.activeName.push({name: '联通', type: 'U'});
+          }
+          if (devCfg.indexOf('G') >= 0) {
+            this.activeName.push({name: 'GSM', type: 'G'});
+          }
+        } else {
+          if (hasGsmModule == 1) {
+            this.activeName = [{name: '电信', type: 'T'}, {name: '移动', type: 'M'},
+              {name: '联通', type: 'U'}, {name: 'GSM', type: 'G'}];
+          }
+        }
       },
       getDevForm(val) {
         for (let item of this.devForms) {

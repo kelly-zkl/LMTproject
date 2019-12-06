@@ -78,7 +78,7 @@
           <el-col :span="24">
             <transition name="fade" mode="out-in">
               <router-view @showDialog="showDialog" @openLoading="openLoading"
-                           @closeLoading="closeLoading"></router-view>
+                           @closeLoading="closeLoading" @getTableItem="getTableItem"></router-view>
             </transition>
           </el-col>
         </div>
@@ -93,8 +93,7 @@
     data() {
       return {
         userName: JSON.parse(sessionStorage.getItem("user")).acc || '--',
-        loading: false,
-        isCollapse: false,
+        loading: false, isCollapse: false,
         runConnectDevice: false,//未连接到设备
         runStartDevice: false,//设置完成重启设备
         collapseWidth: '160px',
@@ -159,6 +158,28 @@
         if (text) {
           this.msg = text;
         }
+      },
+      //获取设备的子卡数量
+      getTableItem(devCfg, val) {
+        let tableItems = [];
+        if (devCfg.indexOf('G') >= 0) {
+          if (val == 0) {
+            tableItems.push({moduleID: -1, name: '移动（GSM）', type: 'GSMCMCC'});
+            tableItems.push({moduleID: -1, name: '联通（GSM）', type: 'GSMCMUC'});
+          } else {
+            tableItems.push({name: 'GSM', type: 'G'});
+          }
+        }
+        if (devCfg.indexOf('M') >= 0) {
+          tableItems.push({moduleID: 0, name: '移动', type: 'M'});
+        }
+        if (devCfg.indexOf('U') >= 0) {
+          tableItems.push({moduleID: 1, name: '联通', type: 'U'});
+        }
+        if (devCfg.indexOf('T') >= 0) {
+          tableItems.push({moduleID: 2, name: '电信', type: 'T'});
+        }
+        return tableItems;
       }
     },
     mounted() {

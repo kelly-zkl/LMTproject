@@ -95,18 +95,12 @@
   export default {
     data() {
       return {
-        dialogWidth: this.$Is_Pc() ? '380px' : '300px',
-        runStartDevice: false,
-        runCellList: false,
-        networkData: [],
-        cells: [],
-        activeNow: 1,
+        dialogWidth: this.$Is_Pc() ? '380px' : '300px', runStartDevice: false, runCellList: false,
+        networkData: [], cells: [], activeNow: 1, listLoading: false, activeItem: "GSMCMCC",
         gsmSniffer: {
           snifferMode: 0, selectFreqMode: 10, snifferCycle: 1,
           runTime: new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds()
         },
-        listLoading: false,
-        activeItem: "GSMCMCC",
         activeName: [{name: '移动(GSM)', type: 'GSMCMCC'}, {name: '联通(GSM)', type: 'GSMCMUC'}],
         autoBccModes: [{value: 10, label: '手动配置'}, {value: 2, label: '周围宏站选次弱'}, {value: 8, label: '宏站邻区选次弱'}],
         snifferModes: [{value: 0, label: '手动'}, {value: 1, label: '自动'}],

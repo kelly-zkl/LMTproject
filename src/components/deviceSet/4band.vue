@@ -243,15 +243,15 @@
           <p style="font-size: 16px;padding-bottom: 20px">新的设置需要重启移动基带板才能生效</p>
           <el-row>
             <el-col :span="8">
-              <el-button @click="activeNow = 1;saveGsm()" type="text" class="left" v-show="getModuleID()<0">立即生效
+              <el-button @click="activeNow = 1;saveGsm()" type="text" class="left" v-if="getModuleID()<0">立即生效
               </el-button>
-              <el-button @click="activeNow = 1;updateParam()" type="text" class="left" v-show="getModuleID()>=0">立即生效
+              <el-button @click="activeNow = 1;updateParam()" type="text" class="left" v-if="getModuleID()>=0">立即生效
               </el-button>
             </el-col>
             <el-col :span="8">
-              <el-button @click="activeNow = 0;saveGsm()" type="text" class="left" v-show="getModuleID()<0">稍后生效
+              <el-button @click="activeNow = 0;saveGsm()" type="text" class="left" v-if="getModuleID()<0">稍后生效
               </el-button>
-              <el-button @click="activeNow = 0;updateParam()" type="text" class="left" v-show="getModuleID()>=0">稍后生效
+              <el-button @click="activeNow = 0;updateParam()" type="text" class="left" v-if="getModuleID()>=0">稍后生效
               </el-button>
             </el-col>
             <el-col :span="8">
@@ -292,8 +292,7 @@
   export default {
     data() {
       return {
-        hasGsmModule: 0, runStartDevice: false,
-        dialogWidth: this.$Is_Pc() ? '380px' : '300px',
+        runStartDevice: false, dialogWidth: this.$Is_Pc() ? '380px' : '300px',
         activeNow: 1, has34: true, activeItem: 'GSMCMCC',
         opDeviceParameter: {}, frequencyList: [], rules: {},
         activeName: [{moduleID: -1, name: '移动（GSM）', type: 'GSMCMCC'},
@@ -844,23 +843,47 @@
         }).catch((error) => {
           this.$emit('closeLoading');
         });
-      }
+      },
+      //获取设备的子卡   有devCfg参数时，根据devCfg判断；没有按照原来的就判断
+      getTableItem(devCfg, hasGsmModule) {
+        if (devCfg != 0) {//根据devCfg判断
+          this.activeName = [];
+          if (devCfg.indexOf('G') >= 0) {
+            this.activeName.push({moduleID: -1, name: '移动（GSM）', type: 'GSMCMCC'});
+            this.activeName.push({moduleID: -1, name: '联通（GSM）', type: 'GSMCMUC'});
+          }
+          if (devCfg.indexOf('M') >= 0) {
+            this.activeName.push({moduleID: 0, name: '移动', type: 'M'});
+          }
+          if (devCfg.indexOf('U') >= 0) {
+            this.activeName.push({moduleID: 1, name: '联通', type: 'U'});
+          }
+          if (devCfg.indexOf('T') >= 0) {
+            this.activeName.push({moduleID: 2, name: '电信', type: 'T'});
+          }
+          this.activeItem = this.activeName[0].type;
+        } else {//兼容之前的旧版本
+          if (hasGsmModule == 0) {//只有2个标签
+            this.activeName = [{moduleID: 0, name: '移动', type: 'M'}, {moduleID: 1, name: '联通', type: 'U'}];
+            this.activeItem = 'M';
+          } else if (hasGsmModule == 1) {//有GSM
+            this.activeName = [{moduleID: -1, name: '移动（GSM）', type: 'GSMCMCC'},
+              {moduleID: -1, name: '联通（GSM）', type: 'GSMCMUC'}, {moduleID: 0, name: '移动', type: 'M'},
+              {moduleID: 1, name: '联通', type: 'U'}, {moduleID: 2, name: '电信', type: 'T'}];
+            this.activeItem = 'GSMCMCC';
+          } else {//没有GSM
+            this.activeName = [{moduleID: 0, name: '移动', type: 'M'},
+              {moduleID: 1, name: '联通', type: 'U'}, {moduleID: 2, name: '电信', type: 'T'}];
+            this.activeItem = 'M';
+          }
+        }
+      },
     },
     mounted() {
-      this.hasGsmModule = sessionStorage.getItem("hasGsmModule");
-      if (this.hasGsmModule == 0) {//只有2个标签
-        this.activeName = [{moduleID: 0, name: '移动', type: 'M'}, {moduleID: 1, name: '联通', type: 'U'}];
-        this.activeItem = 'M';
-      } else if (this.hasGsmModule == 1) {//有GSM
-        this.activeName = [{moduleID: -1, name: '移动（GSM）', type: 'GSMCMCC'},
-          {moduleID: -1, name: '联通（GSM）', type: 'GSMCMUC'}, {moduleID: 0, name: '移动', type: 'M'},
-          {moduleID: 1, name: '联通', type: 'U'}, {moduleID: 2, name: '电信', type: 'T'}];
-        this.activeItem = 'GSMCMCC';
-      } else {//没有GSM
-        this.activeName = [{moduleID: 0, name: '移动', type: 'M'},
-          {moduleID: 1, name: '联通', type: 'U'}, {moduleID: 2, name: '电信', type: 'T'}];
-        this.activeItem = 'M';
-      }
+      let hasGsmModule = sessionStorage.getItem("hasGsmModule");
+      let devCfg = sessionStorage.getItem("devCfg");
+      this.getTableItem(devCfg, hasGsmModule);
+
       let deviceId = sessionStorage.getItem("deviceId");
       if (deviceId.indexOf('ZDK') == 0) {//卡口
         this.has34 = true;

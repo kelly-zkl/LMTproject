@@ -42,32 +42,6 @@
             {{deviceMonitor.mac ? deviceMonitor.mac : "未上报"}}
           </el-form-item>
         </div>
-        <!--<div class="content add-appdiv" v-if="band4 == 1">-->
-        <!--<h4 style="text-align: left;border-left: #33CCFF 3px solid;margin-top: 0;padding-left: 5px">-->
-        <!--GPS配置-->
-        <!--</h4>-->
-        <!--<el-form-item label="GPS" style="text-align: left;margin: 0">-->
-        <!--<el-radio-group size="medium" v-model="gpsParam.timingMode" style="margin-right: 10px">-->
-        <!--<el-radio-button :label="1">GPS同步</el-radio-button>-->
-        <!--<el-radio-button :label="2">空口同步</el-radio-button>-->
-        <!--</el-radio-group>-->
-        <!--<el-input v-model.number="gpsParam.gpsOffset" placeholder="请输入帧头偏移" :maxlength="20"-->
-        <!--style="width: 200px" v-show="gpsParam.timingMode==1"></el-input>-->
-        <!--<el-button @click="saveGps()" size="medium" type="primary" style="margin-left: 10px">设置-->
-        <!--</el-button>-->
-        <!--</el-form-item>-->
-        <!--</div>-->
-        <!--<div class="content add-appdiv">-->
-        <!--<h4 style="text-align: left;border-left: #33CCFF 3px solid;margin-top: 0;padding-left: 5px">-->
-        <!--WAN口网络配置-->
-        <!--</h4>-->
-        <!--<el-form-item label="网络模式" align="left" style="text-align: left;margin: 0">-->
-        <!--<el-radio-group v-model="wanItem" @change="handleWanClick" align="left" size="medium">-->
-        <!--<el-radio-button :label="tab.type" v-for="tab in wanNames" :key="tab.type">{{tab.name}}-->
-        <!--</el-radio-button>-->
-        <!--</el-radio-group>-->
-        <!--</el-form-item>-->
-        <!--</div>-->
         <div class="content add-appdiv">
           <h4 style="text-align: left;border-left: #33CCFF 3px solid;margin-top: 0;padding-left: 5px">配置服务器</h4>
           <el-form-item label="IP地址" style="margin-left: 20px" prop="serverip" align="left">
@@ -90,23 +64,6 @@
       </el-form>
       <div class="main-footer">
         <el-button type="primary" @click="saveSet">保存设置</el-button>
-      </div>
-      <!--修改MAC地址-->
-      <div class="popu">
-        <el-dialog title="" :visible.sync="runModifyMAC" :width="dialogWidth">
-          <section>
-            <p style="font-size: 16px;padding-bottom: 20px">确定修改MAC地址？</p>
-            <el-row>
-              <el-col :span="12">
-                <el-button @click="modifyMAC()" type="text" class="left">确定</el-button>
-              </el-col>
-              <el-col :span="12">
-                <el-button @click="cancelMac()" type="text" class="right">取消
-                </el-button>
-              </el-col>
-            </el-row>
-          </section>
-        </el-dialog>
       </div>
     </section>
   </div>
@@ -141,33 +98,10 @@
           callback();
         }
       };
-      let idValidator = (rule, value, callback) => {
-        if (noValidator(value)) {
-          callback(new Error("请输入正确的设备id，由英文字母、数字、下划线、横线组成"));
-        } else {
-          callback();
-        }
-      };
-      let devValidator = (rule, value, callback) => {
-        if (noSValidator(value)) {
-          callback(new Error("请输入正确的设备名称，由汉字、数字、英文字母、下划线、横线组成"));
-        } else {
-          callback();
-        }
-      };
       return {
-        runModifyMAC: false,//修改MAC地址
         isShow: true,
-        band4: 0,
-        wanItem: '3Gnet',
-        wanNames: [{name: '启用3G', type: '3Gnet'}, {name: '启用有线', type: 'wired'}],
-        deviceMonitor: {devpos: {height: ''}},
-        props: {value: 'o', label: 'n', children: 'c'},
-        selectedOptions2: [],
-        macAddress: "",
-        provinceList: json,
-        dialogWidth: this.$Is_Pc() ? '380px' : '300px',
-        gpsParam: {timingMode: 2, gpsOffset: 0},
+        deviceMonitor: {devpos: {height: ''}}, props: {value: 'o', label: 'n', children: 'c'},
+        selectedOptions2: [], macAddress: "", provinceList: json,
         rules: {
           serverip: [{required: true, message: '请输入IP地址', trigger: 'blur'},
             {validator: ipValidator, trigger: "change,blur"}],
@@ -181,41 +115,6 @@
       }
     },
     methods: {
-      handleWanClick(val) {
-        this.wanItem = val;
-        this.setNetType();
-      },
-      //获取GPS参数
-      // getGps() {
-      //   let param = {msgId: "b7518c70", type: 4194, cmd: 4535, moduleID: 3, timestamp: new Date().getTime()};
-      //   this.$emit('openLoading');
-      //   this.$post(param).then((data) => {
-      //     this.$emit('closeLoading');
-      //     if ("000000" == data.code && data.data) {
-      //       this.gpsParam = data.data;
-      //     }
-      //   }).catch((err) => {
-      //     this.$message.error(err);
-      //     this.$emit('closeLoading');
-      //   });
-      // },
-      //设置gps
-      saveGps() {
-        if (this.gpsParam.timingMode == 1 && (!this.gpsParam.gpsOffset || this.gpsParam.gpsOffset.length == 0)) {
-          this.$message.error('请输入帧头偏移');
-          return;
-        }
-        let param = {
-          msgId: "b7518c70", type: 4193, cmd: 4534, timestamp: new Date().getTime(), data: this.gpsParam
-        };
-        this.$emit('openLoading');
-        this.$post(param, "命令下发成功").then((data) => {
-          this.$emit('closeLoading');
-        }).catch((err) => {
-          this.$message.error(err);
-          this.$emit('closeLoading');
-        });
-      },
       //省市县变化
       areaChange(value) {
         this.selectedOptions2 = value;
@@ -234,20 +133,6 @@
           this.deviceMonitor.areaCode = value[2];
           this.deviceMonitor.townCode = value[3];
         }
-      },
-      /** 验证输入的mac地址*/
-      changeMAC(val) {
-        let isVaild = true;
-        if (val.length > 0) {
-          if (!isMac(val)) {
-            this.$message.error('请输入正确的mac地址');
-            isVaild = false;
-          }
-        } else {
-          this.$message.error('请输入mac地址');
-          isVaild = false;
-        }
-        return isVaild;
       },
       /**只能输入小数点后2位--》高度*/
       checkHeight(value) {//^[0-9]+(\.[0-9]{1,3})?$
@@ -307,64 +192,6 @@
           });
         });
       },
-      //修改MAC地址
-      modifyMAC() {
-        this.runModifyMAC = false;
-        let param = {
-          msgId: "b7518c70", type: 4193, cmd: 4522, moduleID: 255, timestamp: new Date().getTime(),
-          data: {mac: this.deviceMonitor.mac}
-        };
-        this.$emit('openLoading');
-        this.$post(param, "命令下发成功").then((data) => {
-          this.$emit('closeLoading');
-          if ("000000" == data.code) {
-            this.isShow = true;
-            this.macAddress = this.deviceMonitor.mac;
-          }
-        }).catch((error) => {
-          this.$emit('closeLoading');
-          this.deviceMonitor.mac = this.macAddress;
-          this.isShow = true;
-        });
-      },
-      updateMAC() {
-        if (this.deviceMonitor.mac) {
-          if (!this.changeMAC(this.deviceMonitor.mac)) {
-            return;
-          }
-        }
-        this.runModifyMAC = true;
-      },
-      cancelMac() {
-        this.deviceMonitor.mac = this.macAddress;
-        this.runModifyMAC = false;
-        this.isShow = true;
-      },
-      //设置网络类型
-      setNetType() {
-        let type = (this.wanItem == "wired" ? 0 : 1);
-        this.$emit('openLoading');
-        let param = {
-          msgId: "b7518c70", type: 4193, cmd: 4530, moduleID: 255, timestamp: new Date().getTime(),
-          data: {wireless: type}
-        };
-        this.$post(param, "网络类型设置下发成功").then((data) => {
-          this.$emit('closeLoading');
-        }).catch((err) => {
-          this.$emit('closeLoading');
-        })
-      },
-      //获取网络类型
-      getNetType() {
-        let param = {msgId: "b7518c70", type: 4194, cmd: 4531, moduleID: 255, timestamp: new Date().getTime()};
-        this.$post(param).then((data) => {
-          if ("000000" == data.code && data.data) {//"wireless": 1/0,	1为3G，0为固网
-            this.wanItem = (data.data.wireless == 0 ? "wired" : "3Gnet");
-          }
-        }).catch((err) => {
-          this.$message.error(err);
-        });
-      },
       //获取设备基本信息
       getDeviceParam() {
         let param = {msgId: 'b7518c70', type: 4194, cmd: 4521, moduleID: 255, timestamp: new Date().getTime()};
@@ -381,30 +208,22 @@
             }
             this.deviceMonitor.devpos.height = parseInt(data.data.devpos.height + '').toFixed(2) + '';
             let gsm = data.data.devId.indexOf('ZDKD') == 0 ? 0 : (data.data.devId.indexOf('ZDKB') == 0 || data.data.devId.indexOf('ZDM2') == 0) ? 1 : 2;
-            sessionStorage.setItem("band4", data.data.band4 ? data.data.band4 : 0);
+            sessionStorage.setItem("band4", data.data.band4 ? data.data.band4 : 1);
             sessionStorage.setItem("deviceId", data.data.devId);
             sessionStorage.setItem("hasGsmModule", gsm);
             sessionStorage.setItem("hasPaModule", data.data.hasPaModule ? data.data.hasPaModule : 0);
             sessionStorage.setItem("isOld", data.data.setWifiStaticIp);
-            this.getBand4();
+            sessionStorage.setItem("devCfg", data.data.devCfg ? data.data.devCfg : 0);
           }
         }).catch((err) => {
           console.log(err);
           this.$message.error(err);
           this.$emit('closeLoading');
         });
-      },
-      getBand4() {
-        this.band4 = sessionStorage.getItem("band4");
       }
     },
     mounted() {
       this.getDeviceParam();
-      // this.getNetType();
-      this.band4 = sessionStorage.getItem("band4");
-      // if (this.band4 == 1) {
-      //   this.getGps();
-      // }
     }
   }
 </script>

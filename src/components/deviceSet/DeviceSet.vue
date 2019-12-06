@@ -20,34 +20,7 @@
             <PaSet @openLoading="openLoading" @closeLoading="closeLoading" ref="paset"></PaSet>
           </el-tab-pane>
         </el-tabs>
-        <!--<div style="position: absolute;top: 30px;right: 30px">-->
-        <!--<span style="color: #999;font-size: 15px;margin-right: 10px">{{snifer.auto ? '已开启' : '关闭'}}</span>-->
-        <!--<el-button type="primary" @click="getSniffer()">自动扫频</el-button>-->
-        <!--</div>-->
       </div>
-      <!--自动扫频-->
-      <el-dialog title="自动扫频设置" :visible.sync="runSetSniffer" :width="dialWidth" class="gray-form">
-        <el-form label-width="120px" label-position="right" :model="sniffer">
-          <el-form-item label="自动扫频" align="left">
-            <el-switch v-model="sniffer.snifferStart" :active-value="1" :inactive-value="0"
-                       active-color="#34CBFE" inactive-color="#bbb"></el-switch>
-          </el-form-item>
-          <el-form-item label="扫频模式" align="left" v-show="sniffer.snifferStart==1">
-            <el-radio-group v-model="sniffer.snifferMode">
-              <el-radio :label="0">开机自动扫频</el-radio>
-              <el-radio :label="1">定时扫频</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item v-show="sniffer.snifferStart==1 && sniffer.snifferMode == 1" align="left">
-            <el-time-picker v-model="sniffer.startTime" :picker-options="{selectableRange: '00:00:00 - 23:59:59'}"
-                            placeholder="任意时间点" value-format="HH:mm:ss">
-            </el-time-picker>
-          </el-form-item>
-        </el-form>
-        <div class="main-footer">
-          <el-button @click="setSniffer()" type="primary">保存</el-button>
-        </div>
-      </el-dialog>
     </section>
   </div>
 </template>
@@ -61,13 +34,7 @@
   export default {
     data() {
       return {
-        band4: 0,
-        hasGsmModule: 0,
-        hasPaModule: 0,
-        activeItem: 'band',
-        dialWidth: this.$Is_Pc() ? '40%' : '90%',
-        runSetSniffer: false,
-        sniffer: {snifferStart: 0, snifferMode: 0, startTime: ''}
+        band4: 0, hasGsmModule: 0, hasPaModule: 0, activeItem: 'band'
       }
     },
     methods: {
@@ -112,46 +79,17 @@
       closeLoading() {
         this.$emit('closeLoading');
       },
-      //设置自动扫频
-      setSniffer() {
-        if (this.sniffer.snifferMode == 1) {
-          if (!this.sniffer.startTime) {
-            this.$message.error('请选择扫频时间');
-            return;
-          }
-        }
-
-        let param = {msgId: "b7518c70", type: 4193, cmd: 4532, timestamp: new Date().getTime(), data: this.sniffer};
-        this.runSetSniffer = false;
-        this.$emit('openLoading');
-        this.$post(param, "命令下发成功").then((data) => {
-          this.$emit('closeLoading');
-        }).catch((error) => {
-          this.$emit('closeLoading');
-        });
-      },
-      //获取自动扫频参数
-      getSniffer() {
-        this.$emit('openLoading');
-        let param = {msgId: "b7518c70", type: 4194, cmd: 4533, timestamp: new Date().getTime()};
-        this.$post(param).then((data) => {
-          this.$emit('closeLoading');
-          if ("000000" == data.code) {
-            this.runSetSniffer = true;
-            this.sniffer = data.data;
-          }
-        }).catch((err) => {
-          this.$emit('closeLoading');
-          this.$message.error(err);
-          this.runSetSniffer = true;
-          this.sniffer = {snifferStart: 0, snifferMode: 0, startTime: ''};
-        });
+      getTableItem(devCfg, type) {
+        this.$emit('getTableItem', devCfg, type);
       }
     },
     mounted() {
       this.band4 = sessionStorage.getItem("band4");
-      this.hasGsmModule = sessionStorage.getItem("hasGsmModule");
-      this.hasPaModule = sessionStorage.getItem("hasPaModule");
+      let hasGsmModule = sessionStorage.getItem("hasGsmModule");
+      let hasPaModule = sessionStorage.getItem("hasPaModule");
+      let devCfg = sessionStorage.getItem("devCfg");
+      this.hasGsmModule = devCfg != 0 ? devCfg.indexOf('G') >= 0 ? 1 : 0 : hasGsmModule;
+      this.hasPaModule = devCfg != 0 ? devCfg.indexOf('P') >= 0 ? 1 : 0 : hasPaModule;
 
       if (this.band4 == 1) {
         this.activeItem = 'band4';

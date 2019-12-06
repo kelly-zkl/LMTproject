@@ -10,16 +10,6 @@
             <el-switch v-model="item.dlSwitch" active-color="#34CBFE" inactive-color="#bbb" :active-value="1"
                        :inactive-value="0"></el-switch>
           </el-form-item>
-          <!--<el-form-item label="功放等级" align="left" style="margin-left: 15px">-->
-          <!--<el-radio-group v-model="item.dlPower">-->
-          <!--<el-radio-button :label="0">6</el-radio-button>-->
-          <!--<el-radio-button :label="3">5</el-radio-button>-->
-          <!--<el-radio-button :label="6">4</el-radio-button>-->
-          <!--<el-radio-button :label="9">3</el-radio-button>-->
-          <!--<el-radio-button :label="12">2</el-radio-button>-->
-          <!--<el-radio-button :label="15">1</el-radio-button>-->
-          <!--</el-radio-group>-->
-          <!--</el-form-item>-->
         </el-form>
         <el-row style="margin-top: 15px">
           <el-col :span="10">

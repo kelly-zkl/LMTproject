@@ -27,8 +27,7 @@
     components: {NetworkSet, DiagnosticTool, DeviceUpgrade},
     data() {
       return {
-        activeItem: 'net',
-        upgrade: true
+        activeItem: 'net', upgrade: true
       }
     },
     methods: {
@@ -36,10 +35,13 @@
         this.clickTab();
       },
       clickTab() {
-        this.$nextTick(() => {
-          this.$refs.upgrade.clearTimeOut();
-          this.$refs.upgrade.clearInter();
-        });
+        if (this.upgrade) {
+          this.$nextTick(() => {
+            this.$refs.upgrade.clearTimeOut();
+            this.$refs.upgrade.clearInter();
+          });
+        }
+
         if (this.activeItem == 'net') {
           this.$nextTick(() => {
             this.$refs.net.clearData();
@@ -61,11 +63,11 @@
       }
     },
     mounted() {
-      this.clickTab();
       let deviceId = sessionStorage.getItem("deviceId");
       if (deviceId.indexOf('ZDM1') == 0 || deviceId.indexOf('ZDM7') == 0) {//ZDM1和ZDM7没有升级功能
         this.upgrade = false;
       }
+      this.clickTab();
     }
   }
 </script>

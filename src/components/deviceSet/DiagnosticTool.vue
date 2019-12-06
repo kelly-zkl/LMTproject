@@ -17,7 +17,7 @@
   </div>
 </template>
 <script>
-  import {ipValid, numValid} from '../../assets/js/api.js'
+  import {ipValid} from '../../assets/js/api.js'
   import axios from "axios";
 
   export default {

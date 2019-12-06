@@ -81,31 +81,20 @@
 </template>
 
 <script>
-  import {ipValid, numValid} from '../../assets/js/api.js'
+  import {ipValid} from '../../assets/js/api.js'
 
   export default {
     data() {
-      let ipValidator = (rule, value, callback) => {
-        if (!ipValid(value)) {
-          callback(new Error("请输入正确的IP"));
-        } else {
-          callback();
-        }
-      };
       return {
         runStartDevice: false,//设置完成重启设备
         dialogWidth: this.$Is_Pc() ? '380px' : '300px',
-        networkData: {ipMode: 'none'},
-        activeNow: 1,
-        activeItem: 'M',
+        networkData: {ipMode: 'none'}, activeNow: 1, activeItem: 'M',
         activeName: [{name: '移动TDD', type: 'M'}, {name: '联通FDD', type: 'U'},
           {name: '电信FDD', type: 'T'}, {name: 'WIFI', type: 'wifi'}],
         wanNames: [{name: '启用3G', type: 'none'}, {name: '启用有线自动', type: 'dhcp'},
           {name: '启用有线手动', type: 'static'}],
         setTypes: [{name: '自动', type: 'dhcp'}, {name: '手动', type: 'static'}],
-        netParam: {},
-        ipWay: '',
-        isOld: false
+        netParam: {}, ipWay: '', isOld: false
       }
     },
     methods: {

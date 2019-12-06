@@ -97,18 +97,12 @@
   export default {
     data() {
       return {
-        dialogWidth: this.$Is_Pc() ? '380px' : '300px',
-        runStartDevice: false,
-        runCellList: false,
-        networkData: [],
-        cells: [],
-        activeNow: 1,
+        dialogWidth: this.$Is_Pc() ? '380px' : '300px', runStartDevice: false, runCellList: false,
+        networkData: [], cells: [], activeNow: 1, listLoading: false, activeItem: "CMCC",
         lteSniffer: {
           snifferMode: 0, selectFreqMode: 10, snifferCycle: 1,
           runTime: new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds()
         },
-        listLoading: false,
-        activeItem: "CMCC",
         activeName: [{name: '移动', type: 'CMCC'}, {name: '联通', type: 'CMUC'}, {name: '电信', type: 'CMTC'}],
         selectFreqModes: [{value: 10, label: '手动'}, {value: 2, label: '自动算法一'},
           {value: 3, label: '自动算法二'}, {value: 4, label: '自动算法三'}, {value: 5, label: '自动算法四'}],
@@ -237,18 +231,37 @@
           this.$message.error(err);
           this.$emit('closeLoading');
         });
-      }
+      },
+      //获取设备的子卡   有devCfg参数时，根据devCfg判断；没有按照原来的就判断
+      getTableItem(devCfg, hasGsmModule) {
+        if (devCfg != 0) {//根据devCfg判断
+          this.activeName = [];
+          if (devCfg.indexOf('M') >= 0) {
+            this.activeName.push({moduleID: 0, name: '移动', type: 'CMCC'});
+          }
+          if (devCfg.indexOf('U') >= 0) {
+            this.activeName.push({moduleID: 1, name: '联通', type: 'CMUC'});
+          }
+          if (devCfg.indexOf('T') >= 0) {
+            this.activeName.push({moduleID: 2, name: '电信', type: 'CMTC'});
+          }
+          this.activeItem = this.activeName[0].type;
+        } else {//兼容之前的旧版本
+          if (hasGsmModule == 0) {//只有2个标签
+            this.activeName = [{moduleID: 0, name: '移动', type: 'CMCC'}, {moduleID: 1, name: '联通', type: 'CMUC'}];
+            this.activeItem = 'CMCC';
+          } else {//没有GSM模块
+            this.activeName = [{moduleID: 0, name: '移动', type: 'CMCC'}, {moduleID: 1, name: '联通', type: 'CMUC'},
+              {moduleID: 2, name: '电信', type: 'CMTC'}];
+            this.activeItem = 'CMCC';
+          }
+        }
+      },
     },
     mounted() {
-      this.hasGsmModule = sessionStorage.getItem("hasGsmModule");
-      if (this.hasGsmModule == 0) {//只有2个标签
-        this.activeName = [{moduleID: 0, name: '移动', type: 'CMCC'}, {moduleID: 1, name: '联通', type: 'CMUC'}];
-        this.activeItem = 'CMCC';
-      } else {//没有GSM模块
-        this.activeName = [{moduleID: 0, name: '移动', type: 'CMCC'}, {moduleID: 1, name: '联通', type: 'CMUC'},
-          {moduleID: 2, name: '电信', type: 'CMTC'}];
-        this.activeItem = 'CMCC';
-      }
+      let hasGsmModule = sessionStorage.getItem("hasGsmModule");
+      let devCfg = sessionStorage.getItem("devCfg");
+      this.getTableItem(devCfg, hasGsmModule);
     }
   }
 </script>
